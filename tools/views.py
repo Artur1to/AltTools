@@ -1,6 +1,9 @@
+import json
+from datetime import date, datetime, timedelta
 from django.shortcuts import render, get_object_or_404
 import base64
 import uuid as uuid_lib
+
 import re
 from random import SystemRandom
 from io import BytesIO
@@ -8,6 +11,7 @@ from urllib.parse import urlparse
 from collections import OrderedDict
 from .models import ToolCategory, ToolPage
 from django.db.models import Q, Count
+
 
 import qrcode
 from django.core.exceptions import ValidationError
@@ -936,6 +940,313 @@ def phone_number_generator(request, page=None):
     return render(request, 'tools/generators/phone_number_generator.html', context)
 
 
+MAX_RANDOM_DATE_COUNT = 1000
+
+DATE_GENERATOR_MODES = {
+    'single': 'Одна дата',
+    'list': 'Список дат',
+    'birthday': 'Дни рождения',
+}
+
+DATE_OUTPUT_FORMATS = {
+    'dot': 'DD.MM.YYYY',
+    'iso': 'YYYY-MM-DD',
+    'slash': 'DD/MM/YYYY',
+    'text': 'Текстовый формат',
+}
+
+DATE_SORT_OPTIONS = {
+    'none': 'Как сгенерировано',
+    'asc': 'По возрастанию',
+    'desc': 'По убыванию',
+}
+
+RU_MONTHS = [
+    'января',
+    'февраля',
+    'марта',
+    'апреля',
+    'мая',
+    'июня',
+    'июля',
+    'августа',
+    'сентября',
+    'октября',
+    'ноября',
+    'декабря',
+]
+
+RU_WEEKDAYS = [
+    'Понедельник',
+    'Вторник',
+    'Среда',
+    'Четверг',
+    'Пятница',
+    'Суббота',
+    'Воскресенье',
+]
+
+
+def parse_date_input(value, fallback):
+    try:
+        return datetime.strptime(value, '%Y-%m-%d').date()
+    except (TypeError, ValueError):
+        return fallback
+
+
+def parse_int_input(value, default, min_value=None, max_value=None):
+    try:
+        number = int(value)
+    except (TypeError, ValueError):
+        number = default
+
+    if min_value is not None:
+        number = max(number, min_value)
+
+    if max_value is not None:
+        number = min(number, max_value)
+
+    return number
+
+
+def shift_years(source_date, years):
+    try:
+        return source_date.replace(year=source_date.year + years)
+    except ValueError:
+        return source_date.replace(
+            year=source_date.year + years,
+            month=2,
+            day=28
+        )
+
+
+def calculate_age(birthday, today):
+    age = today.year - birthday.year
+
+    if (today.month, today.day) < (birthday.month, birthday.day):
+        age -= 1
+
+    return age
+
+
+def random_date_between(start_date, end_date, random):
+    days_difference = (end_date - start_date).days
+    random_days = random.randint(0, days_difference)
+
+    return start_date + timedelta(days=random_days)
+
+
+def format_random_date(value, output_format):
+    if output_format == 'iso':
+        return value.strftime('%Y-%m-%d')
+
+    if output_format == 'slash':
+        return value.strftime('%d/%m/%Y')
+
+    if output_format == 'text':
+        month = RU_MONTHS[value.month - 1]
+        return f'{value.day} {month} {value.year}'
+
+    return value.strftime('%d.%m.%Y')
+
+
+def build_date_json_item(value, formatted_value, mode, today):
+    item = {
+        'date': value.isoformat(),
+        'value': formatted_value,
+        'day_of_week': RU_WEEKDAYS[value.weekday()],
+    }
+
+    if mode == 'birthday':
+        item['age'] = calculate_age(value, today)
+
+    return item
+
+
+def random_date_generator(request, page=None):
+    if page is None:
+        page = get_object_or_404(
+            ToolPage,
+            slug='random-date-generator',
+            is_published=True
+        )
+
+    today = date.today()
+    random = SystemRandom()
+    errors = []
+
+    selected_mode = request.GET.get('mode', 'list')
+    selected_format = request.GET.get('format', 'dot')
+    selected_sort = request.GET.get('sort', 'none')
+
+    if selected_mode not in DATE_GENERATOR_MODES:
+        selected_mode = 'list'
+
+    if selected_format not in DATE_OUTPUT_FORMATS:
+        selected_format = 'dot'
+
+    if selected_sort not in DATE_SORT_OPTIONS:
+        selected_sort = 'none'
+
+    default_start_date = date(today.year - 10, 1, 1)
+    default_end_date = today
+
+    start_date = parse_date_input(
+        request.GET.get('start_date'),
+        default_start_date
+    )
+
+    end_date = parse_date_input(
+        request.GET.get('end_date'),
+        default_end_date
+    )
+
+    count = parse_int_input(
+        request.GET.get('count'),
+        default=10,
+        min_value=1,
+        max_value=MAX_RANDOM_DATE_COUNT
+    )
+
+    min_age = parse_int_input(
+        request.GET.get('min_age'),
+        default=18,
+        min_value=0,
+        max_value=120
+    )
+
+    max_age = parse_int_input(
+        request.GET.get('max_age'),
+        default=65,
+        min_value=0,
+        max_value=120
+    )
+
+    unique = request.GET.get('unique') == 'on'
+
+    if selected_mode == 'single':
+        count = 1
+
+    if selected_mode == 'birthday':
+        if min_age > max_age:
+            min_age, max_age = max_age, min_age
+            errors.append('Минимальный возраст был больше максимального, поэтому значения поменяны местами.')
+
+        generation_start_date = shift_years(today, -max_age)
+        generation_end_date = shift_years(today, -min_age)
+    else:
+        generation_start_date = start_date
+        generation_end_date = end_date
+
+    if generation_start_date > generation_end_date:
+        generation_start_date, generation_end_date = generation_end_date, generation_start_date
+        errors.append('Начальная дата была позже конечной, поэтому даты поменяны местами.')
+
+    available_days = (generation_end_date - generation_start_date).days + 1
+
+    if unique and count > available_days:
+        count = available_days
+        errors.append(
+            'Количество уникальных дат было больше доступного диапазона, поэтому количество уменьшено.'
+        )
+
+    generated_dates = []
+
+    if unique:
+        random_offsets = random.sample(
+            range(available_days),
+            count
+        )
+
+        for offset in random_offsets:
+            generated_dates.append(
+                generation_start_date + timedelta(days=offset)
+            )
+    else:
+        for _ in range(count):
+            generated_dates.append(
+                random_date_between(
+                    generation_start_date,
+                    generation_end_date,
+                    random
+                )
+            )
+
+    if selected_sort == 'asc':
+        generated_dates.sort()
+
+    if selected_sort == 'desc':
+        generated_dates.sort(reverse=True)
+
+    result_items = []
+
+    for generated_date in generated_dates:
+        formatted_value = format_random_date(
+            generated_date,
+            selected_format
+        )
+
+        result_items.append({
+            'date': generated_date,
+            'formatted': formatted_value,
+            'json': build_date_json_item(
+                generated_date,
+                formatted_value,
+                selected_mode,
+                today
+            )
+        })
+
+    result_lines = [
+        item['formatted']
+        for item in result_items
+    ]
+
+    json_data = {
+        'tool': 'AltTools random date generator',
+        'mode': selected_mode,
+        'format': selected_format,
+        'count': len(result_items),
+        'generated_at': datetime.now().isoformat(timespec='seconds'),
+        'items': [
+            item['json']
+            for item in result_items
+        ]
+    }
+
+    context = {
+        'page': page,
+
+        'modes': DATE_GENERATOR_MODES,
+        'formats': DATE_OUTPUT_FORMATS,
+        'sort_options': DATE_SORT_OPTIONS,
+
+        'selected_mode': selected_mode,
+        'selected_format': selected_format,
+        'selected_sort': selected_sort,
+
+        'start_date': generation_start_date if selected_mode != 'birthday' else start_date,
+        'end_date': generation_end_date if selected_mode != 'birthday' else end_date,
+
+        'count': count,
+        'min_age': min_age,
+        'max_age': max_age,
+        'unique': unique,
+
+        'max_count': MAX_RANDOM_DATE_COUNT,
+        'errors': errors,
+
+        'result_items': result_items,
+        'result_text': '\n'.join(result_lines),
+        'json_data': json_data,
+    }
+
+    return render(
+        request,
+        'tools/generators/random_date_generator.html',
+        context
+    )
+
 
 def tool_detail(request, category_slug, tool_slug):
     page = get_object_or_404(
@@ -953,6 +1264,7 @@ def tool_detail(request, category_slug, tool_slug):
         'phone-number-generator': phone_number_generator,
         'bmi-calculator': bmi_calculator,
         'fish-text-generator': fish_text_generator,
+        'random-date-generator': random_date_generator,
 
 
         # если у тебя уже есть функция barcode_generator:

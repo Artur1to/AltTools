@@ -1,0 +1,331 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page.meta_title }}{% endblock %}
+
+{% block meta_description %}
+{{ page.meta_description }}
+{% endblock %}
+
+{% block canonical %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_url %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_title %}{{ page.meta_title }}{% endblock %}
+{% block og_description %}{{ page.meta_description }}{% endblock %}
+
+{% block nav_tools_active %}nav__link_active{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/random_date_generator.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="date-generator-page">
+    <div class="container">
+
+        <div class="breadcrumbs">
+            <a href="/">Главная</a>
+            <span>/</span>
+            <a href="/tools/">Инструменты</a>
+            <span>/</span>
+            {% if page.category %}
+                <a href="{{ page.category.get_absolute_url }}">{{ page.category.title }}</a>
+                <span>/</span>
+            {% endif %}
+            <span>{{ page.title }}</span>
+        </div>
+
+        <section class="date-hero">
+            <div class="date-hero__content">
+                <p class="page-label">
+                    {% if page.category %}
+                        {{ page.category.title }}
+                    {% else %}
+                        Генератор
+                    {% endif %}
+                </p>
+
+                <h1 class="page-title">
+                    {{ page.h1 }}
+                </h1>
+
+                <p class="page-description">
+                    {{ page.short_description }}
+                </p>
+            </div>
+
+            <div class="date-hero__card">
+                <div class="date-hero__icon">
+                    {{ page.icon|default:"D" }}
+                </div>
+
+                <div>
+                    <strong>Случайные даты</strong>
+                    <span>Список, дни рождения, JSON</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="date-generator">
+
+            <form method="get" class="date-form">
+
+                <div class="date-field">
+                    <label for="mode">Режим генерации</label>
+                    <select name="mode" id="mode">
+                        {% for mode_key, mode_title in modes.items %}
+                            <option value="{{ mode_key }}"
+                                    {% if selected_mode == mode_key %}selected{% endif %}>
+                                {{ mode_title }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="date-form__grid date-range-fields">
+                    <div class="date-field">
+                        <label for="start_date">Начальная дата</label>
+                        <input type="date"
+                               name="start_date"
+                               id="start_date"
+                               value="{{ start_date|date:'Y-m-d' }}">
+                    </div>
+
+                    <div class="date-field">
+                        <label for="end_date">Конечная дата</label>
+                        <input type="date"
+                               name="end_date"
+                               id="end_date"
+                               value="{{ end_date|date:'Y-m-d' }}">
+                    </div>
+                </div>
+
+                <div class="date-form__grid birthday-fields">
+                    <div class="date-field">
+                        <label for="min_age">Возраст от</label>
+                        <input type="number"
+                               name="min_age"
+                               id="min_age"
+                               min="0"
+                               max="120"
+                               value="{{ min_age }}">
+                    </div>
+
+                    <div class="date-field">
+                        <label for="max_age">Возраст до</label>
+                        <input type="number"
+                               name="max_age"
+                               id="max_age"
+                               min="0"
+                               max="120"
+                               value="{{ max_age }}">
+                    </div>
+                </div>
+
+                <div class="date-form__grid">
+                    <div class="date-field">
+                        <label for="count">Количество</label>
+                        <input type="number"
+                               name="count"
+                               id="count"
+                               min="1"
+                               max="{{ max_count }}"
+                               value="{{ count }}">
+                    </div>
+
+                    <div class="date-field">
+                        <label for="format">Формат</label>
+                        <select name="format" id="format">
+                            {% for format_key, format_title in formats.items %}
+                                <option value="{{ format_key }}"
+                                        {% if selected_format == format_key %}selected{% endif %}>
+                                    {{ format_title }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="date-field">
+                    <label for="sort">Сортировка</label>
+                    <select name="sort" id="sort">
+                        {% for sort_key, sort_title in sort_options.items %}
+                            <option value="{{ sort_key }}"
+                                    {% if selected_sort == sort_key %}selected{% endif %}>
+                                {{ sort_title }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <label class="date-checkbox">
+                    <input type="checkbox"
+                           name="unique"
+                           {% if unique %}checked{% endif %}>
+                    <span>Только уникальные даты</span>
+                </label>
+
+                <button type="submit" class="date-form__button">
+                    Сгенерировать даты
+                </button>
+
+                <p class="date-form__hint">
+                    Максимум {{ max_count }} дат за одну генерацию.
+                </p>
+
+            </form>
+
+            <div class="date-result">
+
+                {% if errors %}
+                    <div class="date-alert">
+                        {% for error in errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="date-result__top">
+                    <div>
+                        <h2>Результат</h2>
+                        <p>
+                            Скопируйте список дат или скачайте результат в JSON.
+                        </p>
+                    </div>
+
+                    <div class="date-result__actions">
+                        <button type="button" class="date-action" id="copyDates">
+                            Скопировать
+                        </button>
+
+                        <button type="button" class="date-action" id="downloadTxt">
+                            TXT
+                        </button>
+
+                        <button type="button" class="date-action date-action_dark" id="downloadJson">
+                            Скачать JSON
+                        </button>
+                    </div>
+                </div>
+
+                <textarea id="dateTextResult" class="date-result__textarea" readonly>{{ result_text }}</textarea>
+
+                <div class="date-json-preview">
+                    <div class="date-json-preview__head">
+                        <span>JSON preview</span>
+                    </div>
+
+                    <pre id="dateJsonPreview"></pre>
+                </div>
+
+                <p class="date-result__note" id="dateStatus">
+                    Даты подходят для тестовых данных, таблиц, форм регистрации и макетов.
+                </p>
+
+            </div>
+
+        </section>
+
+        <section class="date-info">
+            <div class="date-info__content">
+                <h2>Зачем нужен генератор случайных дат?</h2>
+
+                <p>
+                    Генератор случайных дат помогает быстро подготовить тестовые данные
+                    для таблиц, CRM, форм регистрации, фильтров, баз данных и макетов.
+                </p>
+
+                <p>
+                    Можно создать одну дату, список дат в диапазоне или реалистичные даты
+                    рождения по возрасту. Результат доступен в обычном текстовом виде и JSON.
+                </p>
+            </div>
+        </section>
+
+    </div>
+</section>
+
+{{ json_data|json_script:"dateJsonData" }}
+
+<script>
+    const modeSelect = document.getElementById('mode');
+    const dateRangeFields = document.querySelector('.date-range-fields');
+    const birthdayFields = document.querySelector('.birthday-fields');
+
+    const textArea = document.getElementById('dateTextResult');
+    const statusText = document.getElementById('dateStatus');
+
+    const copyButton = document.getElementById('copyDates');
+    const downloadTxtButton = document.getElementById('downloadTxt');
+    const downloadJsonButton = document.getElementById('downloadJson');
+
+    const jsonData = JSON.parse(
+        document.getElementById('dateJsonData').textContent
+    );
+
+    const jsonPreview = document.getElementById('dateJsonPreview');
+    jsonPreview.textContent = JSON.stringify(jsonData, null, 2);
+
+    function updateModeFields() {
+        if (modeSelect.value === 'birthday') {
+            dateRangeFields.style.display = 'none';
+            birthdayFields.style.display = 'grid';
+        } else {
+            dateRangeFields.style.display = 'grid';
+            birthdayFields.style.display = 'none';
+        }
+    }
+
+    updateModeFields();
+
+    modeSelect.addEventListener('change', updateModeFields);
+
+    copyButton.addEventListener('click', async function () {
+        try {
+            await navigator.clipboard.writeText(textArea.value);
+            statusText.textContent = 'Список дат скопирован в буфер обмена.';
+        } catch (error) {
+            textArea.select();
+            document.execCommand('copy');
+            statusText.textContent = 'Список дат скопирован.';
+        }
+    });
+
+    downloadTxtButton.addEventListener('click', function () {
+        const blob = new Blob([textArea.value], {
+            type: 'text/plain;charset=utf-8'
+        });
+
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+
+        link.href = url;
+        link.download = 'alttools-random-dates.txt';
+        link.click();
+
+        URL.revokeObjectURL(url);
+
+        statusText.textContent = 'TXT-файл скачан.';
+    });
+
+    downloadJsonButton.addEventListener('click', function () {
+        const jsonText = JSON.stringify(jsonData, null, 2);
+
+        const blob = new Blob([jsonText], {
+            type: 'application/json;charset=utf-8'
+        });
+
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+
+        link.href = url;
+        link.download = 'alttools-random-dates.json';
+        link.click();
+
+        URL.revokeObjectURL(url);
+
+        statusText.textContent = 'JSON-файл скачан.';
+    });
+</script>
+
+{% endblock %}
