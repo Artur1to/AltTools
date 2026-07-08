@@ -1,0 +1,226 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page.meta_title }}{% endblock %}
+
+{% block meta_description %}
+{{ page.meta_description }}
+{% endblock %}
+
+{% block canonical %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_url %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_title %}{{ page.meta_title }}{% endblock %}
+{% block og_description %}{{ page.meta_description }}{% endblock %}
+
+{% block nav_tools_active %}nav__link_active{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/base64_converter.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="base64-page">
+    <div class="container">
+
+        <div class="breadcrumbs">
+            <a href="/">Главная</a>
+            <span>/</span>
+            <a href="/tools/">Инструменты</a>
+            <span>/</span>
+            {% if page.category %}
+                <a href="{{ page.category.get_absolute_url }}">{{ page.category.title }}</a>
+                <span>/</span>
+            {% endif %}
+            <span>{{ page.title }}</span>
+        </div>
+
+        <section class="base64-hero">
+            <div class="base64-hero__content">
+                <p class="page-label">
+                    {% if page.category %}
+                        {{ page.category.title }}
+                    {% else %}
+                        Конвертер
+                    {% endif %}
+                </p>
+
+                <h1 class="page-title">
+                    {{ page.h1 }}
+                </h1>
+
+                <p class="page-description">
+                    {{ page.short_description }}
+                </p>
+            </div>
+
+            <div class="base64-hero__card">
+                <div class="base64-hero__icon">
+                    B64
+                </div>
+
+                <div>
+                    <strong>Base64 Converter</strong>
+                    <span>Encode · Decode · URL-safe</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="base64-tool">
+
+            <form method="post" class="base64-form">
+                {% csrf_token %}
+
+                <div class="base64-form__grid">
+                    <div class="base64-field">
+                        <label for="operation">Режим</label>
+                        <select name="operation" id="operation">
+                            {% for operation_key, operation_title in operations.items %}
+                                <option value="{{ operation_key }}"
+                                        {% if selected_operation == operation_key %}selected{% endif %}>
+                                    {{ operation_title }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="base64-field">
+                        <label for="variant">Тип Base64</label>
+                        <select name="variant" id="variant">
+                            {% for variant_key, variant_title in variants.items %}
+                                <option value="{{ variant_key }}"
+                                        {% if selected_variant == variant_key %}selected{% endif %}>
+                                    {{ variant_title }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="base64-field">
+                        <label for="encoding">Кодировка текста</label>
+                        <select name="encoding" id="encoding">
+                            {% for encoding_key, encoding_title in encodings.items %}
+                                <option value="{{ encoding_key }}"
+                                        {% if selected_encoding == encoding_key %}selected{% endif %}>
+                                    {{ encoding_title }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="base64-options">
+                    <label class="base64-checkbox">
+                        <input type="checkbox"
+                               name="wrap_lines"
+                               {% if wrap_lines %}checked{% endif %}>
+                        <span>Переносить Base64 по строкам</span>
+                    </label>
+
+                    <label class="base64-checkbox">
+                        <input type="checkbox"
+                               name="ignore_spaces"
+                               {% if ignore_spaces %}checked{% endif %}>
+                        <span>Игнорировать пробелы и переносы при декодировании</span>
+                    </label>
+                </div>
+
+                <div class="base64-columns">
+
+                    <div class="base64-panel">
+                        <div class="base64-panel__head">
+                            <div>
+                                <h2>Исходные данные</h2>
+                                <p id="inputHint">Введите текст или Base64-строку</p>
+                            </div>
+
+                            <button type="button" class="base64-small-btn" id="clearInput">
+                                Очистить
+                            </button>
+                        </div>
+
+                        <textarea
+                            name="input_text"
+                            id="inputText"
+                            class="base64-textarea"
+                            maxlength="{{ max_input_length }}"
+                            placeholder="Введите текст для кодирования или Base64 для декодирования">{{ input_text }}</textarea>
+                    </div>
+
+                    <div class="base64-panel">
+                        <div class="base64-panel__head">
+                            <div>
+                                <h2>Результат</h2>
+                                <p>Скопируйте или скачайте результат</p>
+                            </div>
+
+                            <div class="base64-panel__actions">
+                                <button type="button" class="base64-small-btn" id="copyResult">
+                                    Копировать
+                                </button>
+
+                                <button type="button" class="base64-small-btn base64-small-btn_dark" id="downloadResult">
+                                    TXT
+                                </button>
+                            </div>
+                        </div>
+
+                        <textarea
+                            id="resultText"
+                            class="base64-textarea"
+                            readonly
+                            placeholder="Здесь появится результат">{{ result_text }}</textarea>
+                    </div>
+
+                </div>
+
+                {% if error_message %}
+                    <div class="base64-message base64-message_error">
+                        {{ error_message }}
+                    </div>
+                {% endif %}
+
+                {% if success_message %}
+                    <div class="base64-message base64-message_success">
+                        {{ success_message }}
+                    </div>
+                {% endif %}
+
+                <div class="base64-submit">
+                    <button type="submit" class="base64-submit__button">
+                        Выполнить
+                    </button>
+
+                    <button type="button" class="base64-submit__secondary" id="swapText">
+                        Поменять местами
+                    </button>
+                </div>
+
+            </form>
+
+        </section>
+
+        <section class="base64-info">
+            <div class="base64-info__content">
+                <h2>Что такое Base64?</h2>
+
+                <p>
+                    Base64 — это способ представить данные в виде текстовой строки.
+                    Его часто используют в API, токенах, конфигурациях, email-сообщениях,
+                    data URL и при передаче данных между системами.
+                </p>
+
+                <p>
+                    Этот инструмент помогает быстро закодировать обычный текст в Base64
+                    или декодировать Base64 обратно в читаемый текст.
+                </p>
+            </div>
+        </section>
+
+    </div>
+</section>
+{% block extra_js %}
+<script src="{% static 'tools/js/base64_converter.js' %}" defer></script>
+{% endblock %}
+
+{% endblock %}

@@ -1,3 +1,4 @@
+import binascii
 import json
 from datetime import date, datetime, timedelta
 from django.shortcuts import render, get_object_or_404
@@ -1248,6 +1249,159 @@ def random_date_generator(request, page=None):
     )
 
 
+MAX_BASE64_INPUT_LENGTH = 200_000
+
+BASE64_OPERATIONS = {
+    'encode': 'Кодировать в Base64',
+    'decode': 'Декодировать из Base64',
+}
+
+BASE64_VARIANTS = {
+    'standard': 'Обычный Base64',
+    'urlsafe': 'URL-safe Base64',
+}
+
+BASE64_ENCODINGS = {
+    'utf-8': 'UTF-8',
+    'windows-1251': 'Windows-1251',
+    'iso-8859-1': 'ISO-8859-1',
+}
+
+
+def normalize_base64_padding(value):
+    missing_padding = len(value) % 4
+
+    if missing_padding:
+        value += '=' * (4 - missing_padding)
+
+    return value
+
+
+def wrap_base64_text(value, line_length=76):
+    if not value:
+        return value
+
+    return '\n'.join(
+        value[index:index + line_length]
+        for index in range(0, len(value), line_length)
+    )
+
+
+def base64_converter(request, page=None):
+    if page is None:
+        page = get_object_or_404(
+            ToolPage,
+            slug='base64-converter',
+            is_published=True
+        )
+
+    selected_operation = 'encode'
+    selected_variant = 'standard'
+    selected_encoding = 'utf-8'
+    input_text = ''
+    result_text = ''
+    error_message = ''
+    success_message = ''
+    wrap_lines = False
+    ignore_spaces = True
+
+    if request.method == 'POST':
+        selected_operation = request.POST.get('operation', 'encode')
+        selected_variant = request.POST.get('variant', 'standard')
+        selected_encoding = request.POST.get('encoding', 'utf-8')
+        input_text = request.POST.get('input_text', '')
+        wrap_lines = request.POST.get('wrap_lines') == 'on'
+        ignore_spaces = request.POST.get('ignore_spaces') == 'on'
+
+        if selected_operation not in BASE64_OPERATIONS:
+            selected_operation = 'encode'
+
+        if selected_variant not in BASE64_VARIANTS:
+            selected_variant = 'standard'
+
+        if selected_encoding not in BASE64_ENCODINGS:
+            selected_encoding = 'utf-8'
+
+        if len(input_text) > MAX_BASE64_INPUT_LENGTH:
+            error_message = f'Слишком большой текст. Максимум {MAX_BASE64_INPUT_LENGTH} символов.'
+        elif not input_text:
+            error_message = 'Введите текст или Base64-строку.'
+        else:
+            try:
+                if selected_operation == 'encode':
+                    source_bytes = input_text.encode(selected_encoding)
+
+                    if selected_variant == 'urlsafe':
+                        encoded_bytes = base64.urlsafe_b64encode(source_bytes)
+                    else:
+                        encoded_bytes = base64.b64encode(source_bytes)
+
+                    result_text = encoded_bytes.decode('ascii')
+
+                    if wrap_lines:
+                        result_text = wrap_base64_text(result_text)
+
+                    success_message = 'Текст успешно закодирован в Base64.'
+
+                else:
+                    source_value = input_text.strip()
+
+                    if ignore_spaces:
+                        source_value = re.sub(r'\s+', '', source_value)
+
+                    source_value = normalize_base64_padding(source_value)
+
+                    if selected_variant == 'urlsafe':
+                        decoded_bytes = base64.urlsafe_b64decode(
+                            source_value.encode('ascii')
+                        )
+                    else:
+                        decoded_bytes = base64.b64decode(
+                            source_value.encode('ascii'),
+                            validate=True
+                        )
+
+                    result_text = decoded_bytes.decode(selected_encoding)
+                    success_message = 'Base64 успешно декодирован в текст.'
+
+            except UnicodeEncodeError:
+                error_message = f'Текст не удалось закодировать в выбранной кодировке: {BASE64_ENCODINGS[selected_encoding]}.'
+            except UnicodeDecodeError:
+                error_message = f'Base64 декодирован, но результат не является текстом в кодировке {BASE64_ENCODINGS[selected_encoding]}.'
+            except (binascii.Error, ValueError):
+                error_message = 'Некорректная Base64-строка. Проверьте символы, длину строки и выбранный тип Base64.'
+            except Exception:
+                error_message = 'Не удалось обработать данные. Проверьте введённый текст и настройки.'
+
+    context = {
+        'page': page,
+
+        'operations': BASE64_OPERATIONS,
+        'variants': BASE64_VARIANTS,
+        'encodings': BASE64_ENCODINGS,
+
+        'selected_operation': selected_operation,
+        'selected_variant': selected_variant,
+        'selected_encoding': selected_encoding,
+
+        'input_text': input_text,
+        'result_text': result_text,
+
+        'wrap_lines': wrap_lines,
+        'ignore_spaces': ignore_spaces,
+
+        'error_message': error_message,
+        'success_message': success_message,
+        'max_input_length': MAX_BASE64_INPUT_LENGTH,
+    }
+
+    return render(
+        request,
+        'tools/it/base64_converter.html',
+        context
+    )
+
+
 def tool_detail(request, category_slug, tool_slug):
     page = get_object_or_404(
         ToolPage.objects.select_related('category'),
@@ -1265,6 +1419,7 @@ def tool_detail(request, category_slug, tool_slug):
         'bmi-calculator': bmi_calculator,
         'fish-text-generator': fish_text_generator,
         'random-date-generator': random_date_generator,
+        'base64-converter': base64_converter,
 
 
         # если у тебя уже есть функция barcode_generator:
