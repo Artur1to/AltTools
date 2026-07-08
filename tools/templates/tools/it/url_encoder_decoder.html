@@ -1,0 +1,277 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page.meta_title }}{% endblock %}
+
+{% block meta_description %}
+{{ page.meta_description }}
+{% endblock %}
+
+{% block canonical %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_url %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_title %}{{ page.meta_title }}{% endblock %}
+{% block og_description %}{{ page.meta_description }}{% endblock %}
+
+{% block nav_tools_active %}nav__link_active{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/url_encoder_decoder.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="url-tool-page">
+    <div class="container">
+
+        <div class="breadcrumbs">
+            <a href="/">Главная</a>
+            <span>/</span>
+            <a href="/tools/">Инструменты</a>
+            <span>/</span>
+            {% if page.category %}
+                <a href="{{ page.category.get_absolute_url }}">{{ page.category.title }}</a>
+                <span>/</span>
+            {% endif %}
+            <span>{{ page.title }}</span>
+        </div>
+
+        <section class="url-hero">
+            <div class="url-hero__content">
+                <p class="page-label">
+                    {% if page.category %}
+                        {{ page.category.title }}
+                    {% else %}
+                        Инструмент
+                    {% endif %}
+                </p>
+
+                <h1 class="page-title">
+                    {{ page.h1 }}
+                </h1>
+
+                <p class="page-description">
+                    {{ page.short_description }}
+                </p>
+            </div>
+
+            <div class="url-hero__card">
+                <div class="url-hero__icon">
+                    URL
+                </div>
+
+                <div>
+                    <strong>URL Encode / Decode</strong>
+                    <span>Percent-encoding · UTF-8 · Form mode</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="url-tool">
+
+            <form method="post" class="url-form">
+                {% csrf_token %}
+
+                <div class="url-form__grid">
+                    <div class="url-field">
+                        <label for="operation">Действие</label>
+                        <select name="operation" id="operation">
+                            {% for operation_key, operation_title in operations.items %}
+                                <option value="{{ operation_key }}"
+                                        {% if selected_operation == operation_key %}selected{% endif %}>
+                                    {{ operation_title }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="url-field">
+                        <label for="mode">Режим</label>
+                        <select name="mode" id="mode">
+                            {% for mode_key, mode_title in modes.items %}
+                                <option value="{{ mode_key }}"
+                                        {% if selected_mode == mode_key %}selected{% endif %}>
+                                    {{ mode_title }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="url-field">
+                        <label for="encoding">Кодировка</label>
+                        <select name="encoding" id="encoding">
+                            {% for encoding_key, encoding_title in encodings.items %}
+                                <option value="{{ encoding_key }}"
+                                        {% if selected_encoding == encoding_key %}selected{% endif %}>
+                                    {{ encoding_title }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="url-options">
+                    <label class="url-checkbox">
+                        <input type="checkbox"
+                               name="each_line"
+                               {% if each_line %}checked{% endif %}>
+                        <span>Обрабатывать каждую строку отдельно</span>
+                    </label>
+
+                    <label class="url-checkbox">
+                        <input type="checkbox"
+                               name="recursive_decode"
+                               {% if recursive_decode %}checked{% endif %}>
+                        <span>Рекурсивное декодирование</span>
+                    </label>
+                </div>
+
+                <div class="url-columns">
+
+                    <div class="url-panel">
+                        <div class="url-panel__head">
+                            <div>
+                                <h2>Исходные данные</h2>
+                                <p id="inputHint">Введите URL, текст или закодированную строку</p>
+                            </div>
+
+                            <button type="button" class="url-small-btn" id="clearInput">
+                                Очистить
+                            </button>
+                        </div>
+
+                        <textarea
+                            name="input_text"
+                            id="inputText"
+                            class="url-textarea"
+                            maxlength="{{ max_input_length }}"
+                            placeholder="Например: https://example.com/search?q=привет мир">{{ input_text }}</textarea>
+                    </div>
+
+                    <div class="url-panel">
+                        <div class="url-panel__head">
+                            <div>
+                                <h2>Результат</h2>
+                                <p>Скопируйте или скачайте результат</p>
+                            </div>
+
+                            <div class="url-panel__actions">
+                                <button type="button" class="url-small-btn" id="copyResult">
+                                    Копировать
+                                </button>
+
+                                <button type="button" class="url-small-btn url-small-btn_dark" id="downloadResult">
+                                    TXT
+                                </button>
+                            </div>
+                        </div>
+
+                        <textarea
+                            id="resultText"
+                            class="url-textarea"
+                            readonly
+                            placeholder="Здесь появится результат">{{ result_text }}</textarea>
+                    </div>
+
+                </div>
+
+                {% if error_message %}
+                    <div class="url-message url-message_error">
+                        {{ error_message }}
+                    </div>
+                {% endif %}
+
+                {% if success_message %}
+                    <div class="url-message url-message_success">
+                        {{ success_message }}
+                    </div>
+                {% endif %}
+
+                <div class="url-submit">
+                    <button type="submit" class="url-submit__button">
+                        Выполнить
+                    </button>
+
+                    <button type="button" class="url-submit__secondary" id="swapText">
+                        Поменять местами
+                    </button>
+                </div>
+
+            </form>
+
+        </section>
+
+        <section class="url-info">
+            <div class="url-info__content">
+                <h2>Что такое URL-кодирование?</h2>
+
+                <p>
+                    URL-кодирование, или percent-encoding, преобразует символы в безопасный
+                    для URL-адресов формат. Например, пробел может быть представлен как
+                    <code>%20</code>, а кириллица превращается в последовательность
+                    percent-кодов.
+                </p>
+
+                <p>
+                    Такой формат часто используется в параметрах ссылок, поисковых запросах,
+                    UTM-метках, API-запросах и HTML-формах. Инструмент помогает быстро
+                    закодировать строку или вернуть URL-кодированный текст в читаемый вид.
+                </p>
+            </div>
+        </section>
+
+        <section class="url-faq">
+            <div class="url-faq__head">
+                <p class="section-label">FAQ</p>
+                <h2>Частые вопросы</h2>
+            </div>
+
+            <div class="url-faq__list">
+
+                <details class="url-faq__item" open>
+                    <summary>Чем отличается кодирование от декодирования?</summary>
+                    <p>
+                        Кодирование превращает обычный текст в URL-безопасный формат,
+                        например пробел в <code>%20</code>. Декодирование делает обратное:
+                        превращает percent-коды обратно в читаемый текст.
+                    </p>
+                </details>
+
+                <details class="url-faq__item">
+                    <summary>Когда выбирать режим “Компонент URL”?</summary>
+                    <p>
+                        Этот режим лучше использовать для отдельных параметров, значений
+                        query string, поисковых фраз, UTM-меток и других частей URL,
+                        где специальные символы должны быть закодированы.
+                    </p>
+                </details>
+
+                <details class="url-faq__item">
+                    <summary>Что значит Form URL Encoded?</summary>
+                    <p>
+                        Это формат, который часто используется при отправке HTML-форм.
+                        В нём пробел обычно превращается в знак <code>+</code>, а остальные
+                        специальные символы кодируются percent-кодами.
+                    </p>
+                </details>
+
+                <details class="url-faq__item">
+                    <summary>Зачем нужно рекурсивное декодирование?</summary>
+                    <p>
+                        Иногда строка бывает закодирована несколько раз. Например,
+                        <code>%2520</code> сначала декодируется в <code>%20</code>,
+                        а потом уже в пробел. Рекурсивный режим пытается выполнить
+                        декодирование несколько раз подряд.
+                    </p>
+                </details>
+
+            </div>
+        </section>
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'tools/js/url_encoder_decoder.js' %}" defer></script>
+{% endblock %}
