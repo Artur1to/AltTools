@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page.meta_title }}{% endblock %}
+
+{% block meta_description %}
+{{ page.meta_description }}
+{% endblock %}
+
+{% block canonical %}https://example.com/tools/qr-code-generator/{% endblock %}
+{% block og_url %}https://example.com/tools/qr-code-generator/{% endblock %}
+{% block og_title %}{{ page.meta_title }}{% endblock %}
+{% block og_description %}{{ page.meta_description }}{% endblock %}
+
+{% block nav_tools_active %}nav__link_active{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/qr_generator.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="tool-page">
+    <div class="container">
+
+        <div class="breadcrumbs">
+            <a href="/">Главная</a>
+            <span>/</span>
+            <a href="/tools/">Инструменты</a>
+            <span>/</span>
+            <a href="/tools/generators/">Генераторы</a>
+            <span>/</span>
+            <span>Генератор QR-кода</span>
+        </div>
+
+        <div class="page-head">
+            <p class="page-label">Онлайн-генератор</p>
+            <h1 class="page-title">{{ page.h1 }}</h1>
+            <p class="page-description">
+                {{ page.short_description }}
+            </p>
+        </div>
+
+        <section class="tool-layout">
+
+            <div class="tool-box">
+                <h2 class="card-title">Введите ссылку</h2>
+
+                <form method="post" class="form">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label class="form-label" for="url">Ссылка для QR-кода</label>
+                        <input
+                            class="form-input"
+                            type="text"
+                            id="url"
+                            name="url"
+                            value="{{ source_url }}"
+                            placeholder="Например: https://example.com"
+                            autocomplete="url"
+                        >
+                    </div>
+
+                    <button class="button" type="submit">Создать QR-код</button>
+                </form>
+
+                {% if error %}
+                    <div class="result result_error">
+                        {{ error }}
+                    </div>
+                {% endif %}
+
+                <div class="info-card qr-help">
+                    <h2>Что можно закодировать?</h2>
+                    <p>
+                        Сейчас генератор рассчитан на ссылки. Можно вставить URL сайта,
+                        страницы товара, профиля, документа, формы, карточки компании
+                        или любой другой публичной страницы.
+                    </p>
+                </div>
+            </div>
+
+            <aside class="side-box">
+                <h2 class="card-title">Результат</h2>
+
+                {% if qr_image %}
+                    <div class="qr-result">
+                        <div class="qr-preview">
+                            <img
+                                src="data:image/png;base64,{{ qr_image }}"
+                                alt="QR-код для ссылки {{ normalized_url }}"
+                            >
+                        </div>
+
+                        <div class="qr-url">
+                            <span>Ссылка:</span>
+                            <a href="{{ normalized_url }}" target="_blank" rel="noopener noreferrer">
+                                {{ normalized_url }}
+                            </a>
+                        </div>
+
+                        <div class="qr-actions">
+                            <a
+                                class="button"
+                                href="data:image/png;base64,{{ qr_image }}"
+                                download="alttools-qr-code.png"
+                            >
+                                Скачать PNG
+                            </a>
+
+                            <button
+                                class="button button_secondary js-copy-url"
+                                type="button"
+                                data-url="{{ normalized_url }}"
+                            >
+                                Скопировать ссылку
+                            </button>
+
+                            <button
+                                class="button button_secondary js-copy-qr"
+                                type="button"
+                            >
+                                Скопировать QR-код
+                            </button>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="result-box">
+                        <p class="result-label">QR-код</p>
+                        <p class="result-value">—</p>
+                        <p class="hint">
+                            Введите ссылку и нажмите кнопку, чтобы создать QR-код.
+                        </p>
+                    </div>
+                {% endif %}
+
+                <div class="qr-note">
+                    <h3>Совет</h3>
+                    <p>
+                        Перед печатью или размещением QR-кода проверьте его камерой телефона,
+                        чтобы убедиться, что ссылка открывается правильно.
+                    </p>
+                </div>
+            </aside>
+
+        </section>
+
+        <section class="info-section">
+
+            <div class="info-card">
+                <h2>Как создать QR-код для ссылки?</h2>
+                <p>
+                    Вставьте ссылку в поле, нажмите «Создать QR-код», после чего на странице
+                    появится готовое изображение. Его можно скачать в формате PNG и использовать
+                    на сайте, в карточке товара, документе, презентации, объявлении или печатном материале.
+                </p>
+            </div>
+
+            <div class="info-card">
+                <h2>Для чего нужен QR-код?</h2>
+                <p>
+                    QR-код позволяет быстро открыть ссылку с телефона без ручного ввода адреса.
+                    Пользователь просто сканирует код камерой смартфона и переходит на нужную страницу.
+                </p>
+            </div>
+
+        </section>
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'tools/js/qr_generator.js' %}"></script>
+{% endblock %}

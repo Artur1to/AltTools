@@ -1,0 +1,129 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}AltTools — онлайн-калькуляторы и инструменты{% endblock %}</title>
+
+    <meta name="description" content="{% block meta_description %}AltTools — удобные онлайн-калькуляторы, конвертеры и полезные инструменты для быстрых расчётов.{% endblock %}">
+    <meta name="author" content="AltTools">
+    <meta name="robots" content="{% block robots %}index, follow{% endblock %}">
+
+    <meta property="og:title" content="{% block og_title %}AltTools — онлайн-калькуляторы и инструменты{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Быстрые онлайн-калькуляторы, конвертеры и инструменты для повседневных задач.{% endblock %}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{% block og_url %}https://example.com/{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{% static 'img/og-image.jpg' %}{% endblock %}">
+
+    <link rel="canonical" href="{% block canonical %}https://example.com/{% endblock %}">
+    <link rel="icon" href="{% static 'tools/images/favicon.png' %}">
+
+    <link rel="stylesheet" href="{% static 'tools/css/style.css' %}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+
+<div class="page">
+    <header class="header">
+        <div class="container header__inner">
+
+            <a href="/" class="logo">
+                <img src="{% static 'tools/images/logo.png' %}" alt="ToolsHub" class="logo__image">
+            </a>
+
+            <nav class="nav">
+                <a href="/" class="nav__link {% block nav_home_active %}{% endblock %}">Главная</a>
+                <a href="/tools/" class="nav__link {% block nav_tools_active %}{% endblock %}">Инструменты</a>
+                <a href="/about/" class="nav__link {% block nav_about_active %}{% endblock %}">О сайте</a>
+                <a href="/contacts/" class="nav__link {% block nav_contacts_active %}{% endblock %}">Контакты</a>
+            </nav>
+
+        </div>
+    </header>
+
+    <main class="main">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+
+            <div class="footer__top">
+
+                <div class="footer__brand">
+                    <a href="/" class="footer__logo">AltTools</a>
+                    <p class="footer__text">
+                        Онлайн-калькуляторы, конвертеры и полезные инструменты
+                        для быстрых расчётов и повседневных задач.
+                    </p>
+                </div>
+
+                <div class="footer__column">
+                    <h3 class="footer__title">Разделы</h3>
+                    <a href="/" class="footer__link">Главная</a>
+                    <a href="/tools/" class="footer__link">Все инструменты</a>
+                    <a href="/about/" class="footer__link">О сайте</a>
+                    <a href="/contacts/" class="footer__link">Контакты</a>
+                </div>
+
+                <div class="footer__column">
+                    <h3 class="footer__title">Инструменты</h3>
+                    <a href="/tools/calculators/" class="footer__link">Калькуляторы</a>
+                    <a href="/tools/converters/" class="footer__link">Конвертеры</a>
+                    <a href="/tools/generators/" class="footer__link">Генераторы</a>
+                    <a href="/tools/text/" class="footer__link">Работа с текстом</a>
+                </div>
+
+                <div class="footer__column">
+                    <h3 class="footer__title">Информация</h3>
+                    <a href="/privacy/" class="footer__link">Политика конфиденциальности</a>
+                    <a href="/terms/" class="footer__link">Пользовательское соглашение</a>
+                    <a href="/feedback/" class="footer__link">Обратная связь</a>
+                </div>
+
+            </div>
+
+            <div class="footer__bottom">
+                <p>© 2026 AltTools. Все права защищены.</p>
+                <p>Сайт с онлайн-инструментами</p>
+            </div>
+
+        </div>
+    </footer>
+
+</div>
+
+<div id="cookie-banner" class="cookie-banner" aria-hidden="true">
+    <div class="cookie-banner__content">
+        <div class="cookie-banner__text">
+            <strong>Мы используем cookies</strong>
+            <p>
+                AltTools использует cookies и Яндекс.Метрику для анализа посещаемости,
+                улучшения работы сайта и понимания того, какие инструменты полезны пользователям.
+                Подробнее — в <a href="/privacy/">политике конфиденциальности</a>.
+            </p>
+        </div>
+
+        <div class="cookie-banner__actions">
+            <button type="button" class="cookie-btn cookie-btn_accept" id="cookie-accept">
+                Принять
+            </button>
+
+            <button type="button" class="cookie-btn cookie-btn_reject" id="cookie-reject">
+                Отклонить
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'tools/js/cookies.js' %}" defer></script>
+
+{% block extra_js %}{% endblock %}
+
+</body>
+</html>

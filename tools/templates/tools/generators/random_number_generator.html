@@ -1,0 +1,263 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page.meta_title }}{% endblock %}
+
+{% block meta_description %}
+{{ page.meta_description }}
+{% endblock %}
+
+{% block canonical %}https://example.com/tools/random-number-generator/{% endblock %}
+{% block og_url %}https://example.com/tools/random-number-generator/{% endblock %}
+{% block og_title %}{{ page.meta_title }}{% endblock %}
+{% block og_description %}{{ page.meta_description }}{% endblock %}
+
+{% block nav_tools_active %}nav__link_active{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/random_number_generator.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="tool-page">
+    <div class="container">
+
+        <div class="breadcrumbs">
+            <a href="/">Главная</a>
+            <span>/</span>
+            <a href="/tools/">Инструменты</a>
+            <span>/</span>
+            <a href="/tools/generators/">Генераторы</a>
+            <span>/</span>
+            <span>Генератор случайных чисел</span>
+        </div>
+
+        <div class="page-head">
+            <p class="page-label">Онлайн-генератор</p>
+            <h1 class="page-title">{{ page.h1 }}</h1>
+            <p class="page-description">
+                {{ page.short_description }}
+            </p>
+        </div>
+
+        <section class="tool-layout">
+
+            <div class="tool-box">
+                <h2 class="card-title">Настройки генерации</h2>
+
+                <form method="post" class="form random-form">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label class="form-label">Режим генерации</label>
+
+                        <div class="mode-switch">
+                            <label class="mode-switch__item">
+                                <input
+                                    type="radio"
+                                    name="mode"
+                                    value="range"
+                                    {% if mode == 'range' %}checked{% endif %}
+                                >
+                                <span>Из диапазона</span>
+                            </label>
+
+                            <label class="mode-switch__item">
+                                <input
+                                    type="radio"
+                                    name="mode"
+                                    value="list"
+                                    {% if mode == 'list' %}checked{% endif %}
+                                >
+                                <span>Из списка</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="random-panel js-range-panel">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="min_value">От</label>
+                                <input
+                                    class="form-input"
+                                    type="number"
+                                    id="min_value"
+                                    name="min_value"
+                                    value="{{ min_value }}"
+                                    placeholder="1"
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="max_value">До</label>
+                                <input
+                                    class="form-input"
+                                    type="number"
+                                    id="max_value"
+                                    name="max_value"
+                                    value="{{ max_value }}"
+                                    placeholder="100"
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="random-panel js-list-panel">
+                        <div class="form-group">
+                            <label class="form-label" for="numbers_list">Список чисел</label>
+                            <textarea
+                                class="form-textarea"
+                                id="numbers_list"
+                                name="numbers_list"
+                                placeholder="Например: 5, 10, 25, 50, 100"
+                            >{{ numbers_list }}</textarea>
+                            <p class="form-hint">
+                                Можно вводить через запятую, пробел, точку с запятой или с новой строки.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="count">Сколько чисел сгенерировать</label>
+                        <input
+                            class="form-input"
+                            type="number"
+                            min="1"
+                            max="500"
+                            id="count"
+                            name="count"
+                            value="{{ count }}"
+                            placeholder="1"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="exclude_numbers">Исключить числа</label>
+                        <input
+                            class="form-input"
+                            type="text"
+                            id="exclude_numbers"
+                            name="exclude_numbers"
+                            value="{{ exclude_numbers }}"
+                            placeholder="Например: 3, 7, 13"
+                        >
+                        <p class="form-hint">
+                            Эти числа не будут попадать в результат.
+                        </p>
+                    </div>
+
+                    <div class="form-row">
+                        <label class="checkbox-line">
+                            <input
+                                type="checkbox"
+                                name="unique"
+                                {% if unique %}checked{% endif %}
+                            >
+                            <span>Исключить повторения</span>
+                        </label>
+
+                        <div class="form-group">
+                            <label class="form-label" for="sort_result">Сортировка результата</label>
+                            <select class="form-select" id="sort_result" name="sort_result">
+                                <option value="none" {% if sort_result == 'none' %}selected{% endif %}>
+                                    Не сортировать
+                                </option>
+                                <option value="asc" {% if sort_result == 'asc' %}selected{% endif %}>
+                                    По возрастанию
+                                </option>
+                                <option value="desc" {% if sort_result == 'desc' %}selected{% endif %}>
+                                    По убыванию
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button class="button" type="submit">Сгенерировать</button>
+                </form>
+
+                {% if error %}
+                    <div class="result result_error">
+                        {{ error }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <aside class="side-box">
+                <h2 class="card-title">Результат</h2>
+
+                {% if results %}
+                    <div class="random-result">
+                        <p class="result-label">Сгенерированные числа</p>
+
+                        <div class="random-numbers">
+                            {% for number in results %}
+                                <span>{{ number }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <textarea
+                            class="random-result-text js-result-text"
+                            readonly
+                        >{{ result_text }}</textarea>
+
+                        <div class="random-actions">
+                            <button
+                                class="button button_secondary js-copy-result"
+                                type="button"
+                            >
+                                Скопировать результат
+                            </button>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="result-box">
+                        <p class="result-label">Случайные числа</p>
+                        <p class="result-value">—</p>
+                        <p class="hint">
+                            Настройте генератор и нажмите кнопку, чтобы получить результат.
+                        </p>
+                    </div>
+                {% endif %}
+
+                <div class="random-note">
+                    <h3>Что можно настроить?</h3>
+                    <p>
+                        Можно выбрать диапазон, указать собственный список чисел,
+                        исключить отдельные значения и запретить повторения.
+                    </p>
+                </div>
+            </aside>
+
+        </section>
+
+        <section class="info-section">
+
+            <div class="info-card">
+                <h2>Как работает генератор случайных чисел?</h2>
+                <p>
+                    Генератор выбирает одно или несколько чисел из указанного диапазона
+                    или из списка, который вы ввели вручную. Дополнительно можно исключить
+                    отдельные числа и включить режим без повторений.
+                </p>
+            </div>
+
+            <div class="info-card">
+                <h2>Где можно использовать рандомайзер?</h2>
+                <p>
+                    Такой инструмент может пригодиться для розыгрышей, выбора случайного варианта,
+                    тестирования, распределения задач, генерации наборов чисел и других ситуаций,
+                    где нужен случайный результат.
+                </p>
+            </div>
+
+        </section>
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'tools/js/random_number_generator.js' %}"></script>
+{% endblock %}

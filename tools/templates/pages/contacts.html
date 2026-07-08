@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Контакты AltTools — связь, реклама и сотрудничество{% endblock %}
+
+{% block meta_description %}
+Контакты AltTools: обратная связь, сообщения об ошибках, предложения по инструментам, реклама и сотрудничество.
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/pages.css' %}">
+{% endblock %}
+
+{% block canonical %}https://example.com/contacts/{% endblock %}
+
+{% block nav_contacts_active %}nav__link_active{% endblock %}
+
+{% block content %}
+
+<section class="page">
+    <div class="container">
+
+        <div class="page-head">
+            <h1>Контакты AltTools</h1>
+            <p class="page-description">
+                Если вы нашли ошибку в расчётах, хотите предложить новый инструмент,
+                обсудить рекламу или сотрудничество — свяжитесь с нами удобным способом.
+            </p>
+        </div>
+
+        <section class="contacts-hero">
+
+            <div class="contacts-main-card">
+                <h2>Написать нам</h2>
+                <p>
+                    Выберите удобный способ связи. Мы стараемся отвечать на сообщения
+                    в течение 24–72 часов.
+                </p>
+
+                <div class="contact-buttons">
+                    <a href="mailto:support@alttools.ru" class="contact-button contact-button_primary">
+                        Написать на почту
+                    </a>
+
+                    <a href="https://t.me/alttools" target="_blank" rel="noopener noreferrer" class="contact-button">
+                        Telegram
+                    </a>
+
+                    <a href="https://vk.com/alttools" target="_blank" rel="noopener noreferrer" class="contact-button">
+                        ВКонтакте
+                    </a>
+                </div>
+            </div>
+
+            <div class="contacts-side-card">
+                <h2>Основные контакты</h2>
+
+                <div class="contact-line">
+                    <span>Email</span>
+                    <a href="mailto:support@alttools.ru">support@alttools.ru</a>
+                </div>
+
+                <div class="contact-line">
+                    <span>Реклама</span>
+                    <a href="mailto:ads@alttools.ru">ads@alttools.ru</a>
+                </div>
+
+                <div class="contact-line">
+                    <span>Telegram</span>
+                    <a href="https://t.me/alttools" target="_blank" rel="noopener noreferrer">@alttools</a>
+                </div>
+
+                <div class="contact-line">
+                    <span>ВКонтакте</span>
+                    <a href="https://vk.com/alttools" target="_blank" rel="noopener noreferrer">vk.com/alttools</a>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="contacts-grid">
+
+            <div class="info-card">
+                <h2>Нашли ошибку?</h2>
+                <p>
+                    Если какой-то калькулятор считает неправильно, страница не открывается
+                    или вы заметили неточность в описании — напишите нам.
+                </p>
+                <a href="mailto:support@alttools.ru?subject=Ошибка на сайте AltTools" class="small-link">
+                    Сообщить об ошибке
+                </a>
+            </div>
+
+            <div class="info-card">
+                <h2>Предложить инструмент</h2>
+                <p>
+                    Хотите, чтобы на сайте появился новый калькулятор, конвертер
+                    или генератор? Опишите идею, и мы рассмотрим её для добавления.
+                </p>
+                <a href="mailto:support@alttools.ru?subject=Предложение инструмента для AltTools" class="small-link">
+                    Предложить инструмент
+                </a>
+            </div>
+
+            <div class="info-card">
+                <h2>Реклама</h2>
+                <p>
+                    Мы рассматриваем рекламные размещения, партнёрские интеграции,
+                    нативные блоки и сотрудничество с сервисами, которые могут быть
+                    полезны пользователям AltTools.
+                </p>
+                <a href="mailto:ads@alttools.ru?subject=Реклама на AltTools" class="small-link">
+                    Обсудить рекламу
+                </a>
+            </div>
+
+            <div class="info-card">
+                <h2>Сотрудничество</h2>
+                <p>
+                    Если у вас есть сервис, API, партнёрская программа или идея интеграции
+                    с калькуляторами и онлайн-инструментами — напишите нам.
+                </p>
+                <a href="mailto:support@alttools.ru?subject=Сотрудничество с AltTools" class="small-link">
+                    Написать по сотрудничеству
+                </a>
+            </div>
+
+        </section>
+
+        <section class="info-card">
+            <h2>Перед обращением</h2>
+            <p>
+                Чтобы мы быстрее разобрались в вопросе, укажите ссылку на страницу,
+                где возникла проблема, кратко опишите ситуацию и, если возможно,
+                приложите пример введённых данных.
+            </p>
+        </section>
+
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,474 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Генераторы онлайн — пароли, числа, текст, QR-коды и данные{% endblock %}
+
+{% block meta_description %}
+Онлайн-генераторы AltTools: генератор паролей, случайных чисел, QR-кодов, текста, UUID, цветов, имён, никнеймов и других данных.
+{% endblock %}
+
+{% block canonical %}https://example.com/tools/generators/{% endblock %}
+{% block og_url %}https://example.com/tools/generators/{% endblock %}
+{% block og_title %}Генераторы онлайн — AltTools{% endblock %}
+{% block og_description %}Подборка онлайн-генераторов для паролей, случайных чисел, текста, QR-кодов, UUID и других данных.{% endblock %}
+
+{% block nav_tools_active %}nav__link_active{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/category.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="category-page">
+    <div class="container">
+
+        <div class="breadcrumbs">
+            <a href="/">Главная</a>
+            <span>/</span>
+            <a href="/tools/">Инструменты</a>
+            <span>/</span>
+            <span>Генераторы</span>
+        </div>
+
+        <section class="category-hero">
+            <div class="category-hero__content">
+                <p class="page-label">Генераторы</p>
+
+                <h1 class="page-title">
+                    Онлайн-генераторы для текста, паролей и данных
+                </h1>
+
+                <p class="page-description">
+                    Генераторы AltTools помогают быстро создавать пароли, случайные числа,
+                    QR-коды, UUID, тестовые данные, никнеймы, цвета и другие значения
+                    для работы, разработки, учёбы и повседневных задач.
+                </p>
+            </div>
+
+            <div class="category-hero__card">
+                <div class="category-hero__icon">⚙</div>
+                <div>
+                    <strong>Генераторы данных</strong>
+                    <span>Быстрое создание значений, текстов, кодов и случайных данных</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="category-filter">
+            <a href="/tools/generators/" class="category-filter__item category-filter__item_active">
+                Все
+            </a>
+            <a href="#popular" class="category-filter__item">
+                Популярные
+            </a>
+            <a href="#security" class="category-filter__item">
+                Пароли
+            </a>
+            <a href="#random" class="category-filter__item">
+                Случайные данные
+            </a>
+            <a href="#text" class="category-filter__item">
+                Текст
+            </a>
+            <a href="#web" class="category-filter__item">
+                Для сайта
+            </a>
+            <a href="#business" class="category-filter__item">
+                Для бизнеса
+            </a>
+        </section>
+
+        <section class="category-section" id="popular">
+            <div class="section-head">
+                <div>
+                    <p class="section-label">Популярное</p>
+                    <h2 class="section-title">Часто используемые генераторы</h2>
+                </div>
+            </div>
+
+            <div class="category-grid">
+
+                <a href="/tools/password-generator/" class="category-tool-card">
+                    <div class="category-tool-card__icon">🔐</div>
+                    <div class="category-tool-card__content">
+                        <h3>Генератор паролей</h3>
+                        <p>Создайте надёжный пароль с нужной длиной, цифрами, символами и буквами.</p>
+                    </div>
+                    <span class="category-tool-card__badge">Безопасность</span>
+                </a>
+
+                <a href="/tools/generators/random-number-generator/" class="category-tool-card">
+                    <div class="category-tool-card__icon">#</div>
+                    <div class="category-tool-card__content">
+                        <h3>Генератор случайных чисел</h3>
+                        <p>Получите случайное число в заданном диапазоне за несколько секунд.</p>
+                    </div>
+                    <span class="category-tool-card__badge">Случайные данные</span>
+                </a>
+
+                <a href="/tools/generators/qr-code-generator/" class="category-tool-card">
+                    <div class="category-tool-card__icon">QR</div>
+                    <div class="category-tool-card__content">
+                        <h3>Генератор QR-кода</h3>
+                        <p>Создайте QR-код для ссылки, текста, контакта или другой информации.</p>
+                    </div>
+                    <span class="category-tool-card__badge">Для сайта</span>
+                </a>
+
+                <a href="/tools/generators/phone-number-generator/" class="tool-row">
+                    <div class="tool-row__icon">☎</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Генератор номеров телефонов</h3>
+                        <p class="tool-row__text">
+                            Создание тестовых номеров телефонов с выбором страны, оператора и формата вывода.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">Телефоны</span>
+                </a>
+
+            </div>
+        </section>
+
+        <section class="category-section" id="security">
+            <div class="section-head">
+                <div>
+                    <p class="section-label">Безопасность</p>
+                    <h2 class="section-title">Генераторы паролей и кодов</h2>
+                </div>
+            </div>
+
+            <div class="tools-list">
+
+                <a href="/tools/password-generator/" class="tool-row">
+                    <div class="tool-row__icon">🔐</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Генератор паролей</h3>
+                        <p class="tool-row__text">
+                            Создание надёжных паролей с настройкой длины и символов.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">Пароли</span>
+                </a>
+
+                <a href="/tools/pin-code-generator/" class="tool-row">
+                    <div class="tool-row__icon">PIN</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Генератор PIN-кода</h3>
+                        <p class="tool-row__text">
+                            Быстрая генерация случайного цифрового PIN-кода нужной длины.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">Коды</span>
+                </a>
+
+                <a href="/tools/passphrase-generator/" class="tool-row">
+                    <div class="tool-row__icon">Aa</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Генератор парольных фраз</h3>
+                        <p class="tool-row__text">
+                            Создание запоминаемых парольных фраз из нескольких слов.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">Пароли</span>
+                </a>
+
+                <a href="/tools/generators/uuid-generator/" class="tool-row">
+                    <div class="tool-row__icon">ID</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Генератор UUID</h3>
+                        <p class="tool-row__text">
+                            Генерация уникальных идентификаторов UUID для разработки и тестов.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">Разработка</span>
+                </a>
+
+            </div>
+        </section>
+
+        <section class="category-section" id="random">
+            <div class="section-head">
+                <div>
+                    <p class="section-label">Случайные данные</p>
+                    <h2 class="section-title">Генераторы случайных значений</h2>
+                </div>
+            </div>
+
+            <div class="tools-list">
+
+                <a href="/tools/generators/random-number-generator/" class="tool-row">
+                    <div class="tool-row__icon">#</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Генератор случайных чисел</h3>
+                        <p class="tool-row__text">
+                            Случайное число в выбранном диапазоне с настройкой минимального и максимального значения.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">Числа</span>
+                </a>
+
+                <a href="/tools/generators/random-list-generator/" class="tool-row">
+                    <div class="tool-row__icon">☰</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Генератор случайного списка</h3>
+                        <p class="tool-row__text">
+                            Перемешивание списка и случайный выбор одного или нескольких элементов.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">Списки</span>
+                </a>
+
+                <a href="/tools/generators/random-date-generator/" class="tool-row">
+                    <div class="tool-row__icon">📅</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Генератор случайной даты</h3>
+                        <p class="tool-row__text">
+                            Получите случайную дату в указанном диапазоне.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">Даты</span>
+                </a>
+
+                <a href="/tools/generators/random-color-generator/" class="tool-row">
+                    <div class="tool-row__icon">🎨</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Генератор случайного цвета</h3>
+                        <p class="tool-row__text">
+                            Создание случайных цветов в HEX, RGB или HSL формате.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">Цвета</span>
+                </a>
+
+                <a href="/tools/dice-roller/" class="tool-row">
+                    <div class="tool-row__icon">🎲</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Бросок кубика онлайн</h3>
+                        <p class="tool-row__text">
+                            Симулятор броска одного или нескольких кубиков.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">Случайность</span>
+                </a>
+
+            </div>
+        </section>
+
+        <section class="category-section" id="text">
+            <div class="section-head">
+                <div>
+                    <p class="section-label">Текст</p>
+                    <h2 class="section-title">Генераторы текста и названий</h2>
+                </div>
+            </div>
+
+            <div class="tools-list">
+
+                <a href="/tools/lorem-ipsum-generator/" class="tool-row">
+                    <div class="tool-row__icon">Lorem</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Генератор Lorem Ipsum</h3>
+                        <p class="tool-row__text">
+                            Создание тестового текста для макетов, сайтов и дизайна.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">Текст</span>
+                </a>
+
+                <a href="/tools/nickname-generator/" class="tool-row">
+                    <div class="tool-row__icon">@</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Генератор никнеймов</h3>
+                        <p class="tool-row__text">
+                            Создание вариантов никнеймов для игр, соцсетей и аккаунтов.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">Имена</span>
+                </a>
+
+                <a href="/tools/username-generator/" class="tool-row">
+                    <div class="tool-row__icon">ID</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Генератор username</h3>
+                        <p class="tool-row__text">
+                            Быстрая генерация имён пользователей для сайтов и приложений.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">Аккаунты</span>
+                </a>
+
+                <a href="/tools/slug-generator/" class="tool-row">
+                    <div class="tool-row__icon">URL</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Генератор slug</h3>
+                        <p class="tool-row__text">
+                            Преобразование названия страницы в понятный URL-адрес.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">SEO</span>
+                </a>
+
+                <a href="/tools/hashtag-generator/" class="tool-row">
+                    <div class="tool-row__icon">#</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Генератор хештегов</h3>
+                        <p class="tool-row__text">
+                            Создание хештегов для публикаций, товаров и контента.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">Контент</span>
+                </a>
+
+            </div>
+        </section>
+
+        <section class="category-section" id="web">
+            <div class="section-head">
+                <div>
+                    <p class="section-label">Сайт и разработка</p>
+                    <h2 class="section-title">Генераторы для сайта и разработки</h2>
+                </div>
+            </div>
+
+            <div class="tools-list">
+
+                <a href="/tools/qr-code-generator/" class="tool-row">
+                    <div class="tool-row__icon">QR</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Генератор QR-кода</h3>
+                        <p class="tool-row__text">
+                            Создание QR-кода для ссылки, текста, контакта или Wi-Fi.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">QR</span>
+                </a>
+
+                <a href="/tools/utm-generator/" class="tool-row">
+                    <div class="tool-row__icon">UTM</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Генератор UTM-меток</h3>
+                        <p class="tool-row__text">
+                            Создание UTM-ссылок для аналитики рекламных кампаний.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">Маркетинг</span>
+                </a>
+
+                <a href="/tools/meta-tags-generator/" class="tool-row">
+                    <div class="tool-row__icon">SEO</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Генератор meta-тегов</h3>
+                        <p class="tool-row__text">
+                            Быстрое создание title, description и базовых Open Graph тегов.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">SEO</span>
+                </a>
+
+                <a href="/tools/robots-txt-generator/" class="tool-row">
+                    <div class="tool-row__icon">BOT</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Генератор robots.txt</h3>
+                        <p class="tool-row__text">
+                            Создание базового robots.txt для сайта.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">SEO</span>
+                </a>
+
+                <a href="/tools/html-table-generator/" class="tool-row">
+                    <div class="tool-row__icon">HTML</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Генератор HTML-таблицы</h3>
+                        <p class="tool-row__text">
+                            Создание простой HTML-таблицы по заданным строкам и столбцам.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">HTML</span>
+                </a>
+
+            </div>
+        </section>
+
+        <section class="category-section" id="business">
+            <div class="section-head">
+                <div>
+                    <p class="section-label">Бизнес и контент</p>
+                    <h2 class="section-title">Генераторы для работы и маркетинга</h2>
+                </div>
+            </div>
+
+            <div class="tools-list">
+
+                <a href="/tools/product-description-generator/" class="tool-row">
+                    <div class="tool-row__icon">WB</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Генератор описания товара</h3>
+                        <p class="tool-row__text">
+                            Подготовка описания товара для маркетплейсов, карточек и каталогов.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">Маркетплейсы</span>
+                </a>
+
+                <a href="/tools/ad-text-generator/" class="tool-row">
+                    <div class="tool-row__icon">AD</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Генератор рекламного текста</h3>
+                        <p class="tool-row__text">
+                            Создание вариантов короткого рекламного текста для объявлений.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">Реклама</span>
+                </a>
+
+                <a href="/tools/review-response-generator/" class="tool-row">
+                    <div class="tool-row__icon">★</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Генератор ответа на отзыв</h3>
+                        <p class="tool-row__text">
+                            Подготовка вежливого ответа на положительный или негативный отзыв.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">Отзывы</span>
+                </a>
+
+                <a href="/tools/invoice-number-generator/" class="tool-row">
+                    <div class="tool-row__icon">№</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Генератор номера счёта</h3>
+                        <p class="tool-row__text">
+                            Создание номера счёта, заказа или внутреннего документа.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">Документы</span>
+                </a>
+
+            </div>
+        </section>
+
+        <section class="category-info">
+            <div class="category-info__content">
+                <h2>Онлайн-генераторы AltTools</h2>
+
+                <p>
+                    Онлайн-генераторы помогают быстро создавать данные, которые часто нужны
+                    в работе, разработке, маркетинге, дизайне и повседневных задачах.
+                    С помощью таких инструментов можно получить пароль, случайное число,
+                    QR-код, никнейм, тестовый текст, цвет, UUID или другой готовый результат.
+                </p>
+
+                <p>
+                    Генераторы AltTools работают прямо в браузере и не требуют установки
+                    дополнительных программ. Некоторые результаты могут использоваться как
+                    черновые варианты, поэтому перед применением в важных документах, рекламе
+                    или бизнес-процессах их стоит дополнительно проверить.
+                </p>
+            </div>
+        </section>
+
+    </div>
+</section>
+
+{% endblock %}

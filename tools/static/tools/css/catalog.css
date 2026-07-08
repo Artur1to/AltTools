@@ -1,0 +1,338 @@
+/* =========================
+   Tools catalog page
+========================= */
+
+.catalog-page {
+    padding: 42px 0 70px;
+}
+
+.catalog-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 420px;
+    gap: 28px;
+    align-items: end;
+    margin-bottom: 28px;
+}
+
+.catalog-search {
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 18px;
+    background: #ffffff;
+    border: 1px solid #e3e8f2;
+    box-shadow: 0 12px 28px rgba(16, 24, 40, 0.055);
+}
+
+.catalog-search__input {
+    flex: 1;
+    min-height: 48px;
+    padding: 0 14px;
+    border: none;
+    outline: none;
+    color: #111827;
+}
+
+.catalog-search__button {
+    min-height: 48px;
+    padding: 0 22px;
+    border: none;
+    border-radius: 13px;
+    background: #2563eb;
+    color: #ffffff;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.catalog-search__button:hover {
+    background: #1d4ed8;
+}
+
+.catalog-categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 44px;
+}
+
+.catalog-category {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: #ffffff;
+    border: 1px solid #e3e8f2;
+    color: #4b5563;
+    font-size: 14px;
+    transition: 0.2s ease;
+}
+
+.catalog-category:hover,
+.catalog-category_active {
+    border-color: #bfccff;
+    background: #eef2ff;
+    color: #1d4ed8;
+}
+
+.catalog-category__icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    background: #eaf0ff;
+    color: #2563eb;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 13px;
+}
+
+.catalog-section {
+    margin-bottom: 48px;
+}
+
+.tool-card__category {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: #f3f6fb;
+    color: #687386;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.catalog-layout {
+    display: grid;
+    grid-template-columns: 270px minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+}
+
+.catalog-sidebar {
+    padding: 22px;
+    border-radius: 22px;
+    background: #ffffff;
+    border: 1px solid #e3e8f2;
+    box-shadow: 0 12px 28px rgba(16, 24, 40, 0.045);
+    position: sticky;
+    top: 96px;
+}
+
+.catalog-sidebar__title {
+    margin-bottom: 16px;
+    font-size: 18px;
+    color: #111827;
+}
+
+.catalog-sidebar__nav {
+    display: grid;
+    gap: 6px;
+}
+
+.catalog-sidebar__link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    color: #4b5563;
+    font-size: 14px;
+    transition: 0.2s ease;
+}
+
+.catalog-sidebar__link span {
+    color: #94a3b8;
+    font-size: 13px;
+}
+
+.catalog-sidebar__link:hover,
+.catalog-sidebar__link_active {
+    background: #eef2ff;
+    color: #1d4ed8;
+}
+
+.catalog-content {
+    min-width: 0;
+}
+
+.catalog-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+    padding: 16px 18px;
+    border-radius: 18px;
+    background: #ffffff;
+    border: 1px solid #e3e8f2;
+}
+
+.catalog-count {
+    color: #687386;
+    font-size: 14px;
+}
+
+.catalog-count strong {
+    color: #111827;
+}
+
+.catalog-sort {
+    min-height: 40px;
+    padding: 0 12px;
+    border-radius: 10px;
+    border: 1px solid #d7deea;
+    background: #ffffff;
+    color: #374151;
+    outline: none;
+}
+
+.tools-list {
+    display: grid;
+    gap: 12px;
+}
+
+.tool-row {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr) auto;
+    gap: 16px;
+    align-items: center;
+    padding: 18px;
+    border-radius: 18px;
+    background: #ffffff;
+    border: 1px solid #e3e8f2;
+    box-shadow: 0 8px 22px rgba(16, 24, 40, 0.035);
+    transition: 0.2s ease;
+}
+
+.tool-row:hover {
+    transform: translateY(-2px);
+    border-color: #bfccff;
+    box-shadow: 0 14px 30px rgba(16, 24, 40, 0.07);
+}
+
+.tool-row__icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: #eaf0ff;
+    color: #2563eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 15px;
+}
+
+.tool-row__title {
+    margin-bottom: 4px;
+    font-size: 18px;
+    color: #111827;
+}
+
+.tool-row__text {
+    color: #687386;
+    font-size: 14px;
+}
+
+.tool-row__tag {
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #f3f6fb;
+    color: #687386;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.pagination {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 22px;
+}
+
+.pagination__link,
+.pagination__dots {
+    min-width: 38px;
+    height: 38px;
+    padding: 0 12px;
+    border-radius: 10px;
+    background: #ffffff;
+    border: 1px solid #e3e8f2;
+    color: #4b5563;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.pagination__link:hover,
+.pagination__link_active {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: #ffffff;
+}
+
+.pagination__link_disabled {
+    opacity: 0.45;
+    pointer-events: none;
+}
+
+/* Adaptive catalog */
+
+@media (max-width: 980px) {
+    .catalog-hero {
+        grid-template-columns: 1fr;
+    }
+
+    .catalog-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .catalog-sidebar {
+        position: static;
+    }
+
+    .catalog-sidebar__nav {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 720px) {
+    .catalog-page {
+        padding: 32px 0 54px;
+    }
+
+    .catalog-search {
+        flex-direction: column;
+    }
+
+    .catalog-search__button {
+        width: 100%;
+    }
+
+    .catalog-sidebar__nav {
+        grid-template-columns: 1fr;
+    }
+
+    .catalog-toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .catalog-sort {
+        width: 100%;
+    }
+
+    .tool-row {
+        grid-template-columns: 44px minmax(0, 1fr);
+    }
+
+    .tool-row__tag {
+        grid-column: 2;
+        width: fit-content;
+    }
+}

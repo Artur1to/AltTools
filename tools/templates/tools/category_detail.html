@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ category.title }} — AltTools{% endblock %}
+
+{% block meta_description %}
+{{ category.description }}
+{% endblock %}
+
+{% block canonical %}https://example.com/tools/{{ category.slug }}/{% endblock %}
+{% block og_url %}https://example.com/tools/{{ category.slug }}/{% endblock %}
+{% block og_title %}{{ category.title }} — AltTools{% endblock %}
+{% block og_description %}{{ category.description }}{% endblock %}
+
+{% block nav_tools_active %}nav__link_active{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/category.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="category-page">
+    <div class="container">
+
+        <div class="breadcrumbs">
+            <a href="/">Главная</a>
+            <span>/</span>
+            <a href="/tools/">Инструменты</a>
+            <span>/</span>
+            <span>{{ category.title }}</span>
+        </div>
+
+        <section class="category-hero">
+            <div class="category-hero__content">
+                <p class="page-label">{{ category.title }}</p>
+
+                <h1 class="page-title">
+                    {{ category.title }}
+                </h1>
+
+                <p class="page-description">
+                    {{ category.description }}
+                </p>
+            </div>
+
+            <div class="category-hero__card">
+                <div class="category-hero__icon">
+                    {{ category.icon|default:"A" }}
+                </div>
+                <div>
+                    <strong>{{ category.title }}</strong>
+                    <span>{{ tools|length }} инструментов в категории</span>
+                </div>
+            </div>
+        </section>
+
+        {% if tool_groups %}
+            <section class="category-filter">
+                <a href="{{ category.get_absolute_url }}" class="category-filter__item category-filter__item_active">
+                    Все
+                </a>
+
+                {% for group_name, group_tools in tool_groups.items %}
+                    <a href="#section-{{ forloop.counter }}" class="category-filter__item">
+                        {{ group_name }}
+                    </a>
+                {% endfor %}
+            </section>
+        {% endif %}
+
+        {% if popular_tools %}
+            <section class="category-section" id="popular">
+                <div class="section-head">
+                    <div>
+                        <p class="section-label">Популярное</p>
+                        <h2 class="section-title">Часто используемые инструменты</h2>
+                    </div>
+                </div>
+
+                <div class="category-grid">
+
+                    {% for tool in popular_tools %}
+                        <a href="{{ tool.get_absolute_url }}" class="category-tool-card">
+                            <div class="category-tool-card__icon">
+                                {{ tool.icon|default:"A" }}
+                            </div>
+
+                            <div class="category-tool-card__content">
+                                <h3>{{ tool.title }}</h3>
+                                <p>{{ tool.short_description }}</p>
+                            </div>
+
+                            <span class="category-tool-card__badge">
+                                {% if tool.badge %}
+                                    {{ tool.badge }}
+                                {% else %}
+                                    {{ category.title }}
+                                {% endif %}
+                            </span>
+                        </a>
+                    {% endfor %}
+
+                </div>
+            </section>
+        {% endif %}
+
+        {% for group_name, group_tools in tool_groups.items %}
+            <section class="category-section" id="section-{{ forloop.counter }}">
+                <div class="section-head">
+                    <div>
+                        <p class="section-label">{{ category.title }}</p>
+                        <h2 class="section-title">{{ group_name }}</h2>
+                    </div>
+                </div>
+
+                <div class="tools-list">
+
+                    {% for tool in group_tools %}
+                        <a href="{{ tool.get_absolute_url }}" class="tool-row">
+                            <div class="tool-row__icon">
+                                {{ tool.icon|default:"A" }}
+                            </div>
+
+                            <div class="tool-row__content">
+                                <h3 class="tool-row__title">
+                                    {{ tool.title }}
+                                </h3>
+
+                                <p class="tool-row__text">
+                                    {{ tool.short_description }}
+                                </p>
+                            </div>
+
+                            <span class="tool-row__tag">
+                                {% if tool.badge %}
+                                    {{ tool.badge }}
+                                {% else %}
+                                    {{ category.title }}
+                                {% endif %}
+                            </span>
+                        </a>
+                    {% endfor %}
+
+                </div>
+            </section>
+        {% empty %}
+            <section class="category-section">
+                <div class="category-info__content">
+                    <h2>Инструменты скоро появятся</h2>
+                    <p>
+                        В этой категории пока нет опубликованных инструментов.
+                        Добавьте их через админку или SQL-запрос.
+                    </p>
+                </div>
+            </section>
+        {% endfor %}
+
+        <section class="category-info">
+            <div class="category-info__content">
+                <h2>{{ category.title }} AltTools</h2>
+
+                <p>
+                    {{ category.description }}
+                </p>
+
+                <p>
+                    Инструменты AltTools работают прямо в браузере и помогают быстро
+                    выполнить расчёты, создать данные или получить нужный результат
+                    без установки дополнительных программ.
+                </p>
+            </div>
+        </section>
+
+    </div>
+</section>
+
+{% endblock %}

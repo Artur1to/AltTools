@@ -1,0 +1,243 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Все онлайн-инструменты AltTools — калькуляторы, конвертеры и генераторы{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/catalog.css' %}">
+{% endblock %}
+
+{% block meta_description %}
+Каталог онлайн-инструментов AltTools: калькуляторы, финансовые инструменты, конвертеры, генераторы, текстовые инструменты и другие полезные сервисы.
+{% endblock %}
+
+{% block canonical %}https://example.com/tools/{% endblock %}
+{% block og_url %}https://example.com/tools/{% endblock %}
+{% block og_title %}Все онлайн-инструменты — AltTools{% endblock %}
+{% block og_description %}Выберите нужный онлайн-калькулятор, конвертер, генератор или другой полезный инструмент.{% endblock %}
+
+{% block nav_tools_active %}nav__link_active{% endblock %}
+
+{% block content %}
+
+<section class="catalog-page">
+    <div class="container">
+
+        <div class="breadcrumbs">
+            <a href="/">Главная</a>
+            <span>/</span>
+            <span>Инструменты</span>
+        </div>
+
+        <section class="catalog-hero">
+            <div class="catalog-hero__content">
+                <p class="page-label">Каталог инструментов</p>
+
+                <h1 class="page-title">
+                    Все онлайн-инструменты
+                </h1>
+
+                <p class="page-description">
+                    Выберите нужный калькулятор, конвертер, генератор или другой полезный инструмент.
+                    Все сервисы собраны по категориям, чтобы вы могли быстро найти нужный вариант.
+                </p>
+            </div>
+
+            <form class="catalog-search" method="get" action="/tools/">
+                <input
+                    class="catalog-search__input"
+                    type="search"
+                    name="q"
+                    value="{{ query }}"
+                    placeholder="Поиск по инструментам..."
+                >
+                <button class="catalog-search__button" type="submit">
+                    Найти
+                </button>
+            </form>
+        </section>
+
+        <section class="catalog-categories">
+            <a href="/tools/" class="catalog-category catalog-category_active">
+                <span class="catalog-category__icon">#</span>
+                <span>Все инструменты</span>
+            </a>
+
+            {% for category in categories %}
+                <a href="{{ category.get_absolute_url }}" class="catalog-category">
+                    <span class="catalog-category__icon">
+                        {{ category.icon|default:"A" }}
+                    </span>
+                    <span>{{ category.title }}</span>
+                </a>
+            {% endfor %}
+        </section>
+
+        {% if popular_tools and not query %}
+            <section class="catalog-section">
+                <div class="section-head">
+                    <div>
+                        <p class="section-label">Популярное</p>
+                        <h2 class="section-title">Часто используемые инструменты</h2>
+                    </div>
+                </div>
+
+                <div class="tools-grid">
+
+                    {% for tool in popular_tools %}
+                        <a href="{{ tool.get_absolute_url }}" class="tool-card">
+                            <div class="tool-card__icon">
+                                {{ tool.icon|default:"A" }}
+                            </div>
+
+                            <h3 class="tool-card__title">
+                                {{ tool.title }}
+                            </h3>
+
+                            <p class="tool-card__text">
+                                {{ tool.short_description }}
+                            </p>
+
+                            <span class="tool-card__category">
+                                {% if tool.badge %}
+                                    {{ tool.badge }}
+                                {% elif tool.category %}
+                                    {{ tool.category.title }}
+                                {% else %}
+                                    Инструмент
+                                {% endif %}
+                            </span>
+                        </a>
+                    {% endfor %}
+
+                </div>
+            </section>
+        {% endif %}
+
+        <section class="catalog-section">
+            <div class="section-head">
+                <div>
+                    <p class="section-label">Каталог</p>
+
+                    {% if query %}
+                        <h2 class="section-title">Результаты поиска</h2>
+                    {% else %}
+                        <h2 class="section-title">Все инструменты</h2>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="catalog-layout">
+
+                <aside class="catalog-sidebar">
+                    <h3 class="catalog-sidebar__title">Категории</h3>
+
+                    <nav class="catalog-sidebar__nav">
+                        <a href="/tools/" class="catalog-sidebar__link catalog-sidebar__link_active">
+                            Все инструменты
+                            <span>{{ tools|length }}</span>
+                        </a>
+
+                        {% for category in categories %}
+                            <a href="{{ category.get_absolute_url }}" class="catalog-sidebar__link">
+                                {{ category.title }}
+                                <span>{{ category.tools_count }}</span>
+                            </a>
+                        {% endfor %}
+                    </nav>
+                </aside>
+
+                <div class="catalog-content">
+
+                    <div class="catalog-toolbar">
+                        <p class="catalog-count">
+                            {% if query %}
+                                По запросу «{{ query }}» найдено:
+                            {% else %}
+                                Найдено инструментов:
+                            {% endif %}
+
+                            <strong>{{ tools|length }}</strong>
+                        </p>
+
+                        <select class="catalog-sort" name="sort" disabled>
+                            <option value="popular">Сначала популярные</option>
+                        </select>
+                    </div>
+
+                    <div class="tools-list">
+
+                        {% for tool in tools %}
+                            <a href="{{ tool.get_absolute_url }}" class="tool-row">
+                                <div class="tool-row__icon">
+                                    {{ tool.icon|default:"A" }}
+                                </div>
+
+                                <div class="tool-row__content">
+                                    <h3 class="tool-row__title">
+                                        {{ tool.title }}
+                                    </h3>
+
+                                    <p class="tool-row__text">
+                                        {{ tool.short_description }}
+                                    </p>
+                                </div>
+
+                                <span class="tool-row__tag">
+                                    {% if tool.badge %}
+                                        {{ tool.badge }}
+                                    {% elif tool.category %}
+                                        {{ tool.category.title }}
+                                    {% else %}
+                                        Инструмент
+                                    {% endif %}
+                                </span>
+                            </a>
+                        {% empty %}
+                            <div class="tool-row">
+                                <div class="tool-row__icon">?</div>
+
+                                <div class="tool-row__content">
+                                    <h3 class="tool-row__title">
+                                        Ничего не найдено
+                                    </h3>
+
+                                    <p class="tool-row__text">
+                                        Попробуйте изменить поисковый запрос или добавить инструменты в БД.
+                                    </p>
+                                </div>
+
+                                <span class="tool-row__tag">Пусто</span>
+                            </div>
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <section class="section section_seo">
+            <div class="seo-text">
+                <h2>Каталог онлайн-инструментов AltTools</h2>
+
+                <p>
+                    В каталоге AltTools собраны онлайн-калькуляторы, конвертеры, генераторы
+                    и другие полезные инструменты для быстрых расчётов и повседневных задач.
+                    Инструменты разделены по категориям, поэтому нужный сервис можно найти через
+                    поиск, список разделов или общий каталог.
+                </p>
+
+                <p>
+                    Каждая страница инструмента содержит краткое описание, понятную форму ввода
+                    и результат расчёта. Каталог постепенно пополняется новыми сервисами для работы
+                    с числами, текстом, датами, финансами, единицами измерения и другими задачами.
+                </p>
+            </div>
+        </section>
+
+    </div>
+</section>
+
+{% endblock %}

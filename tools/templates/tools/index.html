@@ -1,0 +1,296 @@
+{% extends 'base.html' %}
+
+{% block title %}AltTools — онлайн-калькуляторы, конвертеры и полезные инструменты{% endblock %}
+
+{% block meta_description %}
+AltTools — каталог онлайн-калькуляторов, конвертеров, генераторов и полезных инструментов для быстрых расчётов, работы с числами, текстом, датами и данными.
+{% endblock %}
+
+{% block og_title %}AltTools — онлайн-калькуляторы и полезные инструменты{% endblock %}
+
+{% block og_description %}
+Быстрые онлайн-калькуляторы, генераторы, конвертеры и инструменты для повседневных задач в одном месте.
+{% endblock %}
+
+{% block canonical %}https://example.com/{% endblock %}
+{% block og_url %}https://example.com/{% endblock %}
+
+{% block body_class %}home-page{% endblock %}
+{% block nav_home_active %}nav__link_active{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+    <div class="container hero__inner">
+
+        <div class="hero__content">
+            <p class="hero__label">Онлайн-инструменты для быстрых расчётов</p>
+
+            <h1 class="hero__title">
+                Онлайн-калькуляторы и полезные инструменты в одном месте
+            </h1>
+
+            <p class="hero__description">
+                AltTools помогает быстро выполнять расчёты, генерировать данные,
+                конвертировать значения и решать повседневные задачи без установки программ.
+            </p>
+
+            <form class="hero-search" action="/tools/" method="get">
+                <input
+                    class="hero-search__input"
+                    type="search"
+                    name="q"
+                    placeholder="Найти калькулятор или инструмент..."
+                >
+                <button class="hero-search__button" type="submit">
+                    Найти
+                </button>
+            </form>
+
+            <div class="hero__tags">
+                <a href="/tools/" class="tag">Все инструменты</a>
+
+                {% for category in categories|slice:":4" %}
+                    <a href="{{ category.get_absolute_url }}" class="tag">
+                        {{ category.title }}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="hero__panel">
+
+            {% for tool in popular_tools|slice:":3" %}
+                <a href="{{ tool.get_absolute_url }}" class="mini-tool">
+                    <span class="mini-tool__icon">
+                        {{ tool.icon|default:"A" }}
+                    </span>
+                    <div>
+                        <h3>{{ tool.title }}</h3>
+                        <p>{{ tool.short_description|truncatechars:75 }}</p>
+                    </div>
+                </a>
+            {% empty %}
+                <div class="mini-tool">
+                    <span class="mini-tool__icon">⚙</span>
+                    <div>
+                        <h3>Инструменты AltTools</h3>
+                        <p>Добавьте инструменты через админку или SQL-запрос.</p>
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
+
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <div class="section-head">
+            <div>
+                <p class="section-label">Популярное</p>
+                <h2 class="section-title">Выберите нужный инструмент</h2>
+            </div>
+
+            <a href="/tools/" class="section-link">Смотреть все</a>
+        </div>
+
+        <div class="tools-grid">
+
+            {% for tool in popular_tools %}
+                <a href="{{ tool.get_absolute_url }}" class="tool-card">
+                    <div class="tool-card__icon">
+                        {{ tool.icon|default:"A" }}
+                    </div>
+
+                    <h3 class="tool-card__title">
+                        {{ tool.title }}
+                    </h3>
+
+                    <p class="tool-card__text">
+                        {{ tool.short_description }}
+                    </p>
+
+                    {% if tool.badge %}
+                        <span class="tool-card__category">{{ tool.badge }}</span>
+                    {% elif tool.category %}
+                        <span class="tool-card__category">{{ tool.category.title }}</span>
+                    {% endif %}
+                </a>
+            {% empty %}
+                <div class="tool-card">
+                    <div class="tool-card__icon">+</div>
+                    <h3 class="tool-card__title">Инструменты не добавлены</h3>
+                    <p class="tool-card__text">
+                        Заполните таблицу tools_toolpage, чтобы карточки появились на главной.
+                    </p>
+                </div>
+            {% endfor %}
+
+        </div>
+
+    </div>
+</section>
+
+<section class="section section_light">
+    <div class="container">
+
+        <div class="section-head">
+            <div>
+                <p class="section-label">Категории</p>
+                <h2 class="section-title">Инструменты по разделам</h2>
+            </div>
+        </div>
+
+        <div class="categories-grid">
+
+            {% for category in categories %}
+                <a href="{{ category.get_absolute_url }}" class="category-card">
+                    <h3>
+                        {% if category.icon %}
+                            {{ category.icon }}
+                        {% endif %}
+                        {{ category.title }}
+                    </h3>
+
+                    <p>
+                        {{ category.description }}
+                    </p>
+                </a>
+            {% empty %}
+                <div class="category-card">
+                    <h3>Категории не добавлены</h3>
+                    <p>
+                        Добавьте категории в таблицу tools_toolcategory.
+                    </p>
+                </div>
+            {% endfor %}
+
+        </div>
+
+    </div>
+</section>
+
+{% if latest_tools %}
+<section class="section">
+    <div class="container">
+
+        <div class="section-head">
+            <div>
+                <p class="section-label">Новое</p>
+                <h2 class="section-title">Недавно добавленные инструменты</h2>
+            </div>
+        </div>
+
+        <div class="tools-grid">
+
+            {% for tool in latest_tools %}
+                <a href="{{ tool.get_absolute_url }}" class="tool-card">
+                    <div class="tool-card__icon">
+                        {{ tool.icon|default:"A" }}
+                    </div>
+
+                    <h3 class="tool-card__title">
+                        {{ tool.title }}
+                    </h3>
+
+                    <p class="tool-card__text">
+                        {{ tool.short_description }}
+                    </p>
+
+                    {% if tool.category %}
+                        <span class="tool-card__category">
+                            {{ tool.category.title }}
+                        </span>
+                    {% endif %}
+                </a>
+            {% endfor %}
+
+        </div>
+
+    </div>
+</section>
+{% endif %}
+
+<section class="section">
+    <div class="container">
+
+        <div class="benefits">
+
+            <div class="benefits__content">
+                <p class="section-label">Почему удобно</p>
+                <h2 class="section-title">Быстро, понятно и без лишних действий</h2>
+                <p class="benefits__text">
+                    AltTools создан для простых задач: открыть инструмент, ввести данные
+                    и сразу получить результат. Интерфейс не перегружен, страницы быстро
+                    загружаются, а основные функции доступны без регистрации.
+                </p>
+            </div>
+
+            <div class="benefits__list">
+
+                <div class="benefit-item">
+                    <h3>Без установки</h3>
+                    <p>Все инструменты работают прямо в браузере.</p>
+                </div>
+
+                <div class="benefit-item">
+                    <h3>Понятный интерфейс</h3>
+                    <p>Минимум лишнего, только нужные поля и результат.</p>
+                </div>
+
+                <div class="benefit-item">
+                    <h3>Для разных задач</h3>
+                    <p>Калькуляторы, генераторы, конвертеры и утилиты собраны в одном каталоге.</p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<section class="section section_seo">
+    <div class="container">
+
+        <div class="seo-text">
+            <h2>Онлайн-калькуляторы и инструменты для повседневных задач</h2>
+
+            <p>
+                AltTools — это каталог онлайн-инструментов, который помогает быстро выполнять
+                расчёты, создавать данные и получать нужные значения без сложных программ.
+                На сайте можно найти финансовые калькуляторы, генераторы, конвертеры,
+                текстовые инструменты и другие полезные сервисы.
+            </p>
+
+            <p>
+                Главная цель сайта — сделать расчёты и генерацию данных простыми и доступными.
+                Каждый инструмент имеет понятную форму, краткое описание и отдельную страницу,
+                чтобы пользователь мог быстро найти нужный сервис через поиск или каталог.
+            </p>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_schema %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "AltTools",
+    "url": "https://example.com/",
+    "description": "Онлайн-калькуляторы, генераторы, конвертеры и полезные инструменты для быстрых расчётов.",
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://example.com/tools/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+    }
+}
+</script>
+{% endblock %}

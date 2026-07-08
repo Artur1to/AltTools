@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page.meta_title }}{% endblock %}
+
+{% block meta_description %}
+{{ page.meta_description }}
+{% endblock %}
+
+{% block canonical %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_url %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_title %}{{ page.meta_title }}{% endblock %}
+{% block og_description %}{{ page.meta_description }}{% endblock %}
+
+{% block nav_tools_active %}nav__link_active{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/category.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="category-page">
+    <div class="container">
+
+        <div class="breadcrumbs">
+            <a href="/">Главная</a>
+            <span>/</span>
+            <a href="/tools/">Инструменты</a>
+
+            {% if page.category %}
+                <span>/</span>
+                <a href="{{ page.category.get_absolute_url }}">{{ page.category.title }}</a>
+            {% endif %}
+
+            <span>/</span>
+            <span>{{ page.title }}</span>
+        </div>
+
+        <section class="category-hero">
+            <div class="category-hero__content">
+                <p class="page-label">
+                    {% if page.category %}
+                        {{ page.category.title }}
+                    {% else %}
+                        Инструмент
+                    {% endif %}
+                </p>
+
+                <h1 class="page-title">
+                    {{ page.h1 }}
+                </h1>
+
+                <p class="page-description">
+                    {{ page.short_description }}
+                </p>
+            </div>
+
+            <div class="category-hero__card">
+                <div class="category-hero__icon">
+                    {{ page.icon|default:"A" }}
+                </div>
+                <div>
+                    <strong>{{ page.title }}</strong>
+                    <span>
+                        {% if page.badge %}
+                            {{ page.badge }}
+                        {% else %}
+                            Онлайн-инструмент
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <section class="category-info">
+            <div class="category-info__content">
+                <h2>Инструмент скоро будет доступен</h2>
+
+                <p>
+                    Страница уже добавлена в каталог AltTools, но логика инструмента
+                    ещё не подключена.
+                </p>
+
+                <p>
+                    Позже здесь появится полноценная форма, расчёт или генератор.
+                </p>
+            </div>
+        </section>
+
+    </div>
+</section>
+
+{% endblock %}

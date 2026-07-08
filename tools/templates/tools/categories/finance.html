@@ -1,0 +1,333 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Финансовые калькуляторы онлайн — кредиты, вклады, НДС, маржа{% endblock %}
+
+{% block meta_description %}
+Финансовые калькуляторы AltTools: расчёт кредита, ипотеки, вклада, НДС, маржи, наценки, скидки, прибыли и других финансовых показателей онлайн.
+{% endblock %}
+
+{% block canonical %}https://example.com/tools/finance/{% endblock %}
+{% block og_url %}https://example.com/tools/finance/{% endblock %}
+{% block og_title %}Финансовые калькуляторы онлайн — AltTools{% endblock %}
+{% block og_description %}Подборка финансовых калькуляторов для расчёта кредитов, вкладов, НДС, маржи, прибыли и других показателей.{% endblock %}
+
+{% block nav_tools_active %}nav__link_active{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/category.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="category-page">
+    <div class="container">
+
+        <div class="breadcrumbs">
+            <a href="/">Главная</a>
+            <span>/</span>
+            <a href="/tools/">Инструменты</a>
+            <span>/</span>
+            <span>Финансовые калькуляторы</span>
+        </div>
+
+        <section class="category-hero">
+            <div class="category-hero__content">
+                <p class="page-label">Финансы</p>
+
+                <h1 class="page-title">
+                    Финансовые калькуляторы онлайн
+                </h1>
+
+                <p class="page-description">
+                    Онлайн-калькуляторы для расчёта кредитов, вкладов, НДС, маржи,
+                    наценки, скидок, прибыли и других финансовых показателей.
+                    Выберите нужный инструмент и выполните расчёт прямо в браузере.
+                </p>
+            </div>
+
+            <div class="category-hero__card">
+                <div class="category-hero__icon">₽</div>
+                <div>
+                    <strong>Финансовые инструменты</strong>
+                    <span>Расчёты для личных финансов, бизнеса и торговли</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="category-filter">
+            <a href="/tools/finance/" class="category-filter__item category-filter__item_active">
+                Все
+            </a>
+            <a href="#credit" class="category-filter__item">
+                Кредиты
+            </a>
+            <a href="#business" class="category-filter__item">
+                Бизнес
+            </a>
+            <a href="#taxes" class="category-filter__item">
+                Налоги
+            </a>
+            <a href="#sales" class="category-filter__item">
+                Продажи
+            </a>
+        </section>
+
+        <section class="category-section" id="popular">
+            <div class="section-head">
+                <div>
+                    <p class="section-label">Популярное</p>
+                    <h2 class="section-title">Часто используемые финансовые калькуляторы</h2>
+                </div>
+            </div>
+
+            <div class="category-grid">
+
+                <a href="/tools/loan-calculator/" class="category-tool-card">
+                    <div class="category-tool-card__icon">₽</div>
+                    <div class="category-tool-card__content">
+                        <h3>Кредитный калькулятор</h3>
+                        <p>Рассчитайте ежемесячный платёж, переплату и общую сумму кредита.</p>
+                    </div>
+                    <span class="category-tool-card__badge">Кредиты</span>
+                </a>
+
+                <a href="/tools/mortgage-calculator/" class="category-tool-card">
+                    <div class="category-tool-card__icon">🏠</div>
+                    <div class="category-tool-card__content">
+                        <h3>Ипотечный калькулятор</h3>
+                        <p>Расчёт платежа по ипотеке с учётом суммы, срока и процентной ставки.</p>
+                    </div>
+                    <span class="category-tool-card__badge">Кредиты</span>
+                </a>
+
+                <a href="/tools/deposit-calculator/" class="category-tool-card">
+                    <div class="category-tool-card__icon">%</div>
+                    <div class="category-tool-card__content">
+                        <h3>Калькулятор вклада</h3>
+                        <p>Посчитайте доход по вкладу с капитализацией или без неё.</p>
+                    </div>
+                    <span class="category-tool-card__badge">Вклады</span>
+                </a>
+
+            </div>
+        </section>
+
+        <section class="category-section" id="credit">
+            <div class="section-head">
+                <div>
+                    <p class="section-label">Кредиты</p>
+                    <h2 class="section-title">Кредитные расчёты</h2>
+                </div>
+            </div>
+
+            <div class="tools-list">
+
+                <a href="/tools/loan-calculator/" class="tool-row">
+                    <div class="tool-row__icon">₽</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Кредитный калькулятор</h3>
+                        <p class="tool-row__text">
+                            Расчёт платежа, переплаты и полной суммы кредита.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">Кредит</span>
+                </a>
+
+                <a href="/tools/mortgage-calculator/" class="tool-row">
+                    <div class="tool-row__icon">🏠</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Ипотечный калькулятор</h3>
+                        <p class="tool-row__text">
+                            Расчёт платежа по ипотеке, переплаты и остатка долга.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">Ипотека</span>
+                </a>
+
+                <a href="/tools/loan-overpayment-calculator/" class="tool-row">
+                    <div class="tool-row__icon">↗</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Калькулятор переплаты по кредиту</h3>
+                        <p class="tool-row__text">
+                            Узнайте, сколько вы переплатите банку за весь срок кредита.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">Кредит</span>
+                </a>
+
+            </div>
+        </section>
+
+        <section class="category-section" id="business">
+            <div class="section-head">
+                <div>
+                    <p class="section-label">Бизнес</p>
+                    <h2 class="section-title">Калькуляторы для бизнеса</h2>
+                </div>
+            </div>
+
+            <div class="tools-list">
+
+                <a href="/tools/margin-calculator/" class="tool-row">
+                    <div class="tool-row__icon">%</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Калькулятор маржи</h3>
+                        <p class="tool-row__text">
+                            Рассчитайте маржу, прибыль и рентабельность продажи.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">Бизнес</span>
+                </a>
+
+                <a href="/tools/markup-calculator/" class="tool-row">
+                    <div class="tool-row__icon">+</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Калькулятор наценки</h3>
+                        <p class="tool-row__text">
+                            Посчитайте торговую наценку и итоговую цену товара.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">Продажи</span>
+                </a>
+
+                <a href="/tools/break-even-calculator/" class="tool-row">
+                    <div class="tool-row__icon">=</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Калькулятор точки безубыточности</h3>
+                        <p class="tool-row__text">
+                            Определите, сколько нужно продать, чтобы выйти в ноль.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">Бизнес</span>
+                </a>
+
+                <a href="/tools/marketplace-profit-calculator/" class="tool-row">
+                    <div class="tool-row__icon">WB</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Калькулятор прибыли маркетплейса</h3>
+                        <p class="tool-row__text">
+                            Расчёт прибыли с учётом себестоимости, комиссии, логистики и рекламы.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">Маркетплейсы</span>
+                </a>
+
+            </div>
+        </section>
+
+        <section class="category-section" id="taxes">
+            <div class="section-head">
+                <div>
+                    <p class="section-label">Налоги</p>
+                    <h2 class="section-title">Налоговые калькуляторы</h2>
+                </div>
+            </div>
+
+            <div class="tools-list">
+
+                <a href="/tools/vat-calculator/" class="tool-row">
+                    <div class="tool-row__icon">НДС</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Калькулятор НДС</h3>
+                        <p class="tool-row__text">
+                            Выделить или начислить НДС по заданной сумме.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">Налоги</span>
+                </a>
+
+                <a href="/tools/self-employed-tax-calculator/" class="tool-row">
+                    <div class="tool-row__icon">4%</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Калькулятор налога самозанятого</h3>
+                        <p class="tool-row__text">
+                            Расчёт налога для самозанятых по ставкам 4% и 6%.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">Налоги</span>
+                </a>
+
+                <a href="/tools/usn-calculator/" class="tool-row">
+                    <div class="tool-row__icon">УСН</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Калькулятор УСН</h3>
+                        <p class="tool-row__text">
+                            Расчёт налога по упрощённой системе налогообложения.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">Налоги</span>
+                </a>
+
+            </div>
+        </section>
+
+        <section class="category-section" id="sales">
+            <div class="section-head">
+                <div>
+                    <p class="section-label">Продажи</p>
+                    <h2 class="section-title">Скидки, цены и прибыль</h2>
+                </div>
+            </div>
+
+            <div class="tools-list">
+
+                <a href="/tools/discount-calculator/" class="tool-row">
+                    <div class="tool-row__icon">%</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Калькулятор скидки</h3>
+                        <p class="tool-row__text">
+                            Рассчитайте цену товара после скидки и размер экономии.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">Продажи</span>
+                </a>
+
+                <a href="/tools/profit-calculator/" class="tool-row">
+                    <div class="tool-row__icon">₽</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Калькулятор прибыли</h3>
+                        <p class="tool-row__text">
+                            Посчитайте прибыль по цене продажи и себестоимости.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">Бизнес</span>
+                </a>
+
+                <a href="/tools/price-calculator/" class="tool-row">
+                    <div class="tool-row__icon">₽</div>
+                    <div class="tool-row__content">
+                        <h3 class="tool-row__title">Калькулятор цены товара</h3>
+                        <p class="tool-row__text">
+                            Расчёт итоговой цены с учётом расходов, комиссии и желаемой прибыли.
+                        </p>
+                    </div>
+                    <span class="tool-row__tag">Продажи</span>
+                </a>
+
+            </div>
+        </section>
+
+        <section class="category-info">
+            <div class="category-info__content">
+                <h2>Финансовые калькуляторы AltTools</h2>
+
+                <p>
+                    Финансовые калькуляторы помогают быстро выполнить базовые расчёты,
+                    связанные с кредитами, вкладами, налогами, продажами и бизнес-показателями.
+                    Такие инструменты полезны для личного планирования, торговли, малого бизнеса
+                    и предварительной оценки финансовых решений.
+                </p>
+
+                <p>
+                    Все расчёты на сайте являются ориентировочными. Для точных финансовых,
+                    налоговых или юридических решений стоит дополнительно проверять данные
+                    и учитывать актуальные условия банков, сервисов, налоговых ставок и договоров.
+                </p>
+            </div>
+        </section>
+
+    </div>
+</section>
+
+{% endblock %}
