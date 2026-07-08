@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page.meta_title }}{% endblock %}
+
+{% block meta_description %}
+{{ page.meta_description }}
+{% endblock %}
+
+{% block canonical %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_url %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_title %}{{ page.meta_title }}{% endblock %}
+{% block og_description %}{{ page.meta_description }}{% endblock %}
+
+{% block nav_tools_active %}nav__link_active{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/fish_text_generator.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="fish-generator-page">
+    <div class="container">
+
+        <div class="breadcrumbs">
+            <a href="/">Главная</a>
+            <span>/</span>
+            <a href="/tools/">Инструменты</a>
+            <span>/</span>
+            {% if page.category %}
+                <a href="{{ page.category.get_absolute_url }}">{{ page.category.title }}</a>
+                <span>/</span>
+            {% endif %}
+            <span>{{ page.title }}</span>
+        </div>
+
+        <section class="fish-hero">
+            <div class="fish-hero__content">
+                <p class="page-label">
+                    {% if page.category %}
+                        {{ page.category.title }}
+                    {% else %}
+                        Генератор
+                    {% endif %}
+                </p>
+
+                <h1 class="page-title">
+                    {{ page.h1 }}
+                </h1>
+
+                <p class="page-description">
+                    {{ page.short_description }}
+                </p>
+            </div>
+
+            <div class="fish-hero__card">
+                <div class="fish-hero__icon">
+                    {{ page.icon|default:"T" }}
+                </div>
+
+                <div>
+                    <strong>Рыба-текст</strong>
+                    <span>4 языка · несколько вариантов длины</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="fish-generator">
+            <form method="get" class="fish-form">
+
+                <div class="fish-form__grid">
+                    <div class="fish-field">
+                        <label for="language">Язык текста</label>
+
+                        <select name="language" id="language">
+                            {% for language_key, language_data in languages.items %}
+                                <option value="{{ language_key }}"
+                                        {% if selected_language == language_key %}selected{% endif %}>
+                                    {{ language_data.title }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="fish-field">
+                        <label for="length">Длина текста</label>
+
+                        <select name="length" id="length">
+                            {% for length_key, length_data in lengths.items %}
+                                <option value="{{ length_key }}"
+                                        {% if selected_length == length_key %}selected{% endif %}>
+                                    {{ length_data.title }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="fish-form__button">
+                    Сгенерировать текст
+                </button>
+
+            </form>
+
+            <div class="fish-result">
+                <div class="fish-result__top">
+                    <div>
+                        <h2>Готовый текст</h2>
+                        <p>
+                            Можно скопировать результат или скачать его в TXT-файле.
+                        </p>
+                    </div>
+
+                    <div class="fish-result__actions">
+                        <button type="button" class="fish-action" id="copyFishText">
+                            Скопировать
+                        </button>
+
+                        <button type="button" class="fish-action fish-action_dark" id="downloadFishText">
+                            Скачать TXT
+                        </button>
+                    </div>
+                </div>
+
+                <textarea id="fishTextResult" class="fish-result__textarea" readonly>{{ generated_text }}</textarea>
+
+                <p class="fish-result__note" id="fishTextStatus">
+                    Текст сгенерирован автоматически и подходит для макетов, тестирования интерфейсов и временного заполнения страниц.
+                </p>
+            </div>
+        </section>
+
+        <section class="fish-info">
+            <div class="fish-info__content">
+                <h2>Что такое рыба-текст?</h2>
+
+                <p>
+                    Рыба-текст — это временный текст-заполнитель. Его используют,
+                    когда нужно проверить внешний вид страницы, карточки товара,
+                    презентации, макета или интерфейса до появления настоящего текста.
+                </p>
+
+                <p>
+                    Генератор AltTools позволяет быстро создать текст на русском,
+                    английском, немецком или испанском языке и выбрать подходящую длину.
+                </p>
+            </div>
+        </section>
+
+    </div>
+</section>
+
+<script>
+    const fishTextArea = document.getElementById('fishTextResult');
+    const copyButton = document.getElementById('copyFishText');
+    const downloadButton = document.getElementById('downloadFishText');
+    const statusText = document.getElementById('fishTextStatus');
+
+    copyButton.addEventListener('click', async function () {
+        try {
+            await navigator.clipboard.writeText(fishTextArea.value);
+            statusText.textContent = 'Текст скопирован в буфер обмена.';
+        } catch (error) {
+            fishTextArea.select();
+            document.execCommand('copy');
+            statusText.textContent = 'Текст скопирован.';
+        }
+    });
+
+    downloadButton.addEventListener('click', function () {
+        const blob = new Blob([fishTextArea.value], {
+            type: 'text/plain;charset=utf-8'
+        });
+
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+
+        link.href = url;
+        link.download = 'alttools-fish-text.txt';
+        link.click();
+
+        URL.revokeObjectURL(url);
+
+        statusText.textContent = 'TXT-файл скачан.';
+    });
+</script>
+
+{% endblock %}
