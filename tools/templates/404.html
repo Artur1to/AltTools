@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Страница не найдена — AltTools{% endblock %}
+
+{% block meta_description %}
+Страница не найдена. Вернитесь в каталог AltTools и выберите нужный онлайн-инструмент.
+{% endblock %}
+
+{% block robots %}noindex, follow{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/error_pages.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="error-page">
+    <div class="container">
+
+        <div class="error-page__inner">
+
+            <div class="error-page__content">
+                <div class="error-page__badge">
+                    Ошибка 404
+                </div>
+
+                <h1 class="error-page__title">
+                    Кажется, этот инструмент потерялся
+                </h1>
+
+                <p class="error-page__text">
+                    Страница, которую вы открыли, не существует, была удалена
+                    или у неё изменился адрес. Но остальные инструменты AltTools
+                    всё ещё на месте.
+                </p>
+
+                <div class="error-page__actions">
+                    <a href="/" class="error-page__button error-page__button_primary">
+                        На главную
+                    </a>
+
+                    <a href="/tools/" class="error-page__button error-page__button_secondary">
+                        Все инструменты
+                    </a>
+                </div>
+
+                <div class="error-page__quick">
+                    <p class="error-page__quick-title">
+                        Популярные разделы:
+                    </p>
+
+                    <div class="error-page__links">
+                        <a href="/tools/generators/">Генераторы</a>
+                        <a href="/tools/finance/">Финансы</a>
+                        <a href="/tools/health/">Здоровье</a>
+                        <a href="/tools/converters/">Конвертеры</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="error-page__visual" aria-hidden="true">
+                <div class="error-card error-card_main">
+                    <span class="error-card__code">404</span>
+                    <span class="error-card__label">not found</span>
+                </div>
+
+                <div class="error-tool error-tool_1">
+                    <span>QR</span>
+                    <small>generator</small>
+                </div>
+
+                <div class="error-tool error-tool_2">
+                    <span>%</span>
+                    <small>calculator</small>
+                </div>
+
+                <div class="error-tool error-tool_3">
+                    <span>{ }</span>
+                    <small>formatter</small>
+                </div>
+
+                <div class="error-page__grid"></div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}
