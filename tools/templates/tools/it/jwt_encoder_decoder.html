@@ -1,0 +1,385 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page.meta_title }}{% endblock %}
+
+{% block meta_description %}
+{{ page.meta_description }}
+{% endblock %}
+
+{% block canonical %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_url %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_title %}{{ page.meta_title }}{% endblock %}
+{% block og_description %}{{ page.meta_description }}{% endblock %}
+
+{% block nav_tools_active %}nav__link_active{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/jwt_encoder_decoder.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="jwt-page">
+    <div class="container">
+
+        <div class="breadcrumbs">
+            <a href="/">Главная</a>
+            <span>/</span>
+            <a href="/tools/">Инструменты</a>
+            <span>/</span>
+            {% if page.category %}
+                <a href="{{ page.category.get_absolute_url }}">{{ page.category.title }}</a>
+                <span>/</span>
+            {% endif %}
+            <span>{{ page.title }}</span>
+        </div>
+
+        <section class="jwt-hero">
+            <div class="jwt-hero__content">
+                <p class="page-label">
+                    {% if page.category %}
+                        {{ page.category.title }}
+                    {% else %}
+                        Инструмент
+                    {% endif %}
+                </p>
+
+                <h1 class="page-title">
+                    {{ page.h1 }}
+                </h1>
+
+                <p class="page-description">
+                    {{ page.short_description }}
+                </p>
+
+                <div class="jwt-privacy-note">
+                    Обработка JWT выполняется в браузере. Токен, payload и secret не отправляются на сервер.
+                </div>
+            </div>
+
+            <div class="jwt-hero__card">
+                <div class="jwt-hero__icon">
+                    JWT
+                </div>
+
+                <div>
+                    <strong>JWT Decode / Encode</strong>
+                    <span>Header · Payload · Signature · HS256</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="jwt-tool">
+
+            <div class="jwt-tabs" role="tablist">
+                <button type="button" class="jwt-tab jwt-tab_active" data-tab="decode">
+                    Декодировать JWT
+                </button>
+
+                <button type="button" class="jwt-tab" data-tab="encode">
+                    Создать JWT
+                </button>
+            </div>
+
+            <div class="jwt-panel jwt-panel_active" id="decodePanel">
+
+                <div class="jwt-grid jwt-grid_decode">
+
+                    <div class="jwt-card">
+                        <div class="jwt-card__head">
+                            <div>
+                                <h2>JWT token</h2>
+                                <p>Вставьте токен в формате header.payload.signature</p>
+                            </div>
+
+                            <button type="button" class="jwt-small-btn" id="clearJwt">
+                                Очистить
+                            </button>
+                        </div>
+
+                        <textarea id="jwtInput" class="jwt-textarea jwt-textarea_token" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."></textarea>
+
+                        <div class="jwt-actions">
+                            <button type="button" class="jwt-main-btn" id="decodeJwt">
+                                Декодировать
+                            </button>
+
+                            <button type="button" class="jwt-secondary-btn" id="loadExampleJwt">
+                                Пример JWT
+                            </button>
+                        </div>
+
+                        <div class="jwt-secret-box">
+                            <label for="decodeSecret">Secret для проверки HS256</label>
+                            <input type="text" id="decodeSecret" placeholder="Например: your-256-bit-secret">
+
+                            <button type="button" class="jwt-secondary-btn jwt-secondary-btn_full" id="verifyJwt">
+                                Проверить подпись HS256
+                            </button>
+
+                            <p class="jwt-hint">
+                                Проверка работает для токенов с алгоритмом HS256. Для RS256/ES256 нужен публичный ключ, это можно добавить позже отдельным блоком.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="jwt-results">
+
+                        <div class="jwt-result-card">
+                            <div class="jwt-result-card__head">
+                                <h2>Decoded header</h2>
+                                <button type="button" class="jwt-small-btn" data-copy-target="decodedHeader">
+                                    Копировать
+                                </button>
+                            </div>
+                            <pre id="decodedHeader" class="jwt-code jwt-code_header"></pre>
+                        </div>
+
+                        <div class="jwt-result-card">
+                            <div class="jwt-result-card__head">
+                                <h2>Decoded payload</h2>
+                                <button type="button" class="jwt-small-btn" data-copy-target="decodedPayload">
+                                    Копировать
+                                </button>
+                            </div>
+                            <pre id="decodedPayload" class="jwt-code jwt-code_payload"></pre>
+                        </div>
+
+                        <div class="jwt-result-card">
+                            <div class="jwt-result-card__head">
+                                <h2>Signature</h2>
+                                <button type="button" class="jwt-small-btn" data-copy-target="decodedSignature">
+                                    Копировать
+                                </button>
+                            </div>
+                            <pre id="decodedSignature" class="jwt-code jwt-code_signature"></pre>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="jwt-meta" id="jwtMeta">
+                    <h2>Информация о claims</h2>
+                    <div class="jwt-meta__grid" id="jwtMetaGrid"></div>
+                </div>
+
+                <div class="jwt-status" id="decodeStatus">
+                    Вставьте JWT и нажмите “Декодировать”.
+                </div>
+
+            </div>
+
+            <div class="jwt-panel" id="encodePanel">
+
+                <div class="jwt-grid jwt-grid_encode">
+
+                    <div class="jwt-card">
+                        <div class="jwt-card__head">
+                            <div>
+                                <h2>Header JSON</h2>
+                                <p>Обычно содержит alg и typ</p>
+                            </div>
+
+                            <button type="button" class="jwt-small-btn" id="formatHeaderJson">
+                                Форматировать
+                            </button>
+                        </div>
+
+                        <textarea id="encodeHeader" class="jwt-textarea jwt-textarea_json">{
+  "alg": "HS256",
+  "typ": "JWT"
+}</textarea>
+                    </div>
+
+                    <div class="jwt-card">
+                        <div class="jwt-card__head">
+                            <div>
+                                <h2>Payload JSON</h2>
+                                <p>Claims и данные токена</p>
+                            </div>
+
+                            <button type="button" class="jwt-small-btn" id="formatPayloadJson">
+                                Форматировать
+                            </button>
+                        </div>
+
+                        <textarea id="encodePayload" class="jwt-textarea jwt-textarea_json">{
+  "sub": "1234567890",
+  "name": "AltTools User",
+  "iat": 1710000000
+}</textarea>
+                    </div>
+
+                </div>
+
+                <div class="jwt-encode-options">
+
+                    <div class="jwt-field">
+                        <label for="encodeAlgorithm">Алгоритм</label>
+                        <select id="encodeAlgorithm">
+                            <option value="HS256">HS256</option>
+                            <option value="none">none</option>
+                        </select>
+                    </div>
+
+                    <div class="jwt-field">
+                        <label for="encodeSecret">Secret для HS256</label>
+                        <input type="text" id="encodeSecret" placeholder="your-256-bit-secret">
+                    </div>
+
+                    <label class="jwt-checkbox">
+                        <input type="checkbox" id="addTimestamps" checked>
+                        <span>Добавить iat, если его нет</span>
+                    </label>
+
+                </div>
+
+                <div class="jwt-actions">
+                    <button type="button" class="jwt-main-btn" id="encodeJwt">
+                        Создать JWT
+                    </button>
+
+                    <button type="button" class="jwt-secondary-btn" id="copyEncodedJwt">
+                        Копировать
+                    </button>
+
+                    <button type="button" class="jwt-secondary-btn" id="downloadEncodedJwt">
+                        Скачать TXT
+                    </button>
+                </div>
+
+                <div class="jwt-result-card jwt-result-card_full">
+                    <div class="jwt-result-card__head">
+                        <h2>Generated JWT</h2>
+                    </div>
+
+                    <textarea id="encodedJwtResult" class="jwt-textarea jwt-textarea_token" readonly placeholder="Здесь появится JWT"></textarea>
+                </div>
+
+                <div class="jwt-status" id="encodeStatus">
+                    Заполните header и payload, затем создайте JWT.
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="jwt-info">
+            <div class="jwt-info__content">
+                <h2>Что такое JWT?</h2>
+
+                <p>
+                    JWT, или JSON Web Token, — это компактный формат токена, который часто
+                    используют для авторизации, обмена данными между клиентом и сервером,
+                    API-доступа и OAuth/OpenID Connect сценариев.
+                </p>
+
+                <p>
+                    JWT состоит из трёх частей: <code>header</code>, <code>payload</code>
+                    и <code>signature</code>. Header описывает тип токена и алгоритм подписи,
+                    payload содержит claims, а signature помогает проверить, что header и payload
+                    не были изменены.
+                </p>
+            </div>
+        </section>
+
+        <section class="jwt-how">
+            <div class="jwt-how__head">
+                <p class="section-label">Как это работает</p>
+                <h2>Структура JWT-токена</h2>
+            </div>
+
+            <div class="jwt-steps">
+                <div class="jwt-step">
+                    <span>1</span>
+                    <h3>Header</h3>
+                    <p>
+                        Первая часть токена. Обычно содержит <code>alg</code>, например
+                        <code>HS256</code>, и <code>typ</code> со значением <code>JWT</code>.
+                    </p>
+                </div>
+
+                <div class="jwt-step">
+                    <span>2</span>
+                    <h3>Payload</h3>
+                    <p>
+                        Вторая часть токена. Здесь находятся claims: идентификатор пользователя,
+                        срок действия, роли, issuer, audience и другие данные.
+                    </p>
+                </div>
+
+                <div class="jwt-step">
+                    <span>3</span>
+                    <h3>Signature</h3>
+                    <p>
+                        Третья часть токена. Подпись нужна, чтобы проверить, что token не был
+                        подделан или изменён после создания.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="jwt-faq">
+            <div class="jwt-faq__head">
+                <p class="section-label">FAQ</p>
+                <h2>Частые вопросы о JWT</h2>
+            </div>
+
+            <div class="jwt-faq__list">
+
+                <details class="jwt-faq__item" open>
+                    <summary>Можно ли доверять JWT после простого декодирования?</summary>
+                    <p>
+                        Нет. Декодирование только показывает header и payload. Чтобы доверять JWT,
+                        нужно проверить подпись, срок действия, issuer, audience и другие условия
+                        на стороне backend.
+                    </p>
+                </details>
+
+                <details class="jwt-faq__item">
+                    <summary>Почему payload видно без пароля?</summary>
+                    <p>
+                        JWT обычно не шифруется, а кодируется в Base64URL. Это значит, что данные
+                        можно прочитать без secret. Поэтому в payload нельзя хранить пароли,
+                        приватные ключи и другую чувствительную информацию.
+                    </p>
+                </details>
+
+                <details class="jwt-faq__item">
+                    <summary>Что означает exp?</summary>
+                    <p>
+                        <code>exp</code> — это время истечения токена в Unix timestamp.
+                        После этого момента backend должен считать токен недействительным.
+                    </p>
+                </details>
+
+                <details class="jwt-faq__item">
+                    <summary>Чем HS256 отличается от RS256?</summary>
+                    <p>
+                        HS256 использует один общий secret для создания и проверки подписи.
+                        RS256 использует приватный ключ для подписи и публичный ключ для проверки.
+                        Для публичных API чаще используют RS256 или похожие асимметричные алгоритмы.
+                    </p>
+                </details>
+
+                <details class="jwt-faq__item">
+                    <summary>Можно ли использовать alg none?</summary>
+                    <p>
+                        Для реальной авторизации — нет. Алгоритм <code>none</code> означает отсутствие
+                        подписи. Его можно использовать только для обучения и тестовых примеров.
+                    </p>
+                </details>
+
+            </div>
+        </section>
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'tools/js/jwt_encoder_decoder.js' %}" defer></script>
+{% endblock %}

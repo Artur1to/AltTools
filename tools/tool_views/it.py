@@ -388,3 +388,21 @@ def url_encoder_decoder(request, page=None):
         'tools/it/url_encoder_decoder.html',
         context
     )
+
+def jwt_encoder_decoder(request, page=None):
+    if page is None:
+        page = get_object_or_404(
+            ToolPage,
+            slug='jwt-encoder-decoder',
+            is_published=True
+        )
+
+    context = {
+        'page': page,
+    }
+
+    return render(
+        request,
+        'tools/it/jwt_encoder_decoder.html',
+        context
+    )
