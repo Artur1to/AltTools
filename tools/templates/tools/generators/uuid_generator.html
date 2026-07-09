@@ -7,8 +7,8 @@
 {{ page.meta_description }}
 {% endblock %}
 
-{% block canonical %}https://example.com/tools/uuid-generator/{% endblock %}
-{% block og_url %}https://example.com/tools/uuid-generator/{% endblock %}
+{% block canonical %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_url %}https://example.com{{ page.get_absolute_url }}{% endblock %}
 {% block og_title %}{{ page.meta_title }}{% endblock %}
 {% block og_description %}{{ page.meta_description }}{% endblock %}
 
@@ -20,7 +20,7 @@
 
 {% block content %}
 
-<section class="tool-page">
+<section class="uuid-page">
     <div class="container">
 
         <div class="breadcrumbs">
@@ -28,171 +28,219 @@
             <span>/</span>
             <a href="/tools/">Инструменты</a>
             <span>/</span>
-            <a href="/tools/generators/">Генераторы</a>
-            <span>/</span>
-            <span>Генератор UUID</span>
+            {% if page.category %}
+                <a href="{{ page.category.get_absolute_url }}">{{ page.category.title }}</a>
+                <span>/</span>
+            {% endif %}
+            <span>{{ page.title }}</span>
         </div>
 
-        <div class="page-head">
-            <p class="page-label">Онлайн-генератор</p>
-            <h1 class="page-title">{{ page.h1 }}</h1>
-            <p class="page-description">
-                {{ page.short_description }}
-            </p>
-        </div>
+        <section class="uuid-hero">
+            <div class="uuid-hero__content">
+                <p class="page-label">
+                    {% if page.category %}
+                        {{ page.category.title }}
+                    {% else %}
+                        Генератор
+                    {% endif %}
+                </p>
 
-        <section class="tool-layout">
+                <h1 class="page-title">
+                    {{ page.h1 }}
+                </h1>
 
-            <div class="tool-box">
-                <h2 class="card-title">Настройки генерации</h2>
-
-                <form method="post" class="form uuid-form">
-                    {% csrf_token %}
-
-                    <div class="form-group">
-                        <label class="form-label" for="count">Сколько UUID создать</label>
-                        <input
-                            class="form-input"
-                            type="number"
-                            min="1"
-                            max="1000"
-                            id="count"
-                            name="count"
-                            value="{{ count }}"
-                            placeholder="1"
-                        >
-                        <p class="form-hint">
-                            Можно создать от 1 до 1000 UUID за один раз.
-                        </p>
-                    </div>
-
-                    <div class="uuid-options">
-                        <label class="checkbox-line">
-                            <input
-                                type="checkbox"
-                                name="uppercase"
-                                {% if uppercase %}checked{% endif %}
-                            >
-                            <span>Верхний регистр</span>
-                        </label>
-
-                        <label class="checkbox-line">
-                            <input
-                                type="checkbox"
-                                name="without_hyphens"
-                                {% if without_hyphens %}checked{% endif %}
-                            >
-                            <span>Без дефисов</span>
-                        </label>
-                    </div>
-
-                    <button class="button" type="submit">Создать UUID</button>
-                </form>
-
-                {% if error %}
-                    <div class="result result_error">
-                        {{ error }}
-                    </div>
-                {% endif %}
-
-                <div class="info-card uuid-help">
-                    <h2>Что можно настроить?</h2>
-                    <p>
-                        Можно создать один UUID или сразу список идентификаторов.
-                        Дополнительно можно включить верхний регистр или убрать дефисы,
-                        если такой формат нужен для проекта, базы данных или API.
-                    </p>
-                </div>
+                <p class="page-description">
+                    {{ page.short_description }}
+                </p>
             </div>
 
-            <aside class="side-box">
-                <h2 class="card-title">Результат</h2>
+            <div class="uuid-hero__card">
+                <div class="uuid-hero__icon">
+                    ID
+                </div>
 
-                {% if results %}
-                    <div class="uuid-result">
+                <div>
+                    <strong>UUID Generator</strong>
+                    <span>UUID v4 · Copy · TXT</span>
+                </div>
+            </div>
+        </section>
 
-                        {% if results|length == 1 %}
-                            <p class="result-label">Ваш UUID v4</p>
+        <section class="uuid-tool">
 
-                            <div class="uuid-single js-main-uuid">
-                                {{ results.0 }}
-                            </div>
-                        {% else %}
-                            <p class="result-label">Список UUID v4</p>
-                        {% endif %}
+            <div class="uuid-columns">
 
-                        <textarea
-                            class="uuid-result-text js-result-text"
-                            readonly
-                        >{{ result_text }}</textarea>
+                <div class="uuid-panel">
+                    <div class="uuid-panel__head">
+                        <div>
+                            <h2>Настройки генерации</h2>
+                            <p>Создайте один UUID или список уникальных идентификаторов</p>
+                        </div>
+                    </div>
 
-                        <div class="uuid-actions">
-                            <button
-                                class="button button_secondary js-copy-result"
-                                type="button"
+                    <form method="post" class="uuid-form">
+                        {% csrf_token %}
+
+                        <div class="uuid-field">
+                            <label for="count">Сколько UUID создать</label>
+
+                            <input
+                                type="number"
+                                min="1"
+                                max="1000"
+                                id="count"
+                                name="count"
+                                value="{{ count }}"
+                                placeholder="1"
                             >
-                                Скопировать
-                            </button>
 
-                            <button
-                                class="button button_secondary js-download-txt"
-                                type="button"
-                            >
-                                Скачать TXT
-                            </button>
+                            <p class="uuid-hint">
+                                Можно создать от 1 до 1000 UUID за один раз.
+                            </p>
                         </div>
 
-                    </div>
-                {% else %}
-                    <div class="result-box">
-                        <p class="result-label">UUID</p>
-                        <p class="result-value">—</p>
-                        <p class="hint">
-                            Укажите настройки и нажмите кнопку, чтобы создать UUID.
-                        </p>
-                    </div>
-                {% endif %}
+                        <div class="uuid-options">
+                            <label class="uuid-checkbox">
+                                <input
+                                    type="checkbox"
+                                    name="uppercase"
+                                    {% if uppercase %}checked{% endif %}
+                                >
+                                <span>Верхний регистр</span>
+                            </label>
 
-                <div class="uuid-note">
-                    <h3>Совет</h3>
-                    <p>
-                        Для большинства задач подходит стандартный UUID v4 с дефисами
-                        в нижнем регистре.
-                    </p>
+                            <label class="uuid-checkbox">
+                                <input
+                                    type="checkbox"
+                                    name="without_hyphens"
+                                    {% if without_hyphens %}checked{% endif %}
+                                >
+                                <span>Без дефисов</span>
+                            </label>
+                        </div>
+
+                        {% if error %}
+                            <div class="uuid-message uuid-message_error">
+                                {{ error }}
+                            </div>
+                        {% endif %}
+
+                        <div class="uuid-submit">
+                            <button type="submit" class="uuid-submit__button">
+                                Создать UUID
+                            </button>
+                        </div>
+                    </form>
                 </div>
-            </aside>
+
+                <div class="uuid-panel">
+                    <div class="uuid-panel__head">
+                        <div>
+                            <h2>Результат</h2>
+                            <p>Скопируйте UUID или скачайте список в TXT</p>
+                        </div>
+
+                        {% if results %}
+                            <div class="uuid-panel__actions">
+                                <button
+                                    type="button"
+                                    class="uuid-small-btn uuid-small-btn_dark js-copy-result"
+                                >
+                                    Копировать
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="uuid-small-btn js-download-txt"
+                                >
+                                    TXT
+                                </button>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    {% if results %}
+                        <div class="uuid-result">
+
+                            {% if results|length == 1 %}
+                                <div class="uuid-single js-main-uuid">
+                                    {{ results.0 }}
+                                </div>
+                            {% endif %}
+
+                            <textarea
+                                class="uuid-result-text js-result-text"
+                                readonly
+                            >{{ result_text }}</textarea>
+
+                            <div class="uuid-actions">
+                                <button
+                                    class="uuid-submit__secondary js-copy-result"
+                                    type="button"
+                                >
+                                    Скопировать
+                                </button>
+
+                                <button
+                                    class="uuid-submit__secondary js-download-txt"
+                                    type="button"
+                                >
+                                    Скачать TXT
+                                </button>
+                            </div>
+
+                        </div>
+                    {% else %}
+                        <div class="uuid-empty">
+                            <div class="uuid-empty__icon">
+                                ID
+                            </div>
+
+                            <strong>UUID появится здесь</strong>
+
+                            <p>
+                                Укажите настройки и нажмите «Создать UUID».
+                            </p>
+                        </div>
+                    {% endif %}
+                </div>
+
+            </div>
 
         </section>
 
-        <section class="info-section">
-
-            <div class="info-card">
+        <section class="uuid-info">
+            <div class="uuid-info__content">
                 <h2>Что такое UUID?</h2>
+
                 <p>
                     UUID — это уникальный идентификатор, который часто используют
-                    в разработке, базах данных, API, логах, тестовых данных и разных
-                    внутренних системах.
+                    в разработке, базах данных, API, логах, тестовых данных и внутренних системах.
                 </p>
-            </div>
 
-            <div class="info-card">
-                <h2>Где использовать UUID?</h2>
                 <p>
-                    UUID удобно применять как идентификатор пользователя, заказа, файла,
-                    записи в базе данных, токена операции или объекта в приложении.
-                    Он помогает отличать одну сущность от другой без обычной числовой нумерации.
+                    Такой идентификатор помогает отличать одну сущность от другой без обычной
+                    последовательной нумерации. Например, UUID можно использовать для пользователя,
+                    заказа, файла, записи в базе данных или объекта в приложении.
                 </p>
             </div>
+        </section>
 
-            <div class="info-card">
-                <h2>Можно ли скачать UUID в TXT?</h2>
+        <section class="uuid-info">
+            <div class="uuid-info__content">
+                <h2>Какие настройки доступны?</h2>
+
                 <p>
-                    Да. После генерации нажмите кнопку «Скачать TXT», и браузер сохранит
-                    текстовый файл со всеми созданными UUID. Каждый UUID будет расположен
-                    на отдельной строке.
+                    Можно создать один UUID или сразу список идентификаторов. Дополнительно можно
+                    включить верхний регистр или убрать дефисы, если такой формат нужен для проекта,
+                    базы данных, импорта или API.
+                </p>
+
+                <p>
+                    Для большинства задач подходит стандартный UUID v4 с дефисами в нижнем регистре.
+                    Если нужно сохранить список UUID, можно скачать результат в TXT.
                 </p>
             </div>
-
         </section>
 
     </div>
@@ -201,5 +249,5 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'tools/js/uuid_generator.js' %}"></script>
+<script src="{% static 'tools/js/uuid_generator.js' %}" defer></script>
 {% endblock %}
