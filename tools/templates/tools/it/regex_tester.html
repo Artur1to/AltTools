@@ -1,0 +1,412 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page.meta_title }}{% endblock %}
+
+{% block meta_description %}
+{{ page.meta_description }}
+{% endblock %}
+
+{% block canonical %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_url %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_title %}{{ page.meta_title }}{% endblock %}
+{% block og_description %}{{ page.meta_description }}{% endblock %}
+
+{% block nav_tools_active %}nav__link_active{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/regex_tester.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="regex-page">
+    <div class="container">
+
+        <div class="breadcrumbs">
+            <a href="/">Главная</a>
+            <span>/</span>
+            <a href="/tools/">Инструменты</a>
+            <span>/</span>
+            {% if page.category %}
+                <a href="{{ page.category.get_absolute_url }}">{{ page.category.title }}</a>
+                <span>/</span>
+            {% endif %}
+            <span>{{ page.title }}</span>
+        </div>
+
+        <section class="regex-hero">
+            <div class="regex-hero__content">
+                <p class="page-label">
+                    {% if page.category %}
+                        {{ page.category.title }}
+                    {% else %}
+                        Инструмент
+                    {% endif %}
+                </p>
+
+                <h1 class="page-title">
+                    {{ page.h1 }}
+                </h1>
+
+                <p class="page-description">
+                    {{ page.short_description }}
+                </p>
+
+                <div class="regex-privacy-note">
+                    Проверка выполняется в браузере. Текст и регулярное выражение не отправляются на сервер.
+                </div>
+            </div>
+
+            <div class="regex-hero__card">
+                <div class="regex-hero__icon">
+                    .*
+                </div>
+
+                <div>
+                    <strong>Regex Tester</strong>
+                    <span>Match · Groups · Replace · Flags</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="regex-tool">
+
+            <div class="regex-grid">
+
+                <div class="regex-config-card">
+
+                    <div class="regex-card__head">
+                        <div>
+                            <h2>Регулярное выражение</h2>
+                            <p>Введите pattern без начального и конечного слэша</p>
+                        </div>
+
+                        <button type="button" class="regex-small-btn" id="clearRegex">
+                            Очистить
+                        </button>
+                    </div>
+
+                    <div class="regex-pattern-box">
+                        <span>/</span>
+                        <input type="text" id="regexPattern" placeholder="Например: \b[\w.-]+@[\w.-]+\.\w+\b">
+                        <span>/</span>
+                        <strong id="regexFlagsPreview">g</strong>
+                    </div>
+
+                    <div class="regex-flags">
+                        <label class="regex-checkbox">
+                            <input type="checkbox" class="regex-flag" value="g" checked>
+                            <span>g — все совпадения</span>
+                        </label>
+
+                        <label class="regex-checkbox">
+                            <input type="checkbox" class="regex-flag" value="i">
+                            <span>i — без учёта регистра</span>
+                        </label>
+
+                        <label class="regex-checkbox">
+                            <input type="checkbox" class="regex-flag" value="m">
+                            <span>m — многострочный режим</span>
+                        </label>
+
+                        <label class="regex-checkbox">
+                            <input type="checkbox" class="regex-flag" value="s">
+                            <span>s — точка захватывает переносы</span>
+                        </label>
+
+                        <label class="regex-checkbox">
+                            <input type="checkbox" class="regex-flag" value="u">
+                            <span>u — Unicode</span>
+                        </label>
+
+                        <label class="regex-checkbox">
+                            <input type="checkbox" class="regex-flag" value="y">
+                            <span>y — sticky</span>
+                        </label>
+                    </div>
+
+                    <div class="regex-card__head regex-card__head_small">
+                        <div>
+                            <h2>Тестовый текст</h2>
+                            <p>Вставьте строку, лог, HTML, email-список или любой текст</p>
+                        </div>
+
+                        <button type="button" class="regex-small-btn" id="loadRegexExample">
+                            Пример
+                        </button>
+                    </div>
+
+                    <textarea id="regexTestText" class="regex-textarea" placeholder="Введите текст для проверки"></textarea>
+
+                    <div class="regex-replace-box">
+                        <label for="regexReplace">Замена</label>
+                        <input type="text" id="regexReplace" placeholder="Например: [$&] или User: $1">
+                        <p>
+                            Можно использовать <code>$&</code> для всего совпадения и <code>$1</code>, <code>$2</code> для групп.
+                        </p>
+                    </div>
+
+                    <div class="regex-actions">
+                        <button type="button" class="regex-main-btn" id="runRegex">
+                            Проверить Regex
+                        </button>
+
+                        <button type="button" class="regex-secondary-btn" id="copyMatchesJson">
+                            Скопировать JSON
+                        </button>
+
+                        <button type="button" class="regex-secondary-btn" id="downloadRegexJson">
+                            Скачать JSON
+                        </button>
+                    </div>
+
+                    <div class="regex-status" id="regexStatus">
+                        Введите регулярное выражение и тестовый текст.
+                    </div>
+
+                </div>
+
+                <div class="regex-results-card">
+
+                    <div class="regex-summary">
+                        <div class="regex-summary__item">
+                            <strong id="matchCount">0</strong>
+                            <span>совпадений</span>
+                        </div>
+
+                        <div class="regex-summary__item">
+                            <strong id="groupCount">0</strong>
+                            <span>групп</span>
+                        </div>
+
+                        <div class="regex-summary__item">
+                            <strong id="regexTime">0 мс</strong>
+                            <span>время</span>
+                        </div>
+                    </div>
+
+                    <div class="regex-tabs">
+                        <button type="button" class="regex-tab regex-tab_active" data-tab="highlight">
+                            Подсветка
+                        </button>
+
+                        <button type="button" class="regex-tab" data-tab="matches">
+                            Matches
+                        </button>
+
+                        <button type="button" class="regex-tab" data-tab="replace">
+                            Replace
+                        </button>
+                    </div>
+
+                    <div class="regex-panel regex-panel_active" id="highlightPanel">
+                        <div class="regex-panel__head">
+                            <h2>Подсвеченный текст</h2>
+                            <button type="button" class="regex-small-btn" id="copyHighlightedText">
+                                Копировать текст
+                            </button>
+                        </div>
+
+                        <div class="regex-highlight" id="regexHighlight">
+                            Совпадения появятся здесь.
+                        </div>
+                    </div>
+
+                    <div class="regex-panel" id="matchesPanel">
+                        <div class="regex-panel__head">
+                            <h2>Список совпадений</h2>
+                            <button type="button" class="regex-small-btn" id="downloadMatchesTxt">
+                                Скачать TXT
+                            </button>
+                        </div>
+
+                        <div class="regex-table-wrap">
+                            <table class="regex-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Match</th>
+                                        <th>Index</th>
+                                        <th>Groups</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="matchesTableBody">
+                                    <tr>
+                                        <td colspan="4">Пока нет совпадений.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="regex-panel" id="replacePanel">
+                        <div class="regex-panel__head">
+                            <h2>Результат замены</h2>
+                            <button type="button" class="regex-small-btn" id="copyReplaceResult">
+                                Копировать
+                            </button>
+                        </div>
+
+                        <textarea id="replaceResult" class="regex-textarea regex-textarea_result" readonly placeholder="Результат replace появится здесь"></textarea>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="regex-info">
+            <div class="regex-info__content">
+                <h2>Что такое Regex?</h2>
+
+                <p>
+                    Regex, или регулярное выражение, — это шаблон для поиска, проверки и извлечения
+                    текста. С его помощью можно находить email-адреса, телефоны, даты, URL, строки
+                    логов, HTML-фрагменты, идентификаторы и другие повторяющиеся текстовые структуры.
+                </p>
+
+                <p>
+                    Тестер Regex помогает быстро проверить выражение на примере текста: увидеть
+                    совпадения, индексы, группы захвата и результат замены. Это удобно при разработке,
+                    парсинге данных, настройке валидации форм и обработке логов.
+                </p>
+            </div>
+        </section>
+
+        <section class="regex-how">
+            <div class="regex-how__head">
+                <p class="section-label">Как пользоваться</p>
+                <h2>Как проверить регулярное выражение</h2>
+            </div>
+
+            <div class="regex-steps">
+                <div class="regex-step">
+                    <span>1</span>
+                    <h3>Введите pattern</h3>
+                    <p>
+                        Напишите регулярное выражение без начального и конечного слэша.
+                        Например: <code>\d+</code> или <code>[\w.-]+@[\w.-]+\.\w+</code>.
+                    </p>
+                </div>
+
+                <div class="regex-step">
+                    <span>2</span>
+                    <h3>Выберите флаги</h3>
+                    <p>
+                        Включите <code>g</code> для всех совпадений, <code>i</code> для поиска
+                        без учёта регистра или <code>m</code> для многострочного режима.
+                    </p>
+                </div>
+
+                <div class="regex-step">
+                    <span>3</span>
+                    <h3>Проверьте результат</h3>
+                    <p>
+                        Смотрите подсветку, таблицу matches, группы захвата и результат замены.
+                        Данные можно скачать в TXT или JSON.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="regex-cheatsheet">
+            <div class="regex-cheatsheet__head">
+                <p class="section-label">Шпаргалка</p>
+                <h2>Полезные элементы Regex</h2>
+            </div>
+
+            <div class="regex-cheatsheet__grid">
+                <div><code>.</code><span>любой символ, кроме переноса строки</span></div>
+                <div><code>\d</code><span>цифра</span></div>
+                <div><code>\w</code><span>буква, цифра или подчёркивание</span></div>
+                <div><code>\s</code><span>пробельный символ</span></div>
+                <div><code>+</code><span>один или больше повторов</span></div>
+                <div><code>*</code><span>ноль или больше повторов</span></div>
+                <div><code>?</code><span>ноль или один повтор</span></div>
+                <div><code>{'{n,m}'}</code><span>от n до m повторов</span></div>
+                <div><code>^</code><span>начало строки</span></div>
+                <div><code>$</code><span>конец строки</span></div>
+                <div><code>()</code><span>группа захвата</span></div>
+                <div><code>|</code><span>или</span></div>
+            </div>
+        </section>
+
+        <section class="regex-warning">
+            <h2>Важно про безопасность Regex</h2>
+
+            <p>
+                Некоторые регулярные выражения могут работать очень медленно на специально подобранном
+                тексте. Такая проблема называется ReDoS — Regular Expression Denial of Service.
+                Особенно осторожно нужно использовать сложные вложенные квантификаторы в backend-коде.
+            </p>
+
+            <p>
+                Для пользовательского ввода лучше ограничивать длину текста, избегать опасных шаблонов
+                и тестировать выражение на реальных и крайних примерах.
+            </p>
+        </section>
+
+        <section class="regex-faq">
+            <div class="regex-faq__head">
+                <p class="section-label">FAQ</p>
+                <h2>Частые вопросы о Regex</h2>
+            </div>
+
+            <div class="regex-faq__list">
+
+                <details class="regex-faq__item" open>
+                    <summary>Что означает флаг g?</summary>
+                    <p>
+                        Флаг <code>g</code> включает глобальный поиск. Без него регулярное выражение
+                        обычно находит только первое совпадение, а с ним — все совпадения в тексте.
+                    </p>
+                </details>
+
+                <details class="regex-faq__item">
+                    <summary>Зачем нужны группы захвата?</summary>
+                    <p>
+                        Группы захвата позволяют выделить отдельные части совпадения. Например,
+                        в выражении для даты можно отдельно получить день, месяц и год.
+                    </p>
+                </details>
+
+                <details class="regex-faq__item">
+                    <summary>Почему выражение работает в одном языке, но не работает в другом?</summary>
+                    <p>
+                        У разных языков и движков Regex есть отличия. Этот инструмент использует
+                        JavaScript RegExp в браузере. В Python, PHP, Java или PostgreSQL некоторые
+                        конструкции могут работать иначе.
+                    </p>
+                </details>
+
+                <details class="regex-faq__item">
+                    <summary>Что такое replace в Regex?</summary>
+                    <p>
+                        Replace позволяет заменить найденные совпадения. Можно использовать
+                        <code>$&</code> для всего совпадения и <code>$1</code>, <code>$2</code>
+                        для групп захвата.
+                    </p>
+                </details>
+
+                <details class="regex-faq__item">
+                    <summary>Можно ли проверять email через Regex?</summary>
+                    <p>
+                        Да, для базовой проверки можно. Но идеальная проверка email через Regex сложна.
+                        В реальном проекте лучше использовать простую проверку формата и подтверждение
+                        email через письмо.
+                    </p>
+                </details>
+
+            </div>
+        </section>
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'tools/js/regex_tester.js' %}" defer></script>
+{% endblock %}

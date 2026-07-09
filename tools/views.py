@@ -22,6 +22,7 @@ from .tool_views.it import (
     url_encoder_decoder,
     jwt_encoder_decoder,
     hash_generator,
+    regex_tester,
 )
 
 from .tool_views.health import (
@@ -173,6 +174,7 @@ TOOL_HANDLERS = {
     'url-encoder-decoder': url_encoder_decoder,
     'jwt-encoder-decoder': jwt_encoder_decoder,
     'hash-generator': hash_generator,
+    'regex-tester': regex_tester,
 
     'bmi-calculator': bmi_calculator,
 }

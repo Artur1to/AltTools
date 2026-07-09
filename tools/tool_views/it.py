@@ -424,3 +424,21 @@ def hash_generator(request, page=None):
         'tools/it/hash_generator.html',
         context
     )
+
+def regex_tester(request, page=None):
+    if page is None:
+        page = get_object_or_404(
+            ToolPage,
+            slug='regex-tester',
+            is_published=True
+        )
+
+    context = {
+        'page': page,
+    }
+
+    return render(
+        request,
+        'tools/it/regex_tester.html',
+        context
+    )
