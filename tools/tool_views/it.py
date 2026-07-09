@@ -460,3 +460,21 @@ def css_formatter(request, page=None):
         'tools/it/css_formatter.html',
         context
     )
+
+def javascript_formatter(request, page=None):
+    if page is None:
+        page = get_object_or_404(
+            ToolPage,
+            slug='javascript-formatter',
+            is_published=True
+        )
+
+    context = {
+        'page': page,
+    }
+
+    return render(
+        request,
+        'tools/it/javascript_formatter.html',
+        context
+    )

@@ -24,6 +24,7 @@ from .tool_views.it import (
     hash_generator,
     regex_tester,
     css_formatter,
+    javascript_formatter,
 )
 
 from .tool_views.health import (
@@ -177,6 +178,7 @@ TOOL_HANDLERS = {
     'hash-generator': hash_generator,
     'regex-tester': regex_tester,
     'css-formatter': css_formatter,
+    'javascript-formatter': javascript_formatter,
 
     'bmi-calculator': bmi_calculator,
 }
