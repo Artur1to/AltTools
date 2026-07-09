@@ -1,0 +1,355 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page.meta_title }}{% endblock %}
+
+{% block meta_description %}
+{{ page.meta_description }}
+{% endblock %}
+
+{% block canonical %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_url %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_title %}{{ page.meta_title }}{% endblock %}
+{% block og_description %}{{ page.meta_description }}{% endblock %}
+
+{% block nav_tools_active %}nav__link_active{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/hash_generator.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="hash-page">
+    <div class="container">
+
+        <div class="breadcrumbs">
+            <a href="/">Главная</a>
+            <span>/</span>
+            <a href="/tools/">Инструменты</a>
+            <span>/</span>
+            {% if page.category %}
+                <a href="{{ page.category.get_absolute_url }}">{{ page.category.title }}</a>
+                <span>/</span>
+            {% endif %}
+            <span>{{ page.title }}</span>
+        </div>
+
+        <section class="hash-hero">
+            <div class="hash-hero__content">
+                <p class="page-label">
+                    {% if page.category %}
+                        {{ page.category.title }}
+                    {% else %}
+                        Инструмент
+                    {% endif %}
+                </p>
+
+                <h1 class="page-title">
+                    {{ page.h1 }}
+                </h1>
+
+                <p class="page-description">
+                    {{ page.short_description }}
+                </p>
+
+                <div class="hash-privacy-note">
+                    Хэши создаются в браузере. Введённый текст не отправляется на сервер.
+                </div>
+            </div>
+
+            <div class="hash-hero__card">
+                <div class="hash-hero__icon">
+                    #
+                </div>
+
+                <div>
+                    <strong>Hash Generator</strong>
+                    <span>MD5 · SHA-1 · SHA-256 · SHA-384 · SHA-512</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="hash-tool">
+
+            <div class="hash-grid">
+
+                <div class="hash-input-card">
+                    <div class="hash-card__head">
+                        <div>
+                            <h2>Исходный текст</h2>
+                            <p>Введите строку, JSON, ключ, пароль или любой другой текст</p>
+                        </div>
+
+                        <button type="button" class="hash-small-btn" id="clearHashInput">
+                            Очистить
+                        </button>
+                    </div>
+
+                    <textarea id="hashInput" class="hash-textarea" placeholder="Например: Привет, AltTools!"></textarea>
+
+                    <div class="hash-options">
+                        <label class="hash-checkbox">
+                            <input type="checkbox" id="uppercaseHash">
+                            <span>Верхний регистр</span>
+                        </label>
+
+                        <label class="hash-checkbox">
+                            <input type="checkbox" id="autoHash" checked>
+                            <span>Обновлять автоматически</span>
+                        </label>
+                    </div>
+
+                    <div class="hash-actions">
+                        <button type="button" class="hash-main-btn" id="generateHash">
+                            Сгенерировать hash
+                        </button>
+
+                        <button type="button" class="hash-secondary-btn" id="loadHashExample">
+                            Пример
+                        </button>
+                    </div>
+
+                    <div class="hash-verify">
+                        <h3>Проверить hash</h3>
+
+                        <p>
+                            Вставьте hash, чтобы проверить, совпадает ли он с одним из результатов.
+                        </p>
+
+                        <input type="text" id="hashToVerify" placeholder="Вставьте MD5, SHA-1, SHA-256, SHA-384 или SHA-512">
+
+                        <button type="button" class="hash-secondary-btn hash-secondary-btn_full" id="verifyHash">
+                            Проверить совпадение
+                        </button>
+                    </div>
+
+                    <div class="hash-status" id="hashStatus">
+                        Введите текст и нажмите “Сгенерировать hash”.
+                    </div>
+                </div>
+
+                <div class="hash-results-card">
+                    <div class="hash-card__head">
+                        <div>
+                            <h2>Результаты</h2>
+                            <p>Скопируйте нужный hash или скачайте все результаты</p>
+                        </div>
+
+                        <div class="hash-head-actions">
+                            <button type="button" class="hash-small-btn" id="downloadHashTxt">
+                                TXT
+                            </button>
+
+                            <button type="button" class="hash-small-btn hash-small-btn_dark" id="downloadHashJson">
+                                JSON
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="hash-result-list">
+
+                        <div class="hash-result-item" data-algorithm="MD5">
+                            <div class="hash-result-item__top">
+                                <div>
+                                    <strong>MD5</strong>
+                                    <span>128 бит · 32 hex символа</span>
+                                </div>
+                                <button type="button" class="hash-small-btn" data-copy-hash="MD5">
+                                    Копировать
+                                </button>
+                            </div>
+                            <textarea class="hash-output" id="hashMD5" readonly></textarea>
+                        </div>
+
+                        <div class="hash-result-item" data-algorithm="SHA-1">
+                            <div class="hash-result-item__top">
+                                <div>
+                                    <strong>SHA-1</strong>
+                                    <span>160 бит · 40 hex символов</span>
+                                </div>
+                                <button type="button" class="hash-small-btn" data-copy-hash="SHA-1">
+                                    Копировать
+                                </button>
+                            </div>
+                            <textarea class="hash-output" id="hashSHA1" readonly></textarea>
+                        </div>
+
+                        <div class="hash-result-item" data-algorithm="SHA-256">
+                            <div class="hash-result-item__top">
+                                <div>
+                                    <strong>SHA-256</strong>
+                                    <span>256 бит · 64 hex символа</span>
+                                </div>
+                                <button type="button" class="hash-small-btn" data-copy-hash="SHA-256">
+                                    Копировать
+                                </button>
+                            </div>
+                            <textarea class="hash-output" id="hashSHA256" readonly></textarea>
+                        </div>
+
+                        <div class="hash-result-item" data-algorithm="SHA-384">
+                            <div class="hash-result-item__top">
+                                <div>
+                                    <strong>SHA-384</strong>
+                                    <span>384 бита · 96 hex символов</span>
+                                </div>
+                                <button type="button" class="hash-small-btn" data-copy-hash="SHA-384">
+                                    Копировать
+                                </button>
+                            </div>
+                            <textarea class="hash-output" id="hashSHA384" readonly></textarea>
+                        </div>
+
+                        <div class="hash-result-item" data-algorithm="SHA-512">
+                            <div class="hash-result-item__top">
+                                <div>
+                                    <strong>SHA-512</strong>
+                                    <span>512 бит · 128 hex символов</span>
+                                </div>
+                                <button type="button" class="hash-small-btn" data-copy-hash="SHA-512">
+                                    Копировать
+                                </button>
+                            </div>
+                            <textarea class="hash-output" id="hashSHA512" readonly></textarea>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="hash-info">
+            <div class="hash-info__content">
+                <h2>Что такое hash?</h2>
+
+                <p>
+                    Hash — это результат работы хэш-функции. Она берёт входные данные любой длины
+                    и превращает их в строку фиксированной длины. Например, SHA-256 всегда выдаёт
+                    256-битный результат, который обычно записывают как 64 hex-символа.
+                </p>
+
+                <p>
+                    Хэши используют для проверки целостности файлов, сравнения данных, кэширования,
+                    цифровых подписей, хранения контрольных сумм и технических задач в разработке.
+                    Один и тот же текст всегда даёт один и тот же hash, но даже небольшое изменение
+                    входа создаёт совершенно другой результат.
+                </p>
+            </div>
+        </section>
+
+        <section class="hash-how">
+            <div class="hash-how__head">
+                <p class="section-label">Как пользоваться</p>
+                <h2>Как сгенерировать hash</h2>
+            </div>
+
+            <div class="hash-steps">
+                <div class="hash-step">
+                    <span>1</span>
+                    <h3>Введите текст</h3>
+                    <p>
+                        Вставьте строку, JSON, API-ключ, тестовый пароль или любые данные,
+                        для которых нужно получить hash.
+                    </p>
+                </div>
+
+                <div class="hash-step">
+                    <span>2</span>
+                    <h3>Получите результаты</h3>
+                    <p>
+                        Инструмент сразу создаст MD5, SHA-1, SHA-256, SHA-384 и SHA-512.
+                        Можно включить верхний регистр.
+                    </p>
+                </div>
+
+                <div class="hash-step">
+                    <span>3</span>
+                    <h3>Скопируйте или скачайте</h3>
+                    <p>
+                        Скопируйте один hash или скачайте все результаты в TXT/JSON
+                        для дальнейшей проверки или документации.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="hash-warning">
+            <h2>Важно про безопасность</h2>
+
+            <p>
+                MD5 и SHA-1 считаются устаревшими для задач безопасности и не подходят для
+                цифровых подписей, сертификатов, защиты паролей и проверки доверенных данных.
+                Для обычных контрольных сумм они ещё встречаются, но для современных задач
+                лучше использовать SHA-256 или более сильные алгоритмы.
+            </p>
+
+            <p>
+                Для хранения паролей нельзя использовать простой MD5 или SHA-256. Для этого нужны
+                специальные алгоритмы вроде bcrypt, scrypt или Argon2 с солью и настройкой сложности.
+            </p>
+        </section>
+
+        <section class="hash-faq">
+            <div class="hash-faq__head">
+                <p class="section-label">FAQ</p>
+                <h2>Частые вопросы о hash</h2>
+            </div>
+
+            <div class="hash-faq__list">
+
+                <details class="hash-faq__item" open>
+                    <summary>Можно ли восстановить исходный текст из hash?</summary>
+                    <p>
+                        Обычно нет. Хэш-функции работают в одну сторону: из текста можно получить hash,
+                        но из hash нельзя надёжно восстановить исходный текст.
+                    </p>
+                </details>
+
+                <details class="hash-faq__item">
+                    <summary>Почему у одинакового текста всегда одинаковый hash?</summary>
+                    <p>
+                        Хэш-функция детерминирована. Это значит, что один и тот же вход всегда даёт
+                        один и тот же результат. Именно поэтому hash удобно использовать для сравнения.
+                    </p>
+                </details>
+
+                <details class="hash-faq__item">
+                    <summary>Чем SHA-256 лучше MD5?</summary>
+                    <p>
+                        SHA-256 выдаёт более длинный результат и считается намного надёжнее для современных
+                        задач. MD5 слишком слаб для безопасности и подходит только для простых технических
+                        проверок, где не важна защита от атак.
+                    </p>
+                </details>
+
+                <details class="hash-faq__item">
+                    <summary>Можно ли использовать hash для проверки файла?</summary>
+                    <p>
+                        Да. Если у файла есть известная контрольная сумма, можно посчитать hash файла
+                        и сравнить значения. В этой первой версии инструмент считает hash текста.
+                        Хэширование файлов можно добавить отдельной функцией позже.
+                    </p>
+                </details>
+
+                <details class="hash-faq__item">
+                    <summary>Безопасно ли вставлять сюда секретные данные?</summary>
+                    <p>
+                        Расчёт выполняется в браузере и не отправляет текст на сервер. Но всё равно лучше
+                        не вставлять реальные пароли, приватные ключи и production-токены в любые онлайн-инструменты.
+                    </p>
+                </details>
+
+            </div>
+        </section>
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'tools/js/hash_generator.js' %}" defer></script>
+{% endblock %}

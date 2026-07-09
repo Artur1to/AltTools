@@ -21,6 +21,7 @@ from .tool_views.it import (
     base64_converter,
     url_encoder_decoder,
     jwt_encoder_decoder,
+    hash_generator,
 )
 
 from .tool_views.health import (
@@ -171,6 +172,7 @@ TOOL_HANDLERS = {
     'base64-converter': base64_converter,
     'url-encoder-decoder': url_encoder_decoder,
     'jwt-encoder-decoder': jwt_encoder_decoder,
+    'hash-generator': hash_generator,
 
     'bmi-calculator': bmi_calculator,
 }

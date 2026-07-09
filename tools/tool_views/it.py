@@ -406,3 +406,21 @@ def jwt_encoder_decoder(request, page=None):
         'tools/it/jwt_encoder_decoder.html',
         context
     )
+
+def hash_generator(request, page=None):
+    if page is None:
+        page = get_object_or_404(
+            ToolPage,
+            slug='hash-generator',
+            is_published=True
+        )
+
+    context = {
+        'page': page,
+    }
+
+    return render(
+        request,
+        'tools/it/hash_generator.html',
+        context
+    )
