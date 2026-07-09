@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}{{ page.meta_title }}{% endblock %}
 
@@ -6,16 +7,20 @@
 {{ page.meta_description }}
 {% endblock %}
 
-{% block canonical %}https://example.com/tools/{{ page.slug }}/{% endblock %}
-{% block og_url %}https://example.com/tools/{{ page.slug }}/{% endblock %}
+{% block canonical %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_url %}https://example.com{{ page.get_absolute_url }}{% endblock %}
 {% block og_title %}{{ page.meta_title }}{% endblock %}
 {% block og_description %}{{ page.meta_description }}{% endblock %}
 
 {% block nav_tools_active %}nav__link_active{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/bmi_calculator.css' %}">
+{% endblock %}
+
 {% block content %}
 
-<section class="tool-page">
+<section class="bmi-page">
     <div class="container">
 
         <div class="breadcrumbs">
@@ -23,122 +28,185 @@
             <span>/</span>
             <a href="/tools/">Инструменты</a>
             <span>/</span>
+            {% if page.category %}
+                <a href="{{ page.category.get_absolute_url }}">{{ page.category.title }}</a>
+                <span>/</span>
+            {% endif %}
             <span>{{ page.title }}</span>
         </div>
 
-        <div class="page-head">
-            <p class="page-label">Онлайн-калькулятор</p>
-            <h1 class="page-title">{{ page.h1 }}</h1>
-            <p class="page-description">
-                {{ page.short_description }}
-            </p>
-        </div>
+        <section class="bmi-hero">
+            <div class="bmi-hero__content">
+                <p class="page-label">
+                    {% if page.category %}
+                        {{ page.category.title }}
+                    {% else %}
+                        Калькулятор
+                    {% endif %}
+                </p>
 
-        <section class="tool-layout">
+                <h1 class="page-title">
+                    {{ page.h1 }}
+                </h1>
 
-            <div class="tool-box">
-                <h2 class="card-title">Введите данные</h2>
-
-                <form method="get" class="form">
-
-                    <div class="form-group">
-                        <label class="form-label" for="weight">Вес, кг</label>
-                        <input
-                            class="form-input"
-                            type="number"
-                            step="0.1"
-                            min="1"
-                            id="weight"
-                            name="weight"
-                            value="{{ weight }}"
-                            placeholder="Например: 75"
-                        >
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="height">Рост, см</label>
-                        <input
-                            class="form-input"
-                            type="number"
-                            step="0.1"
-                            min="1"
-                            id="height"
-                            name="height"
-                            value="{{ height }}"
-                            placeholder="Например: 180"
-                        >
-                    </div>
-
-                    <button class="button" type="submit">Рассчитать ИМТ</button>
-
-                </form>
-
-                {% if error %}
-                <div class="result result_error">
-                    {{ error }}
-                </div>
-                {% endif %}
+                <p class="page-description">
+                    {{ page.short_description }}
+                </p>
             </div>
 
-            <aside class="side-box">
-                <h2 class="card-title">Результат</h2>
-
-                <div class="result-box">
-                    <p class="result-label">Ваш ИМТ</p>
-
-                    {% if result %}
-                        <p class="result-value">{{ result }}</p>
-                        <p class="result-category">{{ category }}</p>
-                    {% else %}
-                        <p class="result-value">—</p>
-                        <p class="hint">Введите вес и рост, чтобы получить результат.</p>
-                    {% endif %}
+            <div class="bmi-hero__card">
+                <div class="bmi-hero__icon">
+                    BMI
                 </div>
 
-                <div class="bmi-scale">
-                    <div class="bmi-scale__item">
-                        <span>До 18.5</span>
-                        <strong>Недостаточная масса</strong>
+                <div>
+                    <strong>ИМТ калькулятор</strong>
+                    <span>Вес · Рост · Индекс</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="bmi-tool">
+
+            <div class="bmi-columns">
+
+                <div class="bmi-panel">
+                    <div class="bmi-panel__head">
+                        <div>
+                            <h2>Введите данные</h2>
+                            <p>Укажите вес и рост для расчёта индекса массы тела</p>
+                        </div>
                     </div>
-                    <div class="bmi-scale__item">
-                        <span>18.5–24.9</span>
-                        <strong>Норма</strong>
+
+                    <form method="get" class="bmi-form">
+
+                        <div class="bmi-field">
+                            <label for="weight">Вес, кг</label>
+
+                            <input
+                                type="number"
+                                step="0.1"
+                                min="1"
+                                id="weight"
+                                name="weight"
+                                value="{{ weight }}"
+                                placeholder="Например: 75"
+                            >
+                        </div>
+
+                        <div class="bmi-field">
+                            <label for="height">Рост, см</label>
+
+                            <input
+                                type="number"
+                                step="0.1"
+                                min="1"
+                                id="height"
+                                name="height"
+                                value="{{ height }}"
+                                placeholder="Например: 180"
+                            >
+                        </div>
+
+                        {% if error %}
+                            <div class="bmi-message bmi-message_error">
+                                {{ error }}
+                            </div>
+                        {% endif %}
+
+                        <div class="bmi-submit">
+                            <button type="submit" class="bmi-submit__button">
+                                Рассчитать ИМТ
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+
+                <div class="bmi-panel">
+                    <div class="bmi-panel__head">
+                        <div>
+                            <h2>Результат</h2>
+                            <p>Ваш индекс массы тела и ориентировочная категория</p>
+                        </div>
                     </div>
-                    <div class="bmi-scale__item">
-                        <span>25–29.9</span>
-                        <strong>Избыточная масса</strong>
-                    </div>
-                    <div class="bmi-scale__item">
-                        <span>30 и выше</span>
-                        <strong>Ожирение</strong>
+
+                    <div class="bmi-result">
+
+                        <div class="bmi-result-box">
+                            <span>Ваш ИМТ</span>
+
+                            {% if result %}
+                                <strong>{{ result }}</strong>
+                                <p>{{ category }}</p>
+                            {% else %}
+                                <strong>—</strong>
+                                <p>Введите вес и рост, чтобы получить результат.</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="bmi-scale">
+                            <div class="bmi-scale__item">
+                                <span>До 18.5</span>
+                                <strong>Недостаточная масса</strong>
+                            </div>
+
+                            <div class="bmi-scale__item bmi-scale__item_good">
+                                <span>18.5–24.9</span>
+                                <strong>Норма</strong>
+                            </div>
+
+                            <div class="bmi-scale__item">
+                                <span>25–29.9</span>
+                                <strong>Избыточная масса</strong>
+                            </div>
+
+                            <div class="bmi-scale__item">
+                                <span>30 и выше</span>
+                                <strong>Ожирение</strong>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
-            </aside>
+
+            </div>
 
         </section>
 
-        <section class="info-section">
-            <div class="info-card">
+        <section class="bmi-info">
+            <div class="bmi-info__content">
                 <h2>Что такое ИМТ?</h2>
+
                 <p>
                     Индекс массы тела — это показатель, который помогает примерно оценить
                     соотношение веса и роста человека. Он рассчитывается по формуле:
                     вес в килограммах делится на рост в метрах в квадрате.
                 </p>
+
                 <p>
-                    ИМТ является ориентировочным показателем и не заменяет консультацию врача,
-                    потому что не учитывает состав тела, возраст, пол, мышечную массу и другие факторы.
+                    ИМТ является ориентировочным показателем. Он не учитывает состав тела,
+                    возраст, пол, мышечную массу и другие индивидуальные особенности.
                 </p>
             </div>
+        </section>
 
-            {% if page.seo_text %}
-            <div class="info-card">
-                {% if page.seo_text_title %}
-                    <h2>{{ page.seo_text_title }}</h2>
-                {% endif %}
-                <p>{{ page.seo_text }}</p>
+        <section class="bmi-info">
+            <div class="bmi-info__content">
+                <h2>Как правильно понимать результат?</h2>
+
+                <p>
+                    Значение ИМТ можно использовать как быстрый ориентир, но не как диагноз.
+                    У спортсменов и людей с высокой мышечной массой показатель может быть выше,
+                    хотя фактический процент жира при этом может оставаться нормальным.
+                </p>
+
+                <p>
+                    Если результат вызывает сомнения или есть жалобы на здоровье, лучше
+                    ориентироваться не только на ИМТ, но и на консультацию специалиста,
+                    анализ состава тела и общее состояние организма.
+                </p>
             </div>
-            {% endif %}
         </section>
 
     </div>

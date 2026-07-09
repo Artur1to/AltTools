@@ -1,4 +1,4 @@
-.phone-page {
+.bmi-page {
     padding: 36px 0 80px;
     background:
         radial-gradient(circle at 15% 10%, rgba(79, 70, 229, 0.10), transparent 30%),
@@ -24,7 +24,7 @@
     color: #4f46e5;
 }
 
-.phone-hero {
+.bmi-hero {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 340px;
     gap: 36px;
@@ -58,7 +58,7 @@
     line-height: 1.7;
 }
 
-.phone-hero__card {
+.bmi-hero__card {
     display: flex;
     gap: 16px;
     align-items: center;
@@ -69,7 +69,7 @@
     box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
 }
 
-.phone-hero__icon {
+.bmi-hero__icon {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -78,51 +78,51 @@
     border-radius: 20px;
     background: #111827;
     color: #ffffff;
-    font-size: 22px;
+    font-size: 18px;
     font-weight: 900;
     letter-spacing: -0.04em;
 }
 
-.phone-hero__card strong {
+.bmi-hero__card strong {
     display: block;
     color: #111827;
     font-size: 18px;
 }
 
-.phone-hero__card span {
+.bmi-hero__card span {
     display: block;
     margin-top: 4px;
     color: #64748b;
     font-size: 14px;
 }
 
-.phone-tool,
-.phone-info {
+.bmi-tool,
+.bmi-info {
     border-radius: 30px;
     background: #ffffff;
     border: 1px solid rgba(148, 163, 184, 0.24);
     box-shadow: 0 24px 70px rgba(15, 23, 42, 0.07);
 }
 
-.phone-tool {
+.bmi-tool {
     padding: 24px;
 }
 
-.phone-columns {
+.bmi-columns {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 460px;
+    grid-template-columns: minmax(0, 1fr) 420px;
     gap: 18px;
     align-items: start;
 }
 
-.phone-panel {
+.bmi-panel {
     border-radius: 24px;
     border: 1px solid rgba(148, 163, 184, 0.24);
     background: #f8fafc;
     overflow: hidden;
 }
 
-.phone-panel__head {
+.bmi-panel__head {
     min-height: 82px;
     display: flex;
     justify-content: space-between;
@@ -133,44 +133,27 @@
     border-bottom: 1px solid rgba(148, 163, 184, 0.22);
 }
 
-.phone-panel__head h2 {
+.bmi-panel__head h2 {
     margin: 0;
     color: #111827;
     font-size: 20px;
     letter-spacing: -0.03em;
 }
 
-.phone-panel__head p {
+.bmi-panel__head p {
     margin: 6px 0 0;
     color: #64748b;
     font-size: 13px;
     line-height: 1.5;
 }
 
-.phone-panel__actions {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-}
-
-.phone-form {
+.bmi-form {
     display: grid;
     gap: 18px;
     padding: 18px;
 }
 
-.phone-form__grid {
-    display: grid;
-    gap: 14px;
-    align-items: end;
-}
-
-.phone-form__grid_2 {
-    grid-template-columns: repeat(2, 1fr);
-}
-
-.phone-field label {
+.bmi-field label {
     display: block;
     margin-bottom: 8px;
     color: #334155;
@@ -178,8 +161,7 @@
     font-weight: 800;
 }
 
-.phone-field input,
-.phone-field select {
+.bmi-field input {
     width: 100%;
     height: 52px;
     padding: 0 16px;
@@ -191,295 +173,201 @@
     outline: none;
 }
 
-.phone-field input::placeholder {
+.bmi-field input::placeholder {
     color: #94a3b8;
 }
 
-.phone-field input:focus,
-.phone-field select:focus {
+.bmi-field input:focus {
     border-color: rgba(79, 70, 229, 0.55);
     box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.10);
 }
 
-.phone-hint {
-    margin: 8px 0 0;
-    color: #64748b;
-    font-size: 13px;
-    line-height: 1.5;
-}
-
-.phone-checkbox {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    min-height: 48px;
-    padding: 0 14px;
-    border-radius: 14px;
-    border: 1px solid rgba(148, 163, 184, 0.35);
-    background: #ffffff;
-    color: #334155;
-    font-size: 14px;
-    font-weight: 800;
-    cursor: pointer;
-}
-
-.phone-checkbox input {
-    width: 16px;
-    height: 16px;
-}
-
-.phone-message {
+.bmi-message {
     padding: 14px 16px;
     border-radius: 18px;
     font-size: 14px;
     line-height: 1.5;
 }
 
-.phone-message_error {
+.bmi-message_error {
     color: #991b1b;
     background: rgba(239, 68, 68, 0.10);
 }
 
-.phone-submit {
+.bmi-submit {
     display: flex;
     gap: 12px;
 }
 
-.phone-submit__button,
-.phone-submit__secondary {
+.bmi-submit__button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     min-height: 52px;
     padding: 0 22px;
-    border-radius: 16px;
-    font-size: 15px;
-    font-weight: 900;
-    line-height: 1;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.phone-submit__button {
     border: 0;
+    border-radius: 16px;
     background: #111827;
     color: #ffffff;
     box-shadow: 0 18px 34px rgba(17, 24, 39, 0.18);
+    font-size: 15px;
+    font-weight: 900;
+    line-height: 1;
+    cursor: pointer;
 }
 
-.phone-submit__secondary {
-    border: 1px solid rgba(148, 163, 184, 0.35);
-    background: #ffffff;
-    color: #111827;
-}
-
-.phone-submit__button:hover {
+.bmi-submit__button:hover {
     color: #ffffff;
     transform: translateY(-1px);
 }
 
-.phone-submit__secondary:hover {
-    color: #111827;
-    border-color: rgba(79, 70, 229, 0.45);
-}
-
-.phone-small-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    height: 38px;
-    padding: 0 12px;
-    border-radius: 12px;
-    border: 1px solid rgba(148, 163, 184, 0.35);
-    background: #ffffff;
-    color: #111827;
-    font-size: 13px;
-    font-weight: 800;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.phone-small-btn_dark {
-    color: #ffffff;
-    background: #111827;
-    border-color: #111827;
-}
-
-.phone-result {
+.bmi-result {
     display: grid;
     gap: 16px;
     padding: 18px;
 }
 
-.phone-result-text {
-    width: 100%;
-    min-height: 260px;
-    padding: 18px;
-    border-radius: 18px;
-    border: 1px solid rgba(148, 163, 184, 0.24);
-    background: #ffffff;
-    color: #111827;
-    resize: vertical;
-    outline: none;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-    font-size: 14px;
-    line-height: 1.65;
-}
-
-.phone-result-text::placeholder {
-    color: #94a3b8;
-}
-
-.phone-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.phone-warning {
-    padding: 18px;
+.bmi-result-box {
+    padding: 26px;
     border-radius: 22px;
-    background: rgba(239, 246, 255, 0.82);
+    background:
+        linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
     border: 1px solid rgba(148, 163, 184, 0.24);
-}
-
-.phone-warning h3 {
-    margin: 0 0 8px;
-    color: #111827;
-    font-size: 17px;
-    letter-spacing: -0.02em;
-}
-
-.phone-warning p {
-    margin: 0;
-    color: #64748b;
-    font-size: 14px;
-    line-height: 1.6;
-}
-
-.phone-empty {
-    display: flex;
-    min-height: 420px;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 28px;
     text-align: center;
 }
 
-.phone-empty__icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 78px;
-    height: 78px;
-    margin-bottom: 18px;
-    border-radius: 24px;
-    background: #111827;
-    color: #ffffff;
-    font-size: 26px;
-    font-weight: 900;
-    letter-spacing: -0.04em;
-}
-
-.phone-empty strong {
+.bmi-result-box span {
     display: block;
-    color: #111827;
-    font-size: 20px;
-    letter-spacing: -0.03em;
-}
-
-.phone-empty p {
-    max-width: 320px;
-    margin: 10px 0 0;
     color: #64748b;
-    font-size: 14px;
-    line-height: 1.6;
+    font-size: 13px;
+    font-weight: 800;
 }
 
-.phone-info {
+.bmi-result-box strong {
+    display: block;
+    margin-top: 8px;
+    color: #111827;
+    font-size: 56px;
+    line-height: 1;
+    letter-spacing: -0.06em;
+}
+
+.bmi-result-box p {
+    margin: 12px 0 0;
+    color: #334155;
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 1.5;
+}
+
+.bmi-scale {
+    display: grid;
+    gap: 10px;
+}
+
+.bmi-scale__item {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    align-items: center;
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: #ffffff;
+    border: 1px solid rgba(148, 163, 184, 0.24);
+}
+
+.bmi-scale__item span {
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.bmi-scale__item strong {
+    color: #111827;
+    font-size: 14px;
+    font-weight: 900;
+    text-align: right;
+}
+
+.bmi-scale__item_good {
+    border-color: rgba(16, 185, 129, 0.28);
+    background: rgba(16, 185, 129, 0.08);
+}
+
+.bmi-info {
     margin-top: 24px;
     padding: 28px;
 }
 
-.phone-info__content {
+.bmi-info__content {
     max-width: 860px;
 }
 
-.phone-info h2 {
+.bmi-info h2 {
     margin: 0 0 12px;
     color: #111827;
     font-size: 28px;
     letter-spacing: -0.04em;
 }
 
-.phone-info p {
+.bmi-info p {
     margin: 0 0 12px;
     color: #64748b;
     font-size: 16px;
     line-height: 1.75;
 }
 
-.phone-info p:last-child {
+.bmi-info p:last-child {
     margin-bottom: 0;
 }
 
 @media (max-width: 980px) {
-    .phone-hero {
+    .bmi-hero {
         grid-template-columns: 1fr;
     }
 
-    .phone-columns {
+    .bmi-columns {
         grid-template-columns: 1fr;
-    }
-
-    .phone-empty {
-        min-height: 280px;
     }
 }
 
 @media (max-width: 640px) {
-    .phone-page {
+    .bmi-page {
         padding: 26px 0 56px;
     }
 
-    .phone-tool {
+    .bmi-tool {
         padding: 18px;
     }
 
-    .phone-panel__head {
+    .bmi-panel__head {
         flex-direction: column;
     }
 
-    .phone-panel__actions {
-        width: 100%;
-        justify-content: stretch;
-    }
-
-    .phone-small-btn {
-        flex: 1;
-    }
-
-    .phone-form__grid_2 {
-        grid-template-columns: 1fr;
-    }
-
-    .phone-submit,
-    .phone-actions {
+    .bmi-submit {
         flex-direction: column;
     }
 
-    .phone-submit__button,
-    .phone-submit__secondary {
+    .bmi-submit__button {
         width: 100%;
     }
 
-    .phone-info {
+    .bmi-info {
         padding: 22px;
         border-radius: 24px;
     }
 
-    .phone-result-text {
-        min-height: 220px;
+    .bmi-result-box strong {
+        font-size: 46px;
+    }
+
+    .bmi-scale__item {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .bmi-scale__item strong {
+        text-align: left;
     }
 }

@@ -7,8 +7,8 @@
 {{ page.meta_description }}
 {% endblock %}
 
-{% block canonical %}https://example.com/tools/phone-number-generator/{% endblock %}
-{% block og_url %}https://example.com/tools/phone-number-generator/{% endblock %}
+{% block canonical %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_url %}https://example.com{{ page.get_absolute_url }}{% endblock %}
 {% block og_title %}{{ page.meta_title }}{% endblock %}
 {% block og_description %}{{ page.meta_description }}{% endblock %}
 
@@ -20,7 +20,7 @@
 
 {% block content %}
 
-<section class="tool-page">
+<section class="phone-page">
     <div class="container">
 
         <div class="breadcrumbs">
@@ -28,192 +28,254 @@
             <span>/</span>
             <a href="/tools/">Инструменты</a>
             <span>/</span>
-            <a href="/tools/generators/">Генераторы</a>
-            <span>/</span>
-            <span>Генератор номеров телефонов</span>
+            {% if page.category %}
+                <a href="{{ page.category.get_absolute_url }}">{{ page.category.title }}</a>
+                <span>/</span>
+            {% endif %}
+            <span>{{ page.title }}</span>
         </div>
 
-        <div class="page-head">
-            <p class="page-label">Онлайн-генератор</p>
-            <h1 class="page-title">{{ page.h1 }}</h1>
-            <p class="page-description">
-                {{ page.short_description }}
-            </p>
-        </div>
+        <section class="phone-hero">
+            <div class="phone-hero__content">
+                <p class="page-label">
+                    {% if page.category %}
+                        {{ page.category.title }}
+                    {% else %}
+                        Генератор
+                    {% endif %}
+                </p>
 
-        <section class="tool-layout">
+                <h1 class="page-title">
+                    {{ page.h1 }}
+                </h1>
 
-            <div class="tool-box">
-                <h2 class="card-title">Настройки генерации</h2>
-
-                <form method="post" class="form phone-form">
-                    {% csrf_token %}
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label" for="country">Страна</label>
-                            <select class="form-select js-country-select" id="country" name="country">
-                                {% for key, country in phone_presets.items %}
-                                    <option value="{{ key }}" {% if country_key == key %}selected{% endif %}>
-                                        {{ country.title }} +{{ country.country_code }}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label" for="operator">Оператор</label>
-                            <select
-                                class="form-select js-operator-select"
-                                id="operator"
-                                name="operator"
-                                data-selected-operator="{{ operator_key }}"
-                            >
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label" for="count">Количество номеров</label>
-                            <input
-                                class="form-input"
-                                type="number"
-                                min="1"
-                                max="1000"
-                                id="count"
-                                name="count"
-                                value="{{ count }}"
-                                placeholder="10"
-                            >
-                            <p class="form-hint">Можно создать от 1 до 1000 номеров.</p>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label" for="output_format">Формат вывода</label>
-                            <select class="form-select" id="output_format" name="output_format">
-                                <option value="international" {% if output_format == 'international' %}selected{% endif %}>
-                                    Международный: +7 (999) 123-45-67
-                                </option>
-                                <option value="digits" {% if output_format == 'digits' %}selected{% endif %}>
-                                    Только цифры: 79991234567
-                                </option>
-                                <option value="national" {% if output_format == 'national' %}selected{% endif %}>
-                                    Национальный: 8 (999) 123-45-67
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <label class="checkbox-line">
-                        <input
-                            type="checkbox"
-                            name="unique"
-                            {% if unique %}checked{% endif %}
-                        >
-                        <span>Исключить повторы</span>
-                    </label>
-
-                    <button class="button" type="submit">Сгенерировать номера</button>
-                </form>
-
-                {% if error %}
-                    <div class="result result_error">
-                        {{ error }}
-                    </div>
-                {% endif %}
-
-                <div class="info-card phone-help">
-                    <h2>Для чего это нужно?</h2>
-                    <p>
-                        Генератор удобно использовать для тестовых данных, макетов,
-                        CRM, таблиц, интерфейсов, демонстраций и проверки форм ввода телефона.
-                    </p>
-                </div>
+                <p class="page-description">
+                    {{ page.short_description }}
+                </p>
             </div>
 
-            <aside class="side-box">
-                <h2 class="card-title">Результат</h2>
+            <div class="phone-hero__card">
+                <div class="phone-hero__icon">
+                    +7
+                </div>
 
-                {% if results %}
-                    <div class="phone-result">
-                        <p class="result-label">Сгенерированные номера</p>
+                <div>
+                    <strong>Phone Generator</strong>
+                    <span>Country · Operator · TXT</span>
+                </div>
+            </div>
+        </section>
 
-<!--                        <div class="phone-list">-->
-<!--                            {% for phone in results %}-->
-<!--                                <div class="phone-item">{{ phone }}</div>-->
-<!--                            {% endfor %}-->
-<!--                        </div>-->
+        <section class="phone-tool">
 
-                        <textarea
-                            class="phone-result-text js-result-text"
-                            readonly
-                        >{{ result_text }}</textarea>
+            <div class="phone-columns">
 
-                        <div class="phone-actions">
-                            <button
-                                class="button button_secondary js-copy-result"
-                                type="button"
-                            >
-                                Скопировать
-                            </button>
-
-                            <button
-                                class="button button_secondary js-download-txt"
-                                type="button"
-                            >
-                                Скачать TXT
-                            </button>
+                <div class="phone-panel">
+                    <div class="phone-panel__head">
+                        <div>
+                            <h2>Настройки генерации</h2>
+                            <p>Выберите страну, оператора, количество и формат вывода</p>
                         </div>
                     </div>
-                {% else %}
-                    <div class="result-box">
-                        <p class="result-label">Номера телефонов</p>
-                        <p class="result-value">—</p>
-                        <p class="hint">
-                            Выберите страну, оператора и нажмите кнопку генерации.
-                        </p>
-                    </div>
-                {% endif %}
 
-                <div class="phone-note">
-                    <h3>Важно</h3>
-                    <p>
-                        Генератор создаёт номера по шаблону. Он не проверяет,
-                        существует ли номер, кому он принадлежит и активен ли он.
-                    </p>
+                    <form method="post" class="phone-form">
+                        {% csrf_token %}
+
+                        <div class="phone-form__grid phone-form__grid_2">
+                            <div class="phone-field">
+                                <label for="country">Страна</label>
+
+                                <select class="js-country-select" id="country" name="country">
+                                    {% for key, country in phone_presets.items %}
+                                        <option value="{{ key }}" {% if country_key == key %}selected{% endif %}>
+                                            {{ country.title }} +{{ country.country_code }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="phone-field">
+                                <label for="operator">Оператор</label>
+
+                                <select
+                                    class="js-operator-select"
+                                    id="operator"
+                                    name="operator"
+                                    data-selected-operator="{{ operator_key }}"
+                                >
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="phone-form__grid phone-form__grid_2">
+                            <div class="phone-field">
+                                <label for="count">Количество номеров</label>
+
+                                <input
+                                    type="number"
+                                    min="1"
+                                    max="1000"
+                                    id="count"
+                                    name="count"
+                                    value="{{ count }}"
+                                    placeholder="10"
+                                >
+
+                                <p class="phone-hint">
+                                    Можно создать от 1 до 1000 номеров.
+                                </p>
+                            </div>
+
+                            <div class="phone-field">
+                                <label for="output_format">Формат вывода</label>
+
+                                <select id="output_format" name="output_format">
+                                    <option value="international" {% if output_format == 'international' %}selected{% endif %}>
+                                        Международный: +7 (999) 123-45-67
+                                    </option>
+
+                                    <option value="digits" {% if output_format == 'digits' %}selected{% endif %}>
+                                        Только цифры: 79991234567
+                                    </option>
+
+                                    <option value="national" {% if output_format == 'national' %}selected{% endif %}>
+                                        Национальный: 8 (999) 123-45-67
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <label class="phone-checkbox">
+                            <input
+                                type="checkbox"
+                                name="unique"
+                                {% if unique %}checked{% endif %}
+                            >
+                            <span>Исключить повторы</span>
+                        </label>
+
+                        {% if error %}
+                            <div class="phone-message phone-message_error">
+                                {{ error }}
+                            </div>
+                        {% endif %}
+
+                        <div class="phone-submit">
+                            <button type="submit" class="phone-submit__button">
+                                Сгенерировать номера
+                            </button>
+                        </div>
+                    </form>
                 </div>
-            </aside>
+
+                <div class="phone-panel">
+                    <div class="phone-panel__head">
+                        <div>
+                            <h2>Результат</h2>
+                            <p>Скопируйте номера или скачайте список в TXT</p>
+                        </div>
+
+                        {% if results %}
+                            <div class="phone-panel__actions">
+                                <button
+                                    type="button"
+                                    class="phone-small-btn phone-small-btn_dark js-copy-result"
+                                >
+                                    Копировать
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="phone-small-btn js-download-txt"
+                                >
+                                    TXT
+                                </button>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    {% if results %}
+                        <div class="phone-result">
+
+                            <textarea
+                                class="phone-result-text js-result-text"
+                                readonly
+                            >{{ result_text }}</textarea>
+
+                            <div class="phone-actions">
+                                <button
+                                    class="phone-submit__secondary js-copy-result"
+                                    type="button"
+                                >
+                                    Скопировать
+                                </button>
+
+                                <button
+                                    class="phone-submit__secondary js-download-txt"
+                                    type="button"
+                                >
+                                    Скачать TXT
+                                </button>
+                            </div>
+
+                            <div class="phone-warning">
+                                <h3>Важно</h3>
+                                <p>
+                                    Генератор создаёт номера по шаблону. Он не проверяет,
+                                    существует ли номер, кому он принадлежит и активен ли он.
+                                </p>
+                            </div>
+
+                        </div>
+                    {% else %}
+                        <div class="phone-empty">
+                            <div class="phone-empty__icon">
+                                +7
+                            </div>
+
+                            <strong>Номера появятся здесь</strong>
+
+                            <p>
+                                Выберите страну, оператора и нажмите «Сгенерировать номера».
+                            </p>
+                        </div>
+                    {% endif %}
+                </div>
+
+            </div>
 
         </section>
 
-        <section class="info-section">
-
-            <div class="info-card">
+        <section class="phone-info">
+            <div class="phone-info__content">
                 <h2>Что делает генератор номеров телефонов?</h2>
+
                 <p>
-                    Инструмент создаёт список номеров в выбранном формате. Можно выбрать
-                    страну, оператора, количество номеров и способ отображения результата.
+                    Инструмент создаёт список телефонных номеров в выбранном формате.
+                    Можно выбрать страну, оператора, количество номеров и способ отображения результата.
+                </p>
+
+                <p>
+                    Генератор удобно использовать для тестовых данных, макетов, CRM, таблиц,
+                    интерфейсов, демонстраций и проверки форм ввода телефона.
                 </p>
             </div>
+        </section>
 
-            <div class="info-card">
+        <section class="phone-info">
+            <div class="phone-info__content">
                 <h2>Можно ли использовать эти номера для рассылок?</h2>
+
                 <p>
-                    Нет. Генератор предназначен для тестирования, макетов и демонстрационных
-                    данных. Его не следует использовать для звонков, SMS, спама, регистрации
-                    чужих аккаунтов или массовых рассылок.
+                    Нет. Генератор предназначен для тестирования, макетов и демонстрационных данных.
+                    Его не следует использовать для звонков, SMS, спама, регистрации чужих аккаунтов
+                    или массовых рассылок.
+                </p>
+
+                <p>
+                    Номера создаются по шаблону и не подтверждают существование реального абонента.
                 </p>
             </div>
-
-            <div class="info-card">
-                <h2>Можно ли скачать результат?</h2>
-                <p>
-                    Да. После генерации можно скопировать список номеров или скачать его
-                    в TXT-файл, где каждый номер будет расположен на отдельной строке.
-                </p>
-            </div>
-
         </section>
 
     </div>
@@ -224,5 +286,5 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'tools/js/phone_number_generator.js' %}"></script>
+<script src="{% static 'tools/js/phone_number_generator.js' %}" defer></script>
 {% endblock %}
