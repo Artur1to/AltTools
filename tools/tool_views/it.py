@@ -442,3 +442,21 @@ def regex_tester(request, page=None):
         'tools/it/regex_tester.html',
         context
     )
+
+def css_formatter(request, page=None):
+    if page is None:
+        page = get_object_or_404(
+            ToolPage,
+            slug='css-formatter',
+            is_published=True
+        )
+
+    context = {
+        'page': page,
+    }
+
+    return render(
+        request,
+        'tools/it/css_formatter.html',
+        context
+    )

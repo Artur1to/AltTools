@@ -1,0 +1,320 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page.meta_title }}{% endblock %}
+
+{% block meta_description %}
+{{ page.meta_description }}
+{% endblock %}
+
+{% block canonical %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_url %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_title %}{{ page.meta_title }}{% endblock %}
+{% block og_description %}{{ page.meta_description }}{% endblock %}
+
+{% block nav_tools_active %}nav__link_active{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/css_formatter.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="cssfmt-page">
+    <div class="container">
+
+        <div class="breadcrumbs">
+            <a href="/">Главная</a>
+            <span>/</span>
+            <a href="/tools/">Инструменты</a>
+            <span>/</span>
+            {% if page.category %}
+                <a href="{{ page.category.get_absolute_url }}">{{ page.category.title }}</a>
+                <span>/</span>
+            {% endif %}
+            <span>{{ page.title }}</span>
+        </div>
+
+        <section class="cssfmt-hero">
+            <div class="cssfmt-hero__content">
+                <p class="page-label">
+                    {% if page.category %}
+                        {{ page.category.title }}
+                    {% else %}
+                        Инструмент
+                    {% endif %}
+                </p>
+
+                <h1 class="page-title">
+                    {{ page.h1 }}
+                </h1>
+
+                <p class="page-description">
+                    {{ page.short_description }}
+                </p>
+
+                <div class="cssfmt-privacy-note">
+                    CSS обрабатывается в браузере. Код не отправляется на сервер.
+                </div>
+            </div>
+
+            <div class="cssfmt-hero__card">
+                <div class="cssfmt-hero__icon">
+                    CSS
+                </div>
+
+                <div>
+                    <strong>CSS Formatter</strong>
+                    <span>Beautify · Minify · Copy · Download</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="cssfmt-tool">
+
+            <div class="cssfmt-toolbar">
+
+                <div class="cssfmt-field">
+                    <label for="formatMode">Режим</label>
+                    <select id="formatMode">
+                        <option value="beautify">Beautify / форматировать</option>
+                        <option value="minify">Minify / сжать</option>
+                    </select>
+                </div>
+
+                <div class="cssfmt-field">
+                    <label for="indentSize">Отступ</label>
+                    <select id="indentSize">
+                        <option value="2">2 пробела</option>
+                        <option value="4">4 пробела</option>
+                        <option value="tab">Tab</option>
+                    </select>
+                </div>
+
+                <label class="cssfmt-checkbox">
+                    <input type="checkbox" id="keepComments" checked>
+                    <span>Сохранять комментарии</span>
+                </label>
+
+                <label class="cssfmt-checkbox">
+                    <input type="checkbox" id="breakSelectors" checked>
+                    <span>Переносить селекторы после запятой</span>
+                </label>
+
+                <label class="cssfmt-checkbox">
+                    <input type="checkbox" id="autoFormat" checked>
+                    <span>Форматировать автоматически</span>
+                </label>
+
+            </div>
+
+            <div class="cssfmt-grid">
+
+                <div class="cssfmt-card">
+                    <div class="cssfmt-card__head">
+                        <div>
+                            <h2>Исходный CSS</h2>
+                            <p>Вставьте minified, сжатый или неаккуратный CSS-код</p>
+                        </div>
+
+                        <button type="button" class="cssfmt-small-btn" id="clearCss">
+                            Очистить
+                        </button>
+                    </div>
+
+                    <textarea id="cssInput" class="cssfmt-textarea" placeholder="Например: body{margin:0;padding:0}.card{display:flex;color:#111;}"></textarea>
+
+                    <div class="cssfmt-actions">
+                        <button type="button" class="cssfmt-main-btn" id="formatCss">
+                            Обработать CSS
+                        </button>
+
+                        <button type="button" class="cssfmt-secondary-btn" id="loadCssExample">
+                            Пример
+                        </button>
+
+                        <button type="button" class="cssfmt-secondary-btn" id="swapCss">
+                            Поменять местами
+                        </button>
+                    </div>
+                </div>
+
+                <div class="cssfmt-card">
+                    <div class="cssfmt-card__head">
+                        <div>
+                            <h2>Результат</h2>
+                            <p>Скопируйте CSS или скачайте файл</p>
+                        </div>
+
+                        <div class="cssfmt-head-actions">
+                            <button type="button" class="cssfmt-small-btn" id="copyCss">
+                                Копировать
+                            </button>
+
+                            <button type="button" class="cssfmt-small-btn cssfmt-small-btn_dark" id="downloadCss">
+                                Скачать CSS
+                            </button>
+                        </div>
+                    </div>
+
+                    <textarea id="cssOutput" class="cssfmt-textarea" readonly placeholder="Здесь появится результат"></textarea>
+
+                    <div class="cssfmt-stats">
+                        <div>
+                            <strong id="originalSize">0</strong>
+                            <span>символов исходно</span>
+                        </div>
+
+                        <div>
+                            <strong id="resultSize">0</strong>
+                            <span>символов в результате</span>
+                        </div>
+
+                        <div>
+                            <strong id="rulesCount">0</strong>
+                            <span>CSS-блоков</span>
+                        </div>
+
+                        <div>
+                            <strong id="declarationsCount">0</strong>
+                            <span>свойств</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="cssfmt-status" id="cssStatus">
+                Вставьте CSS и нажмите “Обработать CSS”.
+            </div>
+
+        </section>
+
+        <section class="cssfmt-info">
+            <div class="cssfmt-info__content">
+                <h2>Что делает CSS форматер?</h2>
+
+                <p>
+                    CSS форматер приводит стили к более читаемому виду: добавляет переносы строк,
+                    отступы, пробелы после двоеточий и разделяет правила по блокам. Это удобно,
+                    когда CSS был сжат, скопирован из production-файла или написан в одну строку.
+                </p>
+
+                <p>
+                    Форматирование не меняет смысл CSS-кода. Оно помогает быстрее читать стили,
+                    искать ошибки, сравнивать изменения и работать с кодом в команде.
+                </p>
+            </div>
+        </section>
+
+        <section class="cssfmt-how">
+            <div class="cssfmt-how__head">
+                <p class="section-label">Как пользоваться</p>
+                <h2>Как отформатировать CSS</h2>
+            </div>
+
+            <div class="cssfmt-steps">
+                <div class="cssfmt-step">
+                    <span>1</span>
+                    <h3>Вставьте CSS</h3>
+                    <p>
+                        Скопируйте CSS-код из файла, DevTools, CMS, шаблона или минифицированного bundle.
+                    </p>
+                </div>
+
+                <div class="cssfmt-step">
+                    <span>2</span>
+                    <h3>Выберите режим</h3>
+                    <p>
+                        Используйте Beautify для читаемого вида или Minify, если нужно сжать CSS
+                        перед публикацией.
+                    </p>
+                </div>
+
+                <div class="cssfmt-step">
+                    <span>3</span>
+                    <h3>Скопируйте результат</h3>
+                    <p>
+                        Скопируйте готовый CSS или скачайте файл <code>.css</code> для проекта.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="cssfmt-warning">
+            <h2>Beautify и Minify — в чём разница?</h2>
+
+            <p>
+                Beautify делает CSS удобным для чтения: добавляет переносы, отступы и визуально
+                разделяет блоки. Minify делает обратное: удаляет лишние пробелы, переносы и комментарии,
+                чтобы уменьшить размер CSS-файла.
+            </p>
+
+            <p>
+                Для разработки обычно удобнее beautify-формат, а для production-сборки чаще используют
+                minify. Но если проект собирается через Vite, Webpack, Parcel или другой bundler,
+                финальную минификацию лучше доверять сборщику.
+            </p>
+        </section>
+
+        <section class="cssfmt-faq">
+            <div class="cssfmt-faq__head">
+                <p class="section-label">FAQ</p>
+                <h2>Частые вопросы о CSS форматере</h2>
+            </div>
+
+            <div class="cssfmt-faq__list">
+
+                <details class="cssfmt-faq__item" open>
+                    <summary>Форматер исправляет ошибки в CSS?</summary>
+                    <p>
+                        Нет. Инструмент форматирует код и делает его читаемее, но не является полноценным
+                        CSS-валидатором. Если в коде есть синтаксическая ошибка, форматер может показать
+                        предупреждение, но не всегда сможет исправить проблему.
+                    </p>
+                </details>
+
+                <details class="cssfmt-faq__item">
+                    <summary>Безопасно ли вставлять сюда CSS?</summary>
+                    <p>
+                        Да, обработка выполняется в браузере. CSS-код не отправляется на сервер.
+                        Но для закрытых проектов всё равно лучше не вставлять чувствительные фрагменты
+                        из приватного production-кода в любые онлайн-инструменты.
+                    </p>
+                </details>
+
+                <details class="cssfmt-faq__item">
+                    <summary>Можно ли минифицировать CSS?</summary>
+                    <p>
+                        Да. Выберите режим Minify. Он уберёт лишние переносы, пробелы и, если выключить
+                        сохранение комментариев, комментарии тоже будут удалены.
+                    </p>
+                </details>
+
+                <details class="cssfmt-faq__item">
+                    <summary>Поддерживается ли CSS3?</summary>
+                    <p>
+                        Инструмент работает с обычным современным CSS, включая media queries, keyframes,
+                        custom properties, flex, grid и другие распространённые конструкции.
+                    </p>
+                </details>
+
+                <details class="cssfmt-faq__item">
+                    <summary>Почему после форматирования код выглядит иначе?</summary>
+                    <p>
+                        Меняется только внешний вид: переносы строк, отступы и пробелы. Смысл CSS
+                        должен сохраняться, если исходный код был корректным.
+                    </p>
+                </details>
+
+            </div>
+        </section>
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'tools/js/css_formatter.js' %}" defer></script>
+{% endblock %}
