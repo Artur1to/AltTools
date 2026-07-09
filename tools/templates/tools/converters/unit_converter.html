@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page.meta_title }}{% endblock %}
+
+{% block meta_description %}
+{{ page.meta_description }}
+{% endblock %}
+
+{% block canonical %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_url %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_title %}{{ page.meta_title }}{% endblock %}
+{% block og_description %}{{ page.meta_description }}{% endblock %}
+
+{% block nav_tools_active %}nav__link_active{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/unit_converter.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="unit-page">
+    <div class="container">
+
+        <div class="breadcrumbs">
+            <a href="/">Главная</a>
+            <span>/</span>
+            <a href="/tools/">Инструменты</a>
+            <span>/</span>
+            {% if page.category %}
+                <a href="{{ page.category.get_absolute_url }}">{{ page.category.title }}</a>
+                <span>/</span>
+            {% endif %}
+            <span>{{ page.title }}</span>
+        </div>
+
+        <section class="unit-hero">
+            <div class="unit-hero__content">
+                <p class="page-label">
+                    {{ converter_config.label }}
+                </p>
+
+                <h1 class="page-title">
+                    {{ page.h1 }}
+                </h1>
+
+                <p class="page-description">
+                    {{ page.short_description }}
+                </p>
+            </div>
+
+            <div class="unit-hero__card">
+                <div class="unit-hero__icon">
+                    {{ page.icon|default:"↔" }}
+                </div>
+
+                <div>
+                    <strong>{{ converter_config.title }}</strong>
+                    <span>Базовая единица: {{ converter_config.base_unit }}</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="unit-tool">
+
+            <div class="unit-card unit-card_main">
+
+                <div class="unit-card__head">
+                    <div>
+                        <h2>{{ converter_config.title }}</h2>
+                        <p>Введите значение и выберите единицы измерения</p>
+                    </div>
+
+                    <button type="button" class="unit-small-btn" id="clearUnit">
+                        Очистить
+                    </button>
+                </div>
+
+                <div class="unit-form">
+
+                    <div class="unit-field unit-field_value">
+                        <label for="unitValue">Значение</label>
+                        <input type="text" id="unitValue" value="1" inputmode="decimal">
+                    </div>
+
+                    <div class="unit-field">
+                        <label for="fromUnit">Из</label>
+                        <select id="fromUnit"></select>
+                    </div>
+
+                    <button type="button" class="unit-swap-btn" id="swapUnits" aria-label="Поменять единицы местами">
+                        ⇄
+                    </button>
+
+                    <div class="unit-field">
+                        <label for="toUnit">В</label>
+                        <select id="toUnit"></select>
+                    </div>
+
+                    <div class="unit-field">
+                        <label for="precision">Точность</label>
+                        <select id="precision">
+                            <option value="2">2 знака</option>
+                            <option value="4">4 знака</option>
+                            <option value="6" selected>6 знаков</option>
+                            <option value="10">10 знаков</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="unit-result-box">
+                    <div>
+                        <span>Результат</span>
+                        <strong id="mainResult">—</strong>
+                    </div>
+
+                    <button type="button" class="unit-main-btn" id="copyMainResult">
+                        Копировать
+                    </button>
+                </div>
+
+                <div class="unit-status" id="unitStatus">
+                    Введите значение для конвертации.
+                </div>
+
+            </div>
+
+            <div class="unit-card">
+
+                <div class="unit-card__head">
+                    <div>
+                        <h2>Все значения</h2>
+                        <p>Автоматический пересчёт во все доступные единицы</p>
+                    </div>
+                </div>
+
+                <div class="unit-table-wrap">
+                    <table class="unit-table">
+                        <thead>
+                            <tr>
+                                <th>Единица</th>
+                                <th>Значение</th>
+                            </tr>
+                        </thead>
+                        <tbody id="allResultsTable">
+                            <tr>
+                                <td colspan="2">Результаты появятся после ввода значения.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="unit-info">
+            <div class="unit-info__content">
+                <h2>{{ converter_config.info_title }}</h2>
+
+                <p>
+                    {{ converter_config.info_text }}
+                </p>
+
+                <p>
+                    {{ converter_config.note }}
+                </p>
+            </div>
+        </section>
+
+        <section class="unit-how">
+            <div class="unit-how__head">
+                <p class="section-label">Как пользоваться</p>
+                <h2>Как выполнить перевод величин</h2>
+            </div>
+
+            <div class="unit-steps">
+                <div class="unit-step">
+                    <span>1</span>
+                    <h3>Введите значение</h3>
+                    <p>
+                        Укажите число, которое нужно перевести. Можно использовать точку или запятую.
+                    </p>
+                </div>
+
+                <div class="unit-step">
+                    <span>2</span>
+                    <h3>Выберите единицы</h3>
+                    <p>
+                        Выберите исходную единицу и единицу, в которую нужно выполнить перевод.
+                    </p>
+                </div>
+
+                <div class="unit-step">
+                    <span>3</span>
+                    <h3>Скопируйте результат</h3>
+                    <p>
+                        Скопируйте основной результат или скачайте таблицу всех значений в TXT/JSON.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </div>
+</section>
+
+{{ converter_config|json_script:"unitConverterConfig" }}
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'tools/js/unit_converter.js' %}" defer></script>
+{% endblock %}

@@ -31,6 +31,11 @@ from .tool_views.health import (
     bmi_calculator,
 )
 
+from .tool_views.converters import (
+    unit_converter,
+    UNIT_CONVERTER_SLUGS,
+)
+
 
 def index(request):
     categories = (
@@ -183,6 +188,8 @@ TOOL_HANDLERS = {
     'bmi-calculator': bmi_calculator,
 }
 
+for converter_slug in UNIT_CONVERTER_SLUGS:
+    TOOL_HANDLERS[converter_slug] = unit_converter
 
 def tool_detail(request, category_slug, tool_slug):
     page = get_object_or_404(
