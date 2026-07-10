@@ -958,12 +958,12 @@ img {
 }
 
 .cookie-btn_accept {
-    background: #2563eb;
+    background: #111827;
     color: #ffffff;
 }
 
 .cookie-btn_accept:hover {
-    background: #1d4ed8;
+    background: #020617;
 }
 
 .cookie-btn_reject {

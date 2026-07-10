@@ -1,9 +1,8 @@
 (function () {
-    const STORAGE_KEY = 'alttools_cookie_consent';
+    const STORAGE_KEY = 'alttools_cookie_notice_seen';
 
     const banner = document.getElementById('cookie-banner');
     const acceptBtn = document.getElementById('cookie-accept');
-    const rejectBtn = document.getElementById('cookie-reject');
 
     function showBanner() {
         if (!banner) return;
@@ -22,7 +21,7 @@
     function loadYandexMetrika() {
         const counterId = window.ALTTOOLS_METRIKA_ID;
 
-        if (!counterId || counterId === 00000000) {
+        if (!counterId || String(counterId) === '0' || String(counterId) === '00000000') {
             return;
         }
 
@@ -52,16 +51,16 @@
             clickmap: true,
             trackLinks: true,
             accurateTrackBounce: true,
-            webvisor: true
+            webvisor: false
         });
     }
 
-    const consent = localStorage.getItem(STORAGE_KEY);
+    // Метрика запускается сразу при загрузке страницы
+    loadYandexMetrika();
 
-    if (consent === 'accepted') {
-        hideBanner();
-        loadYandexMetrika();
-    } else if (consent === 'rejected') {
+    const noticeSeen = localStorage.getItem(STORAGE_KEY);
+
+    if (noticeSeen === 'yes') {
         hideBanner();
     } else {
         showBanner();
@@ -69,15 +68,7 @@
 
     if (acceptBtn) {
         acceptBtn.addEventListener('click', function () {
-            localStorage.setItem(STORAGE_KEY, 'accepted');
-            hideBanner();
-            loadYandexMetrika();
-        });
-    }
-
-    if (rejectBtn) {
-        rejectBtn.addEventListener('click', function () {
-            localStorage.setItem(STORAGE_KEY, 'rejected');
+            localStorage.setItem(STORAGE_KEY, 'yes');
             hideBanner();
         });
     }

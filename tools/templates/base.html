@@ -104,22 +104,24 @@
             <strong>Мы используем cookies</strong>
             <p>
                 AltTools использует cookies и Яндекс.Метрику для анализа посещаемости,
-                улучшения работы сайта и понимания того, какие инструменты полезны пользователям.
+                улучшения сайта и понимания того, какие инструменты полезны пользователям.
+                Продолжая пользоваться сайтом, вы соглашаетесь с использованием cookies.
+                Вы можете ограничить или удалить cookies в настройках браузера.
                 Подробнее — в <a href="/privacy/">политике конфиденциальности</a>.
             </p>
         </div>
 
         <div class="cookie-banner__actions">
             <button type="button" class="cookie-btn cookie-btn_accept" id="cookie-accept">
-                Принять
-            </button>
-
-            <button type="button" class="cookie-btn cookie-btn_reject" id="cookie-reject">
-                Отклонить
+                Понятно
             </button>
         </div>
     </div>
 </div>
+
+<script>
+    window.ALTTOOLS_METRIKA_ID = {{ YANDEX_METRICA_ID|default:"0" }};
+</script>
 
 <script src="{% static 'tools/js/cookies.js' %}" defer></script>
 
