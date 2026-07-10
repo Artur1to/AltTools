@@ -1,0 +1,280 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page.meta_title }}{% endblock %}
+
+{% block meta_description %}
+{{ page.meta_description }}
+{% endblock %}
+
+{% block canonical %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_url %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_title %}{{ page.meta_title }}{% endblock %}
+{% block og_description %}{{ page.meta_description }}{% endblock %}
+
+{% block nav_tools_active %}nav__link_active{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/percent_calculator.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="percent-page">
+    <div class="container">
+
+        <div class="breadcrumbs">
+            <a href="/">Главная</a>
+            <span>/</span>
+            <a href="/tools/">Инструменты</a>
+            <span>/</span>
+            {% if page.category %}
+                <a href="{{ page.category.get_absolute_url }}">{{ page.category.title }}</a>
+                <span>/</span>
+            {% endif %}
+            <span>{{ page.title }}</span>
+        </div>
+
+        <section class="percent-hero">
+            <div class="percent-hero__content">
+                <p class="page-label">
+                    {% if page.category %}
+                        {{ page.category.title }}
+                    {% else %}
+                        Калькулятор
+                    {% endif %}
+                </p>
+
+                <h1 class="page-title">
+                    {{ page.h1 }}
+                </h1>
+
+                <p class="page-description">
+                    {{ page.short_description }}
+                </p>
+            </div>
+
+            <div class="percent-hero__card">
+                <div class="percent-hero__icon">
+                    %
+                </div>
+
+                <div>
+                    <strong>Percent Calculator</strong>
+                    <span>4 расчёта · Округление · Формулы</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="percent-tool">
+
+            <div class="percent-toolbar">
+                <div class="percent-field percent-field_precision">
+                    <label for="percentPrecision">Округлять результат</label>
+
+                    <select id="percentPrecision">
+                        <option value="0">0 знаков</option>
+                        <option value="1">1 знак</option>
+                        <option value="2" selected>2 знака</option>
+                        <option value="3">3 знака</option>
+                        <option value="4">4 знака</option>
+                        <option value="5">5 знаков</option>
+                        <option value="6">6 знаков</option>
+                        <option value="7">7 знаков</option>
+                        <option value="8">8 знаков</option>
+                        <option value="9">9 знаков</option>
+                        <option value="10">10 знаков</option>
+                    </select>
+                </div>
+
+                <button type="button" class="percent-small-btn" id="resetPercentCalculator">
+                    Сбросить всё
+                </button>
+            </div>
+
+            <div class="percent-grid">
+
+                <article class="percent-card" data-percent-card>
+                    <div class="percent-card__head">
+                        <div>
+                            <h2>Сколько составляет процент от числа?</h2>
+                            <p>Например: сколько будет 15% от 200</p>
+                        </div>
+                    </div>
+
+                    <div class="percent-expression">
+                        <input type="text" data-input="percent-of-percent" placeholder="15">
+                        <span>% от числа</span>
+                        <input type="text" data-input="percent-of-number" placeholder="200">
+                    </div>
+
+                    <div class="percent-result">
+                        <span>Результат</span>
+                        <strong data-result="percent-of">—</strong>
+                    </div>
+
+                    <p class="percent-formula">
+                        Формула: число × процент / 100
+                    </p>
+                </article>
+
+                <article class="percent-card" data-percent-card>
+                    <div class="percent-card__head">
+                        <div>
+                            <h2>Сколько процентов составляет число?</h2>
+                            <p>Например: сколько процентов 30 составляет от 200</p>
+                        </div>
+                    </div>
+
+                    <div class="percent-expression">
+                        <span>Число</span>
+                        <input type="text" data-input="part-number" placeholder="30">
+                        <span>от числа</span>
+                        <input type="text" data-input="whole-number" placeholder="200">
+                    </div>
+
+                    <div class="percent-result">
+                        <span>Результат</span>
+                        <strong data-result="part-percent">—</strong>
+                    </div>
+
+                    <p class="percent-formula">
+                        Формула: число / общее число × 100
+                    </p>
+                </article>
+
+                <article class="percent-card" data-percent-card>
+                    <div class="percent-card__head">
+                        <div>
+                            <h2>Прибавить процент к числу</h2>
+                            <p>Например: прибавить 20% к 500</p>
+                        </div>
+                    </div>
+
+                    <div class="percent-expression">
+                        <span>Прибавить</span>
+                        <input type="text" data-input="add-percent" placeholder="20">
+                        <span>% к числу</span>
+                        <input type="text" data-input="add-number" placeholder="500">
+                    </div>
+
+                    <div class="percent-result">
+                        <span>Результат</span>
+                        <strong data-result="add-percent">—</strong>
+                    </div>
+
+                    <p class="percent-formula">
+                        Формула: число + число × процент / 100
+                    </p>
+                </article>
+
+                <article class="percent-card" data-percent-card>
+                    <div class="percent-card__head">
+                        <div>
+                            <h2>Вычесть процент из числа</h2>
+                            <p>Например: вычесть 10% из 1000</p>
+                        </div>
+                    </div>
+
+                    <div class="percent-expression">
+                        <span>Вычесть</span>
+                        <input type="text" data-input="subtract-percent" placeholder="10">
+                        <span>% из числа</span>
+                        <input type="text" data-input="subtract-number" placeholder="1000">
+                    </div>
+
+                    <div class="percent-result">
+                        <span>Результат</span>
+                        <strong data-result="subtract-percent">—</strong>
+                    </div>
+
+                    <p class="percent-formula">
+                        Формула: число − число × процент / 100
+                    </p>
+                </article>
+
+            </div>
+
+        </section>
+
+        <section class="percent-info">
+            <div class="percent-info__content">
+                <h2>Какие расчёты можно выполнить?</h2>
+
+                <p>
+                    Калькулятор процентов помогает быстро выполнить самые частые вычисления:
+                    найти процент от числа, определить долю одного числа от другого, прибавить
+                    процент к сумме или вычесть процент из суммы.
+                </p>
+
+                <p>
+                    Такой расчёт часто нужен для скидок, наценок, налогов, комиссий, изменения цены,
+                    статистики, учебных задач и повседневных финансовых вычислений.
+                </p>
+            </div>
+        </section>
+
+        <section class="percent-info">
+            <div class="percent-info__content">
+                <h2>Формулы расчёта процентов</h2>
+
+                <div class="percent-formulas">
+                    <div>
+                        <strong>Процент от числа</strong>
+                        <span>Результат = число × процент / 100</span>
+                    </div>
+
+                    <div>
+                        <strong>Сколько процентов составляет число</strong>
+                        <span>Результат = часть / целое × 100</span>
+                    </div>
+
+                    <div>
+                        <strong>Прибавить процент</strong>
+                        <span>Результат = число × (1 + процент / 100)</span>
+                    </div>
+
+                    <div>
+                        <strong>Вычесть процент</strong>
+                        <span>Результат = число × (1 − процент / 100)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="percent-info">
+            <div class="percent-info__content">
+                <h2>Примеры расчётов</h2>
+
+                <div class="percent-examples">
+                    <div>
+                        <strong>15% от 200</strong>
+                        <span>200 × 15 / 100 = 30</span>
+                    </div>
+
+                    <div>
+                        <strong>30 от 200 в процентах</strong>
+                        <span>30 / 200 × 100 = 15%</span>
+                    </div>
+
+                    <div>
+                        <strong>Прибавить 20% к 500</strong>
+                        <span>500 × 1.2 = 600</span>
+                    </div>
+
+                    <div>
+                        <strong>Вычесть 10% из 1000</strong>
+                        <span>1000 × 0.9 = 900</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'tools/js/percent_calculator.js' %}" defer></script>
+{% endblock %}

@@ -36,6 +36,10 @@ from .tool_views.converters import (
     UNIT_CONVERTER_SLUGS,
 )
 
+from .tool_views.math_tools import (
+    percent_calculator,
+)
+
 
 def index(request):
     categories = (
@@ -186,6 +190,8 @@ TOOL_HANDLERS = {
     'javascript-formatter': javascript_formatter,
 
     'bmi-calculator': bmi_calculator,
+
+    'percent-calculator': percent_calculator,
 }
 
 for converter_slug in UNIT_CONVERTER_SLUGS:
