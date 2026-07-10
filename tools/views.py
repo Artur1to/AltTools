@@ -38,6 +38,7 @@ from .tool_views.converters import (
 
 from .tool_views.math_tools import (
     percent_calculator,
+    median_calculator,
 )
 
 
@@ -192,6 +193,7 @@ TOOL_HANDLERS = {
     'bmi-calculator': bmi_calculator,
 
     'percent-calculator': percent_calculator,
+    'median-calculator': median_calculator,
 }
 
 for converter_slug in UNIT_CONVERTER_SLUGS:

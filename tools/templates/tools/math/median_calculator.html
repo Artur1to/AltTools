@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page.meta_title }}{% endblock %}
+
+{% block meta_description %}
+{{ page.meta_description }}
+{% endblock %}
+
+{% block canonical %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_url %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_title %}{{ page.meta_title }}{% endblock %}
+{% block og_description %}{{ page.meta_description }}{% endblock %}
+
+{% block nav_tools_active %}nav__link_active{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/median_calculator.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="median-page">
+    <div class="container">
+
+        <div class="breadcrumbs">
+            <a href="/">Главная</a>
+            <span>/</span>
+            <a href="/tools/">Инструменты</a>
+            <span>/</span>
+            {% if page.category %}
+                <a href="{{ page.category.get_absolute_url }}">{{ page.category.title }}</a>
+                <span>/</span>
+            {% endif %}
+            <span>{{ page.title }}</span>
+        </div>
+
+        <section class="median-hero">
+            <div class="median-hero__content">
+                <p class="page-label">
+                    {% if page.category %}
+                        {{ page.category.title }}
+                    {% else %}
+                        Калькулятор
+                    {% endif %}
+                </p>
+
+                <h1 class="page-title">
+                    {{ page.h1 }}
+                </h1>
+
+                <p class="page-description">
+                    {{ page.short_description }}
+                </p>
+            </div>
+
+            <div class="median-hero__card">
+                <div class="median-hero__icon">
+                    Me
+                </div>
+
+                <div>
+                    <strong>Median Calculator</strong>
+                    <span>Ряд чисел · Сортировка · Объяснение</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="median-tool">
+
+            <div class="median-columns">
+
+                <div class="median-panel">
+                    <div class="median-panel__head">
+                        <div>
+                            <h2>Введите числа</h2>
+                            <p>Можно вводить через пробел, запятую, точку с запятой или с новой строки</p>
+                        </div>
+                    </div>
+
+                    <div class="median-form">
+
+                        <div class="median-field">
+                            <label for="medianNumbers">Числовой ряд</label>
+
+                            <textarea
+                                id="medianNumbers"
+                                class="median-textarea"
+                                placeholder="Например: 7, 2, 10, 4, 9"
+                            ></textarea>
+                        </div>
+
+                        <div class="median-actions">
+                            <button type="button" class="median-submit__button" id="loadMedianExample">
+                                Пример
+                            </button>
+
+                            <button type="button" class="median-submit__secondary" id="clearMedian">
+                                Очистить
+                            </button>
+                        </div>
+
+                        <div class="median-message" id="medianMessage">
+                            Введите числа, чтобы рассчитать медиану.
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="median-panel">
+                    <div class="median-panel__head">
+                        <div>
+                            <h2>Результат</h2>
+                            <p>Медиана и краткая информация о ряде</p>
+                        </div>
+                    </div>
+
+                    <div class="median-result">
+
+                        <div class="median-result-box">
+                            <span>Медиана</span>
+                            <strong id="medianResult">—</strong>
+                            <p id="medianResultNote">Результат появится после ввода чисел.</p>
+                        </div>
+
+                        <div class="median-stats">
+                            <div>
+                                <span>Количество чисел</span>
+                                <strong id="medianCount">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Тип ряда</span>
+                                <strong id="medianType">—</strong>
+                            </div>
+                        </div>
+
+                        <div class="median-sorted">
+                            <span>Отсортированный ряд</span>
+                            <p id="medianSorted">—</p>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="median-info">
+            <div class="median-info__content">
+                <h2>Как вычисляется медиана?</h2>
+
+                <p>
+                    Медиана — это число, которое находится посередине упорядоченного ряда.
+                    Чтобы найти медиану, сначала нужно отсортировать все значения по возрастанию.
+                </p>
+
+                <p>
+                    Если количество чисел нечётное, медианой будет центральное число.
+                    Если количество чисел чётное, медиана равна среднему арифметическому двух центральных чисел.
+                </p>
+            </div>
+        </section>
+
+        <section class="median-info">
+            <div class="median-info__content">
+                <h2>Пошаговое объяснение для вашего ряда</h2>
+
+                <div class="median-steps" id="medianSteps">
+                    <div>
+                        <strong>1. Введите числа</strong>
+                        <span>Например: 7, 2, 10, 4, 9</span>
+                    </div>
+
+                    <div>
+                        <strong>2. Отсортируйте ряд</strong>
+                        <span>Получится: 2, 4, 7, 9, 10</span>
+                    </div>
+
+                    <div>
+                        <strong>3. Найдите середину</strong>
+                        <span>В нечётном ряду медиана — центральное число.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="median-info">
+            <div class="median-info__content">
+                <h2>Примеры расчёта медианы</h2>
+
+                <div class="median-examples">
+                    <div>
+                        <strong>Нечётное количество чисел</strong>
+                        <span>Ряд: 2, 4, 7, 9, 10. Медиана: 7, потому что это центральное число.</span>
+                    </div>
+
+                    <div>
+                        <strong>Чётное количество чисел</strong>
+                        <span>Ряд: 2, 4, 8, 10. Медиана: (4 + 8) / 2 = 6.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'tools/js/median_calculator.js' %}" defer></script>
+{% endblock %}
