@@ -44,6 +44,7 @@ from .tool_views.math_tools import (
 
 from .tool_views.finance import (
     loan_calculator,
+    mortgage_calculator,
 )
 
 
@@ -202,6 +203,7 @@ TOOL_HANDLERS = {
     'median-calculator': median_calculator,
 
     'loan-calculator': loan_calculator,
+    'mortgage-calculator': mortgage_calculator,
 }
 
 for converter_slug in UNIT_CONVERTER_SLUGS:

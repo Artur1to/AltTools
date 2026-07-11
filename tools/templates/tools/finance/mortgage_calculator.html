@@ -1,0 +1,318 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page.meta_title }}{% endblock %}
+
+{% block meta_description %}
+{{ page.meta_description }}
+{% endblock %}
+
+{% block canonical %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_url %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_title %}{{ page.meta_title }}{% endblock %}
+{% block og_description %}{{ page.meta_description }}{% endblock %}
+
+{% block nav_tools_active %}nav__link_active{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/mortgage_calculator.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="mortgage-page">
+    <div class="container">
+
+        <div class="breadcrumbs">
+            <a href="/">Главная</a>
+            <span>/</span>
+            <a href="/tools/">Инструменты</a>
+            <span>/</span>
+            {% if page.category %}
+                <a href="{{ page.category.get_absolute_url }}">{{ page.category.title }}</a>
+                <span>/</span>
+            {% endif %}
+            <span>{{ page.title }}</span>
+        </div>
+
+        <section class="mortgage-hero">
+            <div class="mortgage-hero__content">
+                <p class="page-label">
+                    {% if page.category %}
+                        {{ page.category.title }}
+                    {% else %}
+                        Финансы
+                    {% endif %}
+                </p>
+
+                <h1 class="page-title">
+                    {{ page.h1 }}
+                </h1>
+
+                <p class="page-description">
+                    {{ page.short_description }}
+                </p>
+            </div>
+
+            <div class="mortgage-hero__card">
+                <div class="mortgage-hero__icon">
+                    ₽
+                </div>
+
+                <div>
+                    <strong>Mortgage Calculator</strong>
+                    <span>Взнос · Платёж · График</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="mortgage-tool">
+
+            <div class="mortgage-columns">
+
+                <div class="mortgage-panel">
+                    <div class="mortgage-panel__head">
+                        <div>
+                            <h2>Данные ипотеки</h2>
+                            <p>Введите стоимость недвижимости, взнос, ставку и срок</p>
+                        </div>
+                    </div>
+
+                    <div class="mortgage-form">
+
+                        <div class="mortgage-field">
+                            <label for="propertyPrice">Стоимость недвижимости</label>
+                            <input type="text" id="propertyPrice" value="8000000" inputmode="decimal">
+                        </div>
+
+                        <div class="mortgage-form__grid">
+                            <div class="mortgage-field">
+                                <label for="downPayment">Первоначальный взнос</label>
+                                <input type="text" id="downPayment" value="20" inputmode="decimal">
+                            </div>
+
+                            <div class="mortgage-field">
+                                <label for="downPaymentType">Тип взноса</label>
+                                <select id="downPaymentType">
+                                    <option value="percent" selected>проценты</option>
+                                    <option value="money">рубли</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mortgage-form__grid">
+                            <div class="mortgage-field">
+                                <label for="mortgageRate">Ставка, % годовых</label>
+                                <input type="text" id="mortgageRate" value="16" inputmode="decimal">
+                            </div>
+
+                            <div class="mortgage-field">
+                                <label for="mortgageTerm">Срок</label>
+                                <input type="text" id="mortgageTerm" value="20" inputmode="decimal">
+                            </div>
+                        </div>
+
+                        <div class="mortgage-form__grid">
+                            <div class="mortgage-field">
+                                <label for="mortgageTermUnit">Единица срока</label>
+                                <select id="mortgageTermUnit">
+                                    <option value="years" selected>лет</option>
+                                    <option value="months">месяцев</option>
+                                </select>
+                            </div>
+
+                            <div class="mortgage-field">
+                                <label for="mortgagePaymentType">Тип платежа</label>
+                                <select id="mortgagePaymentType">
+                                    <option value="annuity" selected>Аннуитетный</option>
+                                    <option value="differentiated">Дифференцированный</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mortgage-actions">
+                            <button type="button" class="mortgage-submit__button" id="mortgageCalculate">
+                                Рассчитать
+                            </button>
+
+                            <button type="button" class="mortgage-submit__secondary" id="mortgageReset">
+                                Сбросить
+                            </button>
+                        </div>
+
+                        <div class="mortgage-message" id="mortgageMessage">
+                            Измените данные и нажмите «Рассчитать».
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="mortgage-panel">
+                    <div class="mortgage-panel__head">
+                        <div>
+                            <h2>Результат</h2>
+                            <p>Платёж, сумма ипотеки, взнос и переплата</p>
+                        </div>
+                    </div>
+
+                    <div class="mortgage-result">
+
+                        <div class="mortgage-result-box">
+                            <span>Ежемесячный платёж</span>
+                            <strong id="mortgageMonthlyPayment">—</strong>
+                            <p id="mortgagePaymentNote">Для аннуитетного платежа сумма одинаковая каждый месяц.</p>
+                        </div>
+
+                        <div class="mortgage-stats">
+                            <div>
+                                <span>Стоимость жилья</span>
+                                <strong id="propertyPriceResult">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Первоначальный взнос</span>
+                                <strong id="downPaymentResult">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Сумма ипотеки</span>
+                                <strong id="mortgageAmountResult">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Срок</span>
+                                <strong id="mortgageMonthsResult">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Всего выплат банку</span>
+                                <strong id="mortgageTotalPayment">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Переплата</span>
+                                <strong id="mortgageOverpayment">—</strong>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="mortgage-schedule">
+                <div class="mortgage-schedule__head">
+                    <div>
+                        <h2>График платежей</h2>
+                        <p>Помесячный расчёт: платёж, проценты, основной долг и остаток</p>
+                    </div>
+
+                    <button type="button" class="mortgage-small-btn" id="mortgageCopySchedule">
+                        Скопировать
+                    </button>
+                </div>
+
+                <div class="mortgage-table-wrap">
+                    <table class="mortgage-table">
+                        <thead>
+                            <tr>
+                                <th>Месяц</th>
+                                <th>Платёж</th>
+                                <th>Основной долг</th>
+                                <th>Проценты</th>
+                                <th>Остаток</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mortgageScheduleBody">
+                            <tr>
+                                <td colspan="5">Введите данные и выполните расчёт.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="mortgage-info">
+            <div class="mortgage-info__content">
+                <h2>Как работает ипотечный калькулятор?</h2>
+
+                <p>
+                    Калькулятор рассчитывает примерные условия ипотеки по данным, которые вводит пользователь:
+                    стоимости недвижимости, первоначальному взносу, процентной ставке, сроку и типу платежа.
+                </p>
+
+                <p>
+                    Инструмент не получает ставки банков автоматически. Пользователь сам вводит условия,
+                    которые увидел на сайте банка, в приложении или в предварительном предложении.
+                    Это делает расчёт универсальным и независимым от банковских API.
+                </p>
+            </div>
+        </section>
+
+        <section class="mortgage-info">
+            <div class="mortgage-info__content">
+                <h2>Что показывает расчёт?</h2>
+
+                <div class="mortgage-rules">
+                    <div>
+                        <strong>Сумма ипотеки</strong>
+                        <span>
+                            Это стоимость недвижимости минус первоначальный взнос. Именно эту сумму
+                            банк выдаёт в кредит.
+                        </span>
+                    </div>
+
+                    <div>
+                        <strong>Переплата</strong>
+                        <span>
+                            Это разница между общей суммой выплат банку и суммой ипотеки.
+                            В переплату входят проценты по кредиту.
+                        </span>
+                    </div>
+
+                    <div>
+                        <strong>Аннуитетный платёж</strong>
+                        <span>
+                            Платёж почти одинаковый каждый месяц. В начале срока большая часть платежа
+                            уходит на проценты.
+                        </span>
+                    </div>
+
+                    <div>
+                        <strong>Дифференцированный платёж</strong>
+                        <span>
+                            Основной долг погашается равными частями, а проценты считаются на остаток.
+                            Поэтому платежи постепенно уменьшаются.
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mortgage-info">
+            <div class="mortgage-info__content">
+                <h2>Важное уточнение</h2>
+
+                <p>
+                    Расчёт носит справочный характер. Фактические условия банка могут отличаться
+                    из-за страхования, комиссий, даты выдачи кредита, округлений, досрочного погашения,
+                    льготных программ и индивидуального решения банка.
+                </p>
+
+                <p>
+                    Перед оформлением ипотеки проверяйте итоговый график и полную стоимость кредита
+                    в официальном предложении банка.
+                </p>
+            </div>
+        </section>
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'tools/js/mortgage_calculator.js' %}" defer></script>
+{% endblock %}
