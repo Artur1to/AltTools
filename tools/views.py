@@ -50,6 +50,7 @@ from .tool_views.finance import (
     vat_calculator,
     usn_calculator,
     self_employed_tax_calculator,
+    income_tax_calculator,
 )
 
 
@@ -214,6 +215,7 @@ TOOL_HANDLERS = {
     'vat-calculator': vat_calculator,
     'usn-calculator': usn_calculator,
     'self-employed-tax-calculator': self_employed_tax_calculator,
+    'income-tax-calculator': income_tax_calculator,
 }
 
 for converter_slug in UNIT_CONVERTER_SLUGS:

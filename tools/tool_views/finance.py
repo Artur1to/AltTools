@@ -114,3 +114,19 @@ def self_employed_tax_calculator(request, page=None):
             'page': page,
         }
     )
+
+def income_tax_calculator(request, page=None):
+    if page is None:
+        page = get_object_or_404(
+            ToolPage,
+            slug='income-tax-calculator',
+            is_published=True
+        )
+
+    return render(
+        request,
+        'tools/finance/income_tax_calculator.html',
+        {
+            'page': page,
+        }
+    )

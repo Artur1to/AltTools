@@ -1,0 +1,297 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page.meta_title }}{% endblock %}
+
+{% block meta_description %}
+{{ page.meta_description }}
+{% endblock %}
+
+{% block canonical %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_url %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_title %}{{ page.meta_title }}{% endblock %}
+{% block og_description %}{{ page.meta_description }}{% endblock %}
+
+{% block nav_tools_active %}nav__link_active{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/income_tax_calculator.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="income-tax-page">
+    <div class="container">
+
+        <div class="breadcrumbs">
+            <a href="/">Главная</a>
+            <span>/</span>
+            <a href="/tools/">Инструменты</a>
+            <span>/</span>
+            {% if page.category %}
+                <a href="{{ page.category.get_absolute_url }}">{{ page.category.title }}</a>
+                <span>/</span>
+            {% endif %}
+            <span>{{ page.title }}</span>
+        </div>
+
+        <section class="income-tax-hero">
+            <div class="income-tax-hero__content">
+                <p class="page-label">
+                    {% if page.category %}
+                        {{ page.category.title }}
+                    {% else %}
+                        Финансы
+                    {% endif %}
+                </p>
+
+                <h1 class="page-title">
+                    {{ page.h1 }}
+                </h1>
+
+                <p class="page-description">
+                    {{ page.short_description }}
+                </p>
+            </div>
+
+            <div class="income-tax-hero__card">
+                <div class="income-tax-hero__icon">
+                    %
+                </div>
+
+                <div>
+                    <strong>Income Tax Calculator</strong>
+                    <span>НДФЛ · На руки · Шкала</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="income-tax-tool">
+
+            <div class="income-tax-columns">
+
+                <div class="income-tax-panel">
+                    <div class="income-tax-panel__head">
+                        <div>
+                            <h2>Данные для расчёта</h2>
+                            <p>Введите доход, вычеты и уже удержанный налог</p>
+                        </div>
+                    </div>
+
+                    <div class="income-tax-form">
+
+                        <div class="income-tax-field">
+                            <label for="incomeTaxAmount">Доход до НДФЛ</label>
+                            <input type="text" id="incomeTaxAmount" value="200000" inputmode="decimal">
+                        </div>
+
+                        <div class="income-tax-form__grid">
+                            <div class="income-tax-field">
+                                <label for="incomeTaxPeriod">Период</label>
+                                <select id="incomeTaxPeriod">
+                                    <option value="payment" selected>одна выплата / месяц</option>
+                                    <option value="year">годовой доход</option>
+                                </select>
+                            </div>
+
+                            <div class="income-tax-field">
+                                <label for="incomeTaxBefore">Доход с начала года до этой суммы</label>
+                                <input type="text" id="incomeTaxBefore" value="0" inputmode="decimal">
+                            </div>
+                        </div>
+
+                        <div class="income-tax-form__grid">
+                            <div class="income-tax-field">
+                                <label for="incomeTaxDeduction">Вычеты для этой суммы</label>
+                                <input type="text" id="incomeTaxDeduction" value="0" inputmode="decimal">
+                            </div>
+
+                            <div class="income-tax-field">
+                                <label for="incomeTaxWithheld">Уже удержанный НДФЛ</label>
+                                <input type="text" id="incomeTaxWithheld" value="0" inputmode="decimal">
+                            </div>
+                        </div>
+
+                        <div class="income-tax-actions">
+                            <button type="button" class="income-tax-submit__secondary" id="incomeTaxReset">
+                                Сбросить
+                            </button>
+
+                            <button type="button" class="income-tax-submit__button" id="incomeTaxCopyResult">
+                                Скопировать результат
+                            </button>
+                        </div>
+
+                        <div class="income-tax-message" id="incomeTaxMessage">
+                            Расчёт обновляется автоматически.
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="income-tax-panel">
+                    <div class="income-tax-panel__head">
+                        <div>
+                            <h2>Результат</h2>
+                            <p>НДФЛ, сумма на руки и эффективная ставка</p>
+                        </div>
+                    </div>
+
+                    <div class="income-tax-result">
+
+                        <div class="income-tax-result-box">
+                            <span>НДФЛ к удержанию</span>
+                            <strong id="incomeTaxResult">—</strong>
+                            <p id="incomeTaxResultNote">Расчёт появится после ввода данных.</p>
+                        </div>
+
+                        <div class="income-tax-stats">
+                            <div>
+                                <span>Доход до налога</span>
+                                <strong id="incomeTaxGrossResult">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Налоговая база</span>
+                                <strong id="incomeTaxBaseResult">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Сумма на руки</span>
+                                <strong id="incomeTaxNetResult">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Эффективная ставка</span>
+                                <strong id="incomeTaxEffectiveRateResult">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Доход с начала года после расчёта</span>
+                                <strong id="incomeTaxYearAfterResult">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Остаток к доплате</span>
+                                <strong id="incomeTaxPayableResult">—</strong>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="income-tax-breakdown">
+                <div class="income-tax-breakdown__head">
+                    <div>
+                        <h2>Разбивка по ставкам</h2>
+                        <p>Какая часть дохода попала в каждую ступень НДФЛ</p>
+                    </div>
+                </div>
+
+                <div class="income-tax-table-wrap">
+                    <table class="income-tax-table">
+                        <thead>
+                            <tr>
+                                <th>Ставка</th>
+                                <th>Часть дохода</th>
+                                <th>Налог</th>
+                            </tr>
+                        </thead>
+                        <tbody id="incomeTaxBreakdownBody">
+                            <tr>
+                                <td colspan="3">Введите данные для расчёта.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="income-tax-examples">
+                <div class="income-tax-examples__head">
+                    <div>
+                        <h2>Быстрые примеры</h2>
+                        <p>Подставьте популярные суммы дохода</p>
+                    </div>
+                </div>
+
+                <div class="income-tax-example-grid" id="incomeTaxExamples">
+                    <button type="button" data-income="50000">50 000 ₽</button>
+                    <button type="button" data-income="100000">100 000 ₽</button>
+                    <button type="button" data-income="200000">200 000 ₽</button>
+                    <button type="button" data-income="300000">300 000 ₽</button>
+                    <button type="button" data-income="500000">500 000 ₽</button>
+                    <button type="button" data-income="1000000">1 000 000 ₽</button>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="income-tax-info">
+            <div class="income-tax-info__content">
+                <h2>Как работает калькулятор НДФЛ?</h2>
+
+                <p>
+                    Калькулятор считает подоходный налог с введённой суммы. Можно указать доход
+                    за одну выплату или годовой доход, добавить налоговые вычеты, доход с начала года
+                    и уже удержанный налог.
+                </p>
+
+                <p>
+                    Для прогрессивной шкалы важно учитывать доход с начала года: если общий доход
+                    переходит в следующую ступень, повышенная ставка применяется только к части дохода
+                    сверх лимита.
+                </p>
+            </div>
+        </section>
+
+        <section class="income-tax-info">
+            <div class="income-tax-info__content">
+                <h2>Шкала НДФЛ в калькуляторе</h2>
+
+                <div class="income-tax-rules">
+                    <div>
+                        <strong>13%</strong>
+                        <span>Для части годового дохода до 2,4 млн ₽ включительно.</span>
+                    </div>
+
+                    <div>
+                        <strong>15%</strong>
+                        <span>Для части дохода свыше 2,4 млн ₽ и до 5 млн ₽.</span>
+                    </div>
+
+                    <div>
+                        <strong>18%</strong>
+                        <span>Для части дохода свыше 5 млн ₽ и до 20 млн ₽.</span>
+                    </div>
+
+                    <div>
+                        <strong>20% и 22%</strong>
+                        <span>20% применяется к части дохода свыше 20 млн ₽ до 50 млн ₽, 22% — к части дохода свыше 50 млн ₽.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="income-tax-info">
+            <div class="income-tax-info__content">
+                <h2>Важное уточнение</h2>
+
+                <p>
+                    Расчёт носит справочный характер. Он не заменяет расчёт работодателя,
+                    налогового агента или декларацию 3-НДФЛ. Для дивидендов, продажи имущества,
+                    операций с ценными бумагами, нерезидентов и отдельных видов доходов могут
+                    действовать другие правила.
+                </p>
+            </div>
+        </section>
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'tools/js/income_tax_calculator.js' %}" defer></script>
+{% endblock %}
