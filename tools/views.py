@@ -42,6 +42,10 @@ from .tool_views.math_tools import (
     median_calculator,
 )
 
+from .tool_views.finance import (
+    loan_calculator,
+)
+
 
 def index(request):
     categories = (
@@ -196,6 +200,8 @@ TOOL_HANDLERS = {
 
     'percent-calculator': percent_calculator,
     'median-calculator': median_calculator,
+
+    'loan-calculator': loan_calculator,
 }
 
 for converter_slug in UNIT_CONVERTER_SLUGS:

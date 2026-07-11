@@ -1,0 +1,20 @@
+from django.shortcuts import render, get_object_or_404
+
+from ..models import ToolPage
+
+
+def loan_calculator(request, page=None):
+    if page is None:
+        page = get_object_or_404(
+            ToolPage,
+            slug='loan-calculator',
+            is_published=True
+        )
+
+    return render(
+        request,
+        'tools/finance/loan_calculator.html',
+        {
+            'page': page,
+        }
+    )

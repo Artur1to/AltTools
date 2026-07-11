@@ -1,0 +1,280 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page.meta_title }}{% endblock %}
+
+{% block meta_description %}
+{{ page.meta_description }}
+{% endblock %}
+
+{% block canonical %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_url %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_title %}{{ page.meta_title }}{% endblock %}
+{% block og_description %}{{ page.meta_description }}{% endblock %}
+
+{% block nav_tools_active %}nav__link_active{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/loan_calculator.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="loan-page">
+    <div class="container">
+
+        <div class="breadcrumbs">
+            <a href="/">Главная</a>
+            <span>/</span>
+            <a href="/tools/">Инструменты</a>
+            <span>/</span>
+            {% if page.category %}
+                <a href="{{ page.category.get_absolute_url }}">{{ page.category.title }}</a>
+                <span>/</span>
+            {% endif %}
+            <span>{{ page.title }}</span>
+        </div>
+
+        <section class="loan-hero">
+            <div class="loan-hero__content">
+                <p class="page-label">
+                    {% if page.category %}
+                        {{ page.category.title }}
+                    {% else %}
+                        Финансы
+                    {% endif %}
+                </p>
+
+                <h1 class="page-title">
+                    {{ page.h1 }}
+                </h1>
+
+                <p class="page-description">
+                    {{ page.short_description }}
+                </p>
+            </div>
+
+            <div class="loan-hero__card">
+                <div class="loan-hero__icon">
+                    ₽
+                </div>
+
+                <div>
+                    <strong>Loan Calculator</strong>
+                    <span>Платёж · Переплата · График</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="loan-tool">
+
+            <div class="loan-columns">
+
+                <div class="loan-panel">
+                    <div class="loan-panel__head">
+                        <div>
+                            <h2>Данные кредита</h2>
+                            <p>Введите условия, которые предлагает банк</p>
+                        </div>
+                    </div>
+
+                    <div class="loan-form">
+
+                        <div class="loan-field">
+                            <label for="loanAmount">Сумма кредита</label>
+                            <input type="text" id="loanAmount" value="1000000" inputmode="decimal">
+                        </div>
+
+                        <div class="loan-form__grid">
+                            <div class="loan-field">
+                                <label for="loanRate">Ставка, % годовых</label>
+                                <input type="text" id="loanRate" value="18" inputmode="decimal">
+                            </div>
+
+                            <div class="loan-field">
+                                <label for="loanTerm">Срок</label>
+                                <input type="text" id="loanTerm" value="5" inputmode="decimal">
+                            </div>
+                        </div>
+
+                        <div class="loan-form__grid">
+                            <div class="loan-field">
+                                <label for="loanTermUnit">Единица срока</label>
+                                <select id="loanTermUnit">
+                                    <option value="years" selected>лет</option>
+                                    <option value="months">месяцев</option>
+                                </select>
+                            </div>
+
+                            <div class="loan-field">
+                                <label for="loanPaymentType">Тип платежа</label>
+                                <select id="loanPaymentType">
+                                    <option value="annuity" selected>Аннуитетный</option>
+                                    <option value="differentiated">Дифференцированный</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="loan-actions">
+                            <button type="button" class="loan-submit__button" id="loanCalculate">
+                                Рассчитать
+                            </button>
+
+                            <button type="button" class="loan-submit__secondary" id="loanReset">
+                                Сбросить
+                            </button>
+                        </div>
+
+                        <div class="loan-message" id="loanMessage">
+                            Измените данные и нажмите «Рассчитать».
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="loan-panel">
+                    <div class="loan-panel__head">
+                        <div>
+                            <h2>Результат</h2>
+                            <p>Платёж, переплата и итоговая сумма</p>
+                        </div>
+                    </div>
+
+                    <div class="loan-result">
+
+                        <div class="loan-result-box">
+                            <span>Ежемесячный платёж</span>
+                            <strong id="loanMonthlyPayment">—</strong>
+                            <p id="loanPaymentNote">Для аннуитетного платежа сумма одинаковая каждый месяц.</p>
+                        </div>
+
+                        <div class="loan-stats">
+                            <div>
+                                <span>Сумма кредита</span>
+                                <strong id="loanPrincipalResult">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Срок</span>
+                                <strong id="loanMonthsResult">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Всего выплат</span>
+                                <strong id="loanTotalPayment">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Переплата</span>
+                                <strong id="loanOverpayment">—</strong>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="loan-schedule">
+                <div class="loan-schedule__head">
+                    <div>
+                        <h2>График платежей</h2>
+                        <p>Расчёт по месяцам: платёж, проценты, тело кредита и остаток</p>
+                    </div>
+
+                    <button type="button" class="loan-small-btn" id="loanCopySchedule">
+                        Скопировать
+                    </button>
+                </div>
+
+                <div class="loan-table-wrap">
+                    <table class="loan-table">
+                        <thead>
+                            <tr>
+                                <th>Месяц</th>
+                                <th>Платёж</th>
+                                <th>Основной долг</th>
+                                <th>Проценты</th>
+                                <th>Остаток</th>
+                            </tr>
+                        </thead>
+                        <tbody id="loanScheduleBody">
+                            <tr>
+                                <td colspan="5">Введите данные и выполните расчёт.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="loan-info">
+            <div class="loan-info__content">
+                <h2>Как работает кредитный калькулятор?</h2>
+
+                <p>
+                    Калькулятор считает примерный график платежей по введённым условиям:
+                    сумме кредита, годовой процентной ставке, сроку и типу платежа.
+                    Все данные пользователь вводит самостоятельно, поэтому инструмент не зависит
+                    от актуальности банковских API и тарифов.
+                </p>
+
+                <p>
+                    Расчёт носит справочный характер. Итоговые условия банка могут отличаться
+                    из-за страховок, комиссий, даты выдачи кредита, округлений, досрочных платежей
+                    и индивидуального решения банка.
+                </p>
+            </div>
+        </section>
+
+        <section class="loan-info">
+            <div class="loan-info__content">
+                <h2>Аннуитетный и дифференцированный платёж</h2>
+
+                <div class="loan-rules">
+                    <div>
+                        <strong>Аннуитетный платёж</strong>
+                        <span>
+                            Платёж каждый месяц одинаковый. В начале срока большая часть платежа
+                            уходит на проценты, а ближе к концу — на погашение основного долга.
+                        </span>
+                    </div>
+
+                    <div>
+                        <strong>Дифференцированный платёж</strong>
+                        <span>
+                            Основной долг делится равными частями, а проценты считаются на остаток.
+                            Поэтому первый платёж самый большой, а затем платежи постепенно уменьшаются.
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="loan-info">
+            <div class="loan-info__content">
+                <h2>Формула аннуитетного платежа</h2>
+
+                <p>
+                    Для аннуитетного платежа используется формула:
+                    платёж = сумма кредита × месячная ставка × коэффициент / (коэффициент − 1),
+                    где коэффициент = (1 + месячная ставка) в степени количества месяцев.
+                </p>
+
+                <p>
+                    Для дифференцированного платежа основной долг каждый месяц одинаковый:
+                    сумма кредита делится на количество месяцев. Проценты каждый месяц считаются
+                    на текущий остаток долга.
+                </p>
+            </div>
+        </section>
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'tools/js/loan_calculator.js' %}" defer></script>
+{% endblock %}
