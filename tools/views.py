@@ -2,6 +2,9 @@ from collections import OrderedDict
 
 from django.db.models import Q, Count
 from django.shortcuts import render, get_object_or_404
+from django.conf import settings
+from django.http import HttpResponse
+from xml.sax.saxutils import escape
 
 from .models import ToolCategory, ToolPage
 
@@ -240,3 +243,100 @@ def tool_detail(request, category_slug, tool_slug):
         return handler(request, page=page)
 
     return render(request, 'tools/tool_detail.html', {'page': page})
+
+def robots_txt(request):
+    site_url = getattr(settings, 'SITE_URL', 'https://alttools.ru').rstrip('/')
+
+    content = f"""User-agent: *
+    Disallow: /admin/
+
+    Host: alttools.ru
+    Sitemap: {site_url}/sitemap.xml
+    """
+
+    return HttpResponse(
+        content,
+        content_type='text/plain; charset=utf-8'
+    )
+
+
+def sitemap_xml(request):
+    site_url = getattr(settings, 'SITE_URL', 'https://alttools.ru').rstrip('/')
+
+    urls = [
+        {
+            'loc': '/',
+            'priority': '1.0',
+            'changefreq': 'daily',
+        },
+        {
+            'loc': '/tools/',
+            'priority': '0.9',
+            'changefreq': 'daily',
+        },
+        {
+            'loc': '/about/',
+            'priority': '0.5',
+            'changefreq': 'monthly',
+        },
+        {
+            'loc': '/contacts/',
+            'priority': '0.5',
+            'changefreq': 'monthly',
+        },
+        {
+            'loc': '/privacy/',
+            'priority': '0.4',
+            'changefreq': 'monthly',
+        },
+    ]
+
+    categories = ToolCategory.objects.filter(
+        is_published=True
+    ).order_by('sort_order', 'title')
+
+    for category in categories:
+        urls.append({
+            'loc': category.get_absolute_url(),
+            'priority': '0.8',
+            'changefreq': 'weekly',
+        })
+
+    tools = ToolPage.objects.select_related('category').filter(
+        is_published=True,
+        category__is_published=True,
+        category__isnull=False,
+    ).order_by('category__sort_order', 'sort_order', 'title')
+
+    for tool in tools:
+        urls.append({
+            'loc': tool.get_absolute_url(),
+            'priority': '0.9' if tool.is_popular else '0.8',
+            'changefreq': 'weekly',
+            'lastmod': tool.updated_at.date().isoformat(),
+        })
+
+    xml_parts = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    ]
+
+    for item in urls:
+        loc = f"{site_url}{item['loc']}"
+
+        xml_parts.append('    <url>')
+        xml_parts.append(f'        <loc>{escape(loc)}</loc>')
+
+        if item.get('lastmod'):
+            xml_parts.append(f"        <lastmod>{item['lastmod']}</lastmod>")
+
+        xml_parts.append(f"        <changefreq>{item['changefreq']}</changefreq>")
+        xml_parts.append(f"        <priority>{item['priority']}</priority>")
+        xml_parts.append('    </url>')
+
+    xml_parts.append('</urlset>')
+
+    return HttpResponse(
+        '\n'.join(xml_parts),
+        content_type='application/xml; charset=utf-8'
+    )
