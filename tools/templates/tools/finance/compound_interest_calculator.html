@@ -1,0 +1,321 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page.meta_title }}{% endblock %}
+
+{% block meta_description %}
+{{ page.meta_description }}
+{% endblock %}
+
+{% block canonical %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_url %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_title %}{{ page.meta_title }}{% endblock %}
+{% block og_description %}{{ page.meta_description }}{% endblock %}
+
+{% block nav_tools_active %}nav__link_active{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/compound_interest_calculator.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="compound-page">
+    <div class="container">
+
+        <div class="breadcrumbs">
+            <a href="/">Главная</a>
+            <span>/</span>
+            <a href="/tools/">Инструменты</a>
+            <span>/</span>
+            {% if page.category %}
+                <a href="{{ page.category.get_absolute_url }}">{{ page.category.title }}</a>
+                <span>/</span>
+            {% endif %}
+            <span>{{ page.title }}</span>
+        </div>
+
+        <section class="compound-hero">
+            <div class="compound-hero__content">
+                <p class="page-label">
+                    {% if page.category %}
+                        {{ page.category.title }}
+                    {% else %}
+                        Финансы
+                    {% endif %}
+                </p>
+
+                <h1 class="page-title">
+                    {{ page.h1 }}
+                </h1>
+
+                <p class="page-description">
+                    {{ page.short_description }}
+                </p>
+            </div>
+
+            <div class="compound-hero__card">
+                <div class="compound-hero__icon">
+                    %
+                </div>
+
+                <div>
+                    <strong>Compound Interest</strong>
+                    <span>Капитализация · Рост · Доход</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="compound-tool">
+
+            <div class="compound-columns">
+
+                <div class="compound-panel">
+                    <div class="compound-panel__head">
+                        <div>
+                            <h2>Данные расчёта</h2>
+                            <p>Введите сумму, ставку, срок и пополнения</p>
+                        </div>
+                    </div>
+
+                    <div class="compound-form">
+
+                        <div class="compound-field">
+                            <label for="compoundInitialAmount">Начальная сумма</label>
+                            <input type="text" id="compoundInitialAmount" value="100000" inputmode="decimal">
+                        </div>
+
+                        <div class="compound-form__grid">
+                            <div class="compound-field">
+                                <label for="compoundRate">Ставка, % годовых</label>
+                                <input type="text" id="compoundRate" value="15" inputmode="decimal">
+                            </div>
+
+                            <div class="compound-field">
+                                <label for="compoundTerm">Срок</label>
+                                <input type="text" id="compoundTerm" value="5" inputmode="decimal">
+                            </div>
+                        </div>
+
+                        <div class="compound-form__grid">
+                            <div class="compound-field">
+                                <label for="compoundTermUnit">Единица срока</label>
+                                <select id="compoundTermUnit">
+                                    <option value="years" selected>лет</option>
+                                    <option value="months">месяцев</option>
+                                </select>
+                            </div>
+
+                            <div class="compound-field">
+                                <label for="compoundFrequency">Капитализация</label>
+                                <select id="compoundFrequency">
+                                    <option value="12" selected>ежемесячная</option>
+                                    <option value="4">ежеквартальная</option>
+                                    <option value="1">ежегодная</option>
+                                    <option value="365">ежедневная</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="compound-form__grid">
+                            <div class="compound-field">
+                                <label for="compoundMonthlyContribution">Ежемесячное пополнение</label>
+                                <input type="text" id="compoundMonthlyContribution" value="10000" inputmode="decimal">
+                            </div>
+
+                            <div class="compound-field">
+                                <label for="compoundContributionTiming">Когда пополнять</label>
+                                <select id="compoundContributionTiming">
+                                    <option value="beginning" selected>в начале месяца</option>
+                                    <option value="end">в конце месяца</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="compound-actions">
+                            <button type="button" class="compound-submit__button" id="compoundCalculate">
+                                Рассчитать
+                            </button>
+
+                            <button type="button" class="compound-submit__secondary" id="compoundReset">
+                                Сбросить
+                            </button>
+                        </div>
+
+                        <div class="compound-message" id="compoundMessage">
+                            Измените данные и нажмите «Рассчитать».
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="compound-panel">
+                    <div class="compound-panel__head">
+                        <div>
+                            <h2>Результат</h2>
+                            <p>Итоговая сумма, проценты и пополнения</p>
+                        </div>
+                    </div>
+
+                    <div class="compound-result">
+
+                        <div class="compound-result-box">
+                            <span>Итоговая сумма</span>
+                            <strong id="compoundFinalAmount">—</strong>
+                            <p id="compoundResultNote">Расчёт появится после ввода данных.</p>
+                        </div>
+
+                        <div class="compound-stats">
+                            <div>
+                                <span>Начальная сумма</span>
+                                <strong id="compoundInitialResult">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Сумма пополнений</span>
+                                <strong id="compoundContributionsResult">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Доход от процентов</span>
+                                <strong id="compoundInterestResult">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Срок</span>
+                                <strong id="compoundMonthsResult">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Эффективная ставка</span>
+                                <strong id="compoundEffectiveRateResult">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Всего вложено</span>
+                                <strong id="compoundInvestedResult">—</strong>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="compound-schedule">
+                <div class="compound-schedule__head">
+                    <div>
+                        <h2>График роста капитала</h2>
+                        <p>Помесячный расчёт: баланс, пополнение, проценты и итог</p>
+                    </div>
+
+                    <button type="button" class="compound-small-btn" id="compoundCopySchedule">
+                        Скопировать
+                    </button>
+                </div>
+
+                <div class="compound-table-wrap">
+                    <table class="compound-table">
+                        <thead>
+                            <tr>
+                                <th>Месяц</th>
+                                <th>Баланс на начало</th>
+                                <th>Пополнение</th>
+                                <th>Проценты</th>
+                                <th>Баланс на конец</th>
+                            </tr>
+                        </thead>
+                        <tbody id="compoundScheduleBody">
+                            <tr>
+                                <td colspan="5">Введите данные и выполните расчёт.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="compound-info">
+            <div class="compound-info__content">
+                <h2>Что такое сложный процент?</h2>
+
+                <p>
+                    Сложный процент — это ситуация, когда проценты начисляются не только
+                    на первоначальную сумму, но и на уже накопленные проценты. За счёт этого
+                    капитал со временем растёт быстрее, чем при обычном начислении процентов.
+                </p>
+
+                <p>
+                    Калькулятор помогает оценить, как будет расти сумма при заданной ставке,
+                    сроке, капитализации и регулярных пополнениях.
+                </p>
+            </div>
+        </section>
+
+        <section class="compound-info">
+            <div class="compound-info__content">
+                <h2>Как влияет капитализация?</h2>
+
+                <div class="compound-rules">
+                    <div>
+                        <strong>Ежемесячная капитализация</strong>
+                        <span>
+                            Проценты чаще прибавляются к капиталу, поэтому следующий доход
+                            начисляется уже на увеличенную сумму.
+                        </span>
+                    </div>
+
+                    <div>
+                        <strong>Ежегодная капитализация</strong>
+                        <span>
+                            Проценты прибавляются реже, поэтому итоговая сумма обычно ниже,
+                            чем при ежемесячной или ежедневной капитализации.
+                        </span>
+                    </div>
+
+                    <div>
+                        <strong>Регулярные пополнения</strong>
+                        <span>
+                            Пополнения увеличивают базу для начисления процентов и сильно влияют
+                            на итоговую сумму на длинном сроке.
+                        </span>
+                    </div>
+
+                    <div>
+                        <strong>Эффект времени</strong>
+                        <span>
+                            Чем дольше срок, тем заметнее становится разница между простым
+                            и сложным процентом.
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="compound-info">
+            <div class="compound-info__content">
+                <h2>Формула сложного процента</h2>
+
+                <p>
+                    Без регулярных пополнений итоговая сумма рассчитывается по формуле:
+                    итог = сумма × (1 + ставка / количество капитализаций) в степени
+                    количества периодов капитализации.
+                </p>
+
+                <p>
+                    Если есть ежемесячные пополнения, расчёт удобнее делать по периодам:
+                    каждый месяц к балансу добавляется пополнение, затем начисляются проценты,
+                    а новый баланс становится основой для следующего месяца.
+                </p>
+            </div>
+        </section>
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'tools/js/compound_interest_calculator.js' %}" defer></script>
+{% endblock %}
