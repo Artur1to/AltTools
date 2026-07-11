@@ -82,3 +82,19 @@ def vat_calculator(request, page=None):
             'page': page,
         }
     )
+
+def usn_calculator(request, page=None):
+    if page is None:
+        page = get_object_or_404(
+            ToolPage,
+            slug='usn-calculator',
+            is_published=True
+        )
+
+    return render(
+        request,
+        'tools/finance/usn_calculator.html',
+        {
+            'page': page,
+        }
+    )

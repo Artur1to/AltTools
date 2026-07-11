@@ -48,6 +48,7 @@ from .tool_views.finance import (
     deposit_calculator,
     compound_interest_calculator,
     vat_calculator,
+    usn_calculator,
 )
 
 
@@ -210,6 +211,7 @@ TOOL_HANDLERS = {
     'deposit-calculator': deposit_calculator,
     'compound-interest-calculator': compound_interest_calculator,
     'vat-calculator': vat_calculator,
+    'usn-calculator': usn_calculator,
 }
 
 for converter_slug in UNIT_CONVERTER_SLUGS:
