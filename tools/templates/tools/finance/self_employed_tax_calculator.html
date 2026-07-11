@@ -1,0 +1,297 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page.meta_title }}{% endblock %}
+
+{% block meta_description %}
+{{ page.meta_description }}
+{% endblock %}
+
+{% block canonical %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_url %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_title %}{{ page.meta_title }}{% endblock %}
+{% block og_description %}{{ page.meta_description }}{% endblock %}
+
+{% block nav_tools_active %}nav__link_active{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/self_employed_tax_calculator.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="npd-page">
+    <div class="container">
+
+        <div class="breadcrumbs">
+            <a href="/">Главная</a>
+            <span>/</span>
+            <a href="/tools/">Инструменты</a>
+            <span>/</span>
+            {% if page.category %}
+                <a href="{{ page.category.get_absolute_url }}">{{ page.category.title }}</a>
+                <span>/</span>
+            {% endif %}
+            <span>{{ page.title }}</span>
+        </div>
+
+        <section class="npd-hero">
+            <div class="npd-hero__content">
+                <p class="page-label">
+                    {% if page.category %}
+                        {{ page.category.title }}
+                    {% else %}
+                        Финансы
+                    {% endif %}
+                </p>
+
+                <h1 class="page-title">
+                    {{ page.h1 }}
+                </h1>
+
+                <p class="page-description">
+                    {{ page.short_description }}
+                </p>
+            </div>
+
+            <div class="npd-hero__card">
+                <div class="npd-hero__icon">
+                    ₽
+                </div>
+
+                <div>
+                    <strong>NPD Calculator</strong>
+                    <span>4% · 6% · Бонус</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="npd-tool">
+
+            <div class="npd-columns">
+
+                <div class="npd-panel">
+                    <div class="npd-panel__head">
+                        <div>
+                            <h2>Данные для расчёта</h2>
+                            <p>Введите доходы от физических лиц, ИП и организаций</p>
+                        </div>
+                    </div>
+
+                    <div class="npd-form">
+
+                        <div class="npd-form__grid">
+                            <div class="npd-field">
+                                <label for="npdIncomeIndividuals">Доход от физических лиц</label>
+                                <input type="text" id="npdIncomeIndividuals" value="50000" inputmode="decimal">
+                            </div>
+
+                            <div class="npd-field">
+                                <label for="npdIncomeCompanies">Доход от ИП и юрлиц</label>
+                                <input type="text" id="npdIncomeCompanies" value="100000" inputmode="decimal">
+                            </div>
+                        </div>
+
+                        <div class="npd-form__grid">
+                            <div class="npd-field">
+                                <label for="npdBonusLeft">Остаток налогового бонуса</label>
+                                <input type="text" id="npdBonusLeft" value="10000" inputmode="decimal">
+                            </div>
+
+                            <div class="npd-field">
+                                <label for="npdYearIncomeBefore">Доход с начала года до расчёта</label>
+                                <input type="text" id="npdYearIncomeBefore" value="0" inputmode="decimal">
+                            </div>
+                        </div>
+
+                        <div class="npd-actions">
+                            <button type="button" class="npd-submit__secondary" id="npdReset">
+                                Сбросить
+                            </button>
+
+                            <button type="button" class="npd-submit__button" id="npdCopyResult">
+                                Скопировать результат
+                            </button>
+                        </div>
+
+                        <div class="npd-message" id="npdMessage">
+                            Расчёт обновляется автоматически.
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="npd-panel">
+                    <div class="npd-panel__head">
+                        <div>
+                            <h2>Результат</h2>
+                            <p>Налог, бонус, доход после налога и лимит НПД</p>
+                        </div>
+                    </div>
+
+                    <div class="npd-result">
+
+                        <div class="npd-result-box">
+                            <span>Налог к уплате</span>
+                            <strong id="npdTaxPayable">—</strong>
+                            <p id="npdResultNote">Расчёт появится после ввода данных.</p>
+                        </div>
+
+                        <div class="npd-stats">
+                            <div>
+                                <span>Общий доход</span>
+                                <strong id="npdTotalIncome">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Налог до бонуса</span>
+                                <strong id="npdTaxBeforeBonus">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Бонус использован</span>
+                                <strong id="npdBonusUsed">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Бонус останется</span>
+                                <strong id="npdBonusRemaining">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Доход после налога</span>
+                                <strong id="npdIncomeAfterTax">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Эффективная ставка</span>
+                                <strong id="npdEffectiveRate">—</strong>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="npd-breakdown">
+                <div class="npd-breakdown__head">
+                    <div>
+                        <h2>Разбивка расчёта</h2>
+                        <p>Отдельно по доходам от физических лиц и от ИП/юрлиц</p>
+                    </div>
+                </div>
+
+                <div class="npd-table-wrap">
+                    <table class="npd-table">
+                        <thead>
+                            <tr>
+                                <th>Тип дохода</th>
+                                <th>Доход</th>
+                                <th>Ставка</th>
+                                <th>Налог до бонуса</th>
+                                <th>Бонус</th>
+                                <th>К уплате</th>
+                            </tr>
+                        </thead>
+                        <tbody id="npdBreakdownBody">
+                            <tr>
+                                <td colspan="6">Введите данные для расчёта.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="npd-examples">
+                <div class="npd-examples__head">
+                    <div>
+                        <h2>Быстрые примеры</h2>
+                        <p>Подставьте популярные суммы дохода</p>
+                    </div>
+                </div>
+
+                <div class="npd-example-grid" id="npdExamples">
+                    <button type="button" data-individuals="50000" data-companies="0">50 000 ₽ от физлиц</button>
+                    <button type="button" data-individuals="0" data-companies="100000">100 000 ₽ от юрлиц</button>
+                    <button type="button" data-individuals="50000" data-companies="100000">150 000 ₽ смешанный</button>
+                    <button type="button" data-individuals="100000" data-companies="200000">300 000 ₽ смешанный</button>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="npd-info">
+            <div class="npd-info__content">
+                <h2>Как считается налог самозанятого?</h2>
+
+                <p>
+                    Налог на профессиональный доход зависит от того, от кого получен доход.
+                    Доходы от физических лиц считаются по ставке 4%, а доходы от ИП и организаций —
+                    по ставке 6%.
+                </p>
+
+                <p>
+                    Если у самозанятого ещё есть налоговый бонус, фактический налог временно меньше:
+                    для доходов от физлиц ставка уменьшается с 4% до 3%, а для доходов от ИП и юрлиц —
+                    с 6% до 4%.
+                </p>
+            </div>
+        </section>
+
+        <section class="npd-info">
+            <div class="npd-info__content">
+                <h2>Формулы расчёта НПД</h2>
+
+                <div class="npd-rules">
+                    <div>
+                        <strong>Доход от физических лиц</strong>
+                        <span>
+                            Налог = доход × 4%. При наличии бонуса налог уменьшается на 1% от дохода.
+                        </span>
+                    </div>
+
+                    <div>
+                        <strong>Доход от ИП и юрлиц</strong>
+                        <span>
+                            Налог = доход × 6%. При наличии бонуса налог уменьшается на 2% от дохода.
+                        </span>
+                    </div>
+
+                    <div>
+                        <strong>Налоговый бонус</strong>
+                        <span>
+                            Бонус уменьшает налог частично, но не может сделать налог полностью нулевым.
+                        </span>
+                    </div>
+
+                    <div>
+                        <strong>Лимит дохода</strong>
+                        <span>
+                            Калькулятор проверяет, не превышает ли доход с начала года лимит 2,4 млн ₽.
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="npd-info">
+            <div class="npd-info__content">
+                <h2>Важное уточнение</h2>
+
+                <p>
+                    Расчёт носит справочный характер. Официальное начисление налога выполняется
+                    в приложении «Мой налог» после формирования чеков. Проверяйте итоговую сумму
+                    к уплате в приложении ФНС.
+                </p>
+            </div>
+        </section>
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'tools/js/self_employed_tax_calculator.js' %}" defer></script>
+{% endblock %}
