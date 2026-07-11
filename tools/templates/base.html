@@ -15,10 +15,10 @@
     <meta property="og:title" content="{% block og_title %}AltTools — онлайн-калькуляторы и инструменты{% endblock %}">
     <meta property="og:description" content="{% block og_description %}Быстрые онлайн-калькуляторы, конвертеры и инструменты для повседневных задач.{% endblock %}">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="{% block og_url %}https://example.com/{% endblock %}">
+    <meta property="og:url" content="{{ CANONICAL_URL }}">
     <meta property="og:image" content="{% block og_image %}{% static 'img/og-image.jpg' %}{% endblock %}">
 
-    <link rel="canonical" href="{% block canonical %}https://example.com/{% endblock %}">
+    <link rel="canonical" href="{{ CANONICAL_URL }}">
     <link rel="icon" href="{% static 'tools/images/favicon.png' %}">
 
     <link rel="stylesheet" href="{% static 'tools/css/style.css' %}">

@@ -130,7 +130,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-SITE_URL = os.getenv('SITE_URL', 'http://127.0.0.1:8000')
+SITE_URL = os.getenv('SITE_URL', 'http://127.0.0.1:8000').rstrip('/')
 YANDEX_METRICA_ID = os.getenv('YANDEX_METRICA_ID', '')
 
 # Static files (CSS, JavaScript, Images)
