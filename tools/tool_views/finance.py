@@ -130,3 +130,19 @@ def income_tax_calculator(request, page=None):
             'page': page,
         }
     )
+
+def salary_net_calculator(request, page=None):
+    if page is None:
+        page = get_object_or_404(
+            ToolPage,
+            slug='salary-net-calculator',
+            is_published=True
+        )
+
+    return render(
+        request,
+        'tools/finance/salary_net_calculator.html',
+        {
+            'page': page,
+        }
+    )

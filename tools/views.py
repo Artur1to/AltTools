@@ -51,6 +51,7 @@ from .tool_views.finance import (
     usn_calculator,
     self_employed_tax_calculator,
     income_tax_calculator,
+    salary_net_calculator,
 )
 
 
@@ -216,6 +217,7 @@ TOOL_HANDLERS = {
     'usn-calculator': usn_calculator,
     'self-employed-tax-calculator': self_employed_tax_calculator,
     'income-tax-calculator': income_tax_calculator,
+    'salary-net-calculator': salary_net_calculator,
 }
 
 for converter_slug in UNIT_CONVERTER_SLUGS:

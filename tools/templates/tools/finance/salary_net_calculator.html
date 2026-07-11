@@ -1,0 +1,312 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page.meta_title }}{% endblock %}
+
+{% block meta_description %}
+{{ page.meta_description }}
+{% endblock %}
+
+{% block canonical %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_url %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_title %}{{ page.meta_title }}{% endblock %}
+{% block og_description %}{{ page.meta_description }}{% endblock %}
+
+{% block nav_tools_active %}nav__link_active{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/salary_net_calculator.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="salary-page">
+    <div class="container">
+
+        <div class="breadcrumbs">
+            <a href="/">Главная</a>
+            <span>/</span>
+            <a href="/tools/">Инструменты</a>
+            <span>/</span>
+            {% if page.category %}
+                <a href="{{ page.category.get_absolute_url }}">{{ page.category.title }}</a>
+                <span>/</span>
+            {% endif %}
+            <span>{{ page.title }}</span>
+        </div>
+
+        <section class="salary-hero">
+            <div class="salary-hero__content">
+                <p class="page-label">
+                    {% if page.category %}
+                        {{ page.category.title }}
+                    {% else %}
+                        Финансы
+                    {% endif %}
+                </p>
+
+                <h1 class="page-title">
+                    {{ page.h1 }}
+                </h1>
+
+                <p class="page-description">
+                    {{ page.short_description }}
+                </p>
+            </div>
+
+            <div class="salary-hero__card">
+                <div class="salary-hero__icon">
+                    ₽
+                </div>
+
+                <div>
+                    <strong>Salary Net Calculator</strong>
+                    <span>Оклад · НДФЛ · На руки</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="salary-tool">
+
+            <div class="salary-columns">
+
+                <div class="salary-panel">
+                    <div class="salary-panel__head">
+                        <div>
+                            <h2>Данные для расчёта</h2>
+                            <p>Введите зарплату, вычеты и доход с начала года</p>
+                        </div>
+                    </div>
+
+                    <div class="salary-form">
+
+                        <div class="salary-field">
+                            <label for="salaryMode">Что рассчитать</label>
+                            <select id="salaryMode">
+                                <option value="gross_to_net" selected>Зарплату на руки из начисленной</option>
+                                <option value="net_to_gross">Начисленную зарплату из суммы на руки</option>
+                            </select>
+                        </div>
+
+                        <div class="salary-field">
+                            <label for="salaryAmount" id="salaryAmountLabel">Начисленная зарплата до НДФЛ</label>
+                            <input type="text" id="salaryAmount" value="100000" inputmode="decimal">
+                        </div>
+
+                        <div class="salary-form__grid">
+                            <div class="salary-field">
+                                <label for="salaryIncomeBefore">Доход с начала года до этой выплаты</label>
+                                <input type="text" id="salaryIncomeBefore" value="0" inputmode="decimal">
+                            </div>
+
+                            <div class="salary-field">
+                                <label for="salaryDeduction">Вычеты для этой выплаты</label>
+                                <input type="text" id="salaryDeduction" value="0" inputmode="decimal">
+                            </div>
+                        </div>
+
+                        <div class="salary-form__grid">
+                            <div class="salary-field">
+                                <label for="salaryWithheld">Уже удержанный НДФЛ по этой выплате</label>
+                                <input type="text" id="salaryWithheld" value="0" inputmode="decimal">
+                            </div>
+
+                            <div class="salary-field">
+                                <label for="salaryRound">Округление</label>
+                                <select id="salaryRound">
+                                    <option value="kopecks" selected>до копеек</option>
+                                    <option value="rubles">до рублей</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="salary-actions">
+                            <button type="button" class="salary-submit__secondary" id="salaryReset">
+                                Сбросить
+                            </button>
+
+                            <button type="button" class="salary-submit__button" id="salaryCopyResult">
+                                Скопировать результат
+                            </button>
+                        </div>
+
+                        <div class="salary-message" id="salaryMessage">
+                            Расчёт обновляется автоматически.
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="salary-panel">
+                    <div class="salary-panel__head">
+                        <div>
+                            <h2>Результат</h2>
+                            <p>Начислено, удержано и сумма на руки</p>
+                        </div>
+                    </div>
+
+                    <div class="salary-result">
+
+                        <div class="salary-result-box">
+                            <span>Зарплата на руки</span>
+                            <strong id="salaryNetResult">—</strong>
+                            <p id="salaryResultNote">Расчёт появится после ввода данных.</p>
+                        </div>
+
+                        <div class="salary-stats">
+                            <div>
+                                <span>Начисленная зарплата</span>
+                                <strong id="salaryGrossResult">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Налоговая база</span>
+                                <strong id="salaryBaseResult">—</strong>
+                            </div>
+
+                            <div>
+                                <span>НДФЛ с выплаты</span>
+                                <strong id="salaryTaxResult">—</strong>
+                            </div>
+
+                            <div>
+                                <span>К удержанию после учёта удержанного</span>
+                                <strong id="salaryPayableTaxResult">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Доход с начала года после выплаты</span>
+                                <strong id="salaryYearAfterResult">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Эффективная ставка</span>
+                                <strong id="salaryEffectiveRateResult">—</strong>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="salary-breakdown">
+                <div class="salary-breakdown__head">
+                    <div>
+                        <h2>Разбивка НДФЛ по ставкам</h2>
+                        <p>Какая часть зарплаты попала в каждую ступень</p>
+                    </div>
+                </div>
+
+                <div class="salary-table-wrap">
+                    <table class="salary-table">
+                        <thead>
+                            <tr>
+                                <th>Ставка</th>
+                                <th>Часть базы</th>
+                                <th>НДФЛ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="salaryBreakdownBody">
+                            <tr>
+                                <td colspan="3">Введите данные для расчёта.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="salary-examples">
+                <div class="salary-examples__head">
+                    <div>
+                        <h2>Быстрые примеры</h2>
+                        <p>Подставьте популярные суммы зарплаты</p>
+                    </div>
+                </div>
+
+                <div class="salary-example-grid" id="salaryExamples">
+                    <button type="button" data-salary="50000">50 000 ₽</button>
+                    <button type="button" data-salary="80000">80 000 ₽</button>
+                    <button type="button" data-salary="100000">100 000 ₽</button>
+                    <button type="button" data-salary="150000">150 000 ₽</button>
+                    <button type="button" data-salary="200000">200 000 ₽</button>
+                    <button type="button" data-salary="300000">300 000 ₽</button>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="salary-info">
+            <div class="salary-info__content">
+                <h2>Как работает калькулятор зарплаты на руки?</h2>
+
+                <p>
+                    Калькулятор показывает, сколько сотрудник получит после удержания НДФЛ.
+                    Можно рассчитать сумму на руки из начисленной зарплаты или наоборот подобрать
+                    начисленную зарплату по желаемой сумме на руки.
+                </p>
+
+                <p>
+                    Доход с начала года нужен для прогрессивной шкалы: если общий доход переходит
+                    через порог, повышенная ставка применяется только к части дохода выше этого порога.
+                </p>
+            </div>
+        </section>
+
+        <section class="salary-info">
+            <div class="salary-info__content">
+                <h2>Что учитывает расчёт?</h2>
+
+                <div class="salary-rules">
+                    <div>
+                        <strong>Начисленная зарплата</strong>
+                        <span>
+                            Это сумма до удержания НДФЛ. Именно от неё считается налоговая база.
+                        </span>
+                    </div>
+
+                    <div>
+                        <strong>Зарплата на руки</strong>
+                        <span>
+                            Это сумма после удержания НДФЛ. Страховые взносы работодателя из неё не вычитаются.
+                        </span>
+                    </div>
+
+                    <div>
+                        <strong>Вычеты</strong>
+                        <span>
+                            Вычеты уменьшают налоговую базу, а значит могут уменьшить НДФЛ.
+                        </span>
+                    </div>
+
+                    <div>
+                        <strong>Прогрессивная шкала</strong>
+                        <span>
+                            При высоком годовом доходе часть зарплаты может попасть под ставки выше 13%.
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="salary-info">
+            <div class="salary-info__content">
+                <h2>Важное уточнение</h2>
+
+                <p>
+                    Расчёт носит справочный характер. Он не заменяет расчёт работодателя,
+                    бухгалтерии или налогового агента. На итоговую выплату могут влиять отпускные,
+                    больничные, премии, районные коэффициенты, алименты, исполнительные листы,
+                    удержания и особенности трудового договора.
+                </p>
+            </div>
+        </section>
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'tools/js/salary_net_calculator.js' %}" defer></script>
+{% endblock %}
