@@ -51,3 +51,19 @@ def bmi_calculator(request, page=None):
     }
 
     return render(request, 'tools/bmi_calculator.html', context)
+
+def daily_calorie_calculator(request, page=None):
+    if page is None:
+        page = get_object_or_404(
+            ToolPage,
+            slug='daily-calorie-calculator',
+            is_published=True
+        )
+
+    return render(
+        request,
+        'tools/health/daily_calorie_calculator.html',
+        {
+            'page': page,
+        }
+    )

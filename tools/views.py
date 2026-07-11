@@ -30,6 +30,7 @@ from .tool_views.it import (
 
 from .tool_views.health import (
     bmi_calculator,
+    daily_calorie_calculator,
 )
 
 from .tool_views.converters import (
@@ -205,6 +206,7 @@ TOOL_HANDLERS = {
     'javascript-formatter': javascript_formatter,
 
     'bmi-calculator': bmi_calculator,
+    'daily-calorie-calculator': daily_calorie_calculator,
 
     'percent-calculator': percent_calculator,
     'median-calculator': median_calculator,

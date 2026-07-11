@@ -1,0 +1,292 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page.meta_title }}{% endblock %}
+
+{% block meta_description %}
+{{ page.meta_description }}
+{% endblock %}
+
+{% block canonical %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_url %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_title %}{{ page.meta_title }}{% endblock %}
+{% block og_description %}{{ page.meta_description }}{% endblock %}
+
+{% block nav_tools_active %}nav__link_active{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/daily_calorie_calculator.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="calorie-page">
+    <div class="container">
+
+        <div class="breadcrumbs">
+            <a href="/">Главная</a>
+            <span>/</span>
+            <a href="/tools/">Инструменты</a>
+            <span>/</span>
+            {% if page.category %}
+                <a href="{{ page.category.get_absolute_url }}">{{ page.category.title }}</a>
+                <span>/</span>
+            {% endif %}
+            <span>{{ page.title }}</span>
+        </div>
+
+        <section class="calorie-hero">
+            <div class="calorie-hero__content">
+                <p class="page-label">
+                    {% if page.category %}
+                        {{ page.category.title }}
+                    {% else %}
+                        Здоровье
+                    {% endif %}
+                </p>
+
+                <h1 class="page-title">
+                    {{ page.h1 }}
+                </h1>
+
+                <p class="page-description">
+                    {{ page.short_description }}
+                </p>
+            </div>
+
+            <div class="calorie-hero__card">
+                <div class="calorie-hero__icon">
+                    kcal
+                </div>
+
+                <div>
+                    <strong>Calorie Calculator</strong>
+                    <span>BMR · Калории · БЖУ</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="calorie-tool">
+
+            <div class="calorie-columns">
+
+                <div class="calorie-panel">
+                    <div class="calorie-panel__head">
+                        <div>
+                            <h2>Данные для расчёта</h2>
+                            <p>Введите параметры тела, активность и цель</p>
+                        </div>
+                    </div>
+
+                    <div class="calorie-form">
+
+                        <div class="calorie-form__grid">
+                            <div class="calorie-field">
+                                <label for="calorieGender">Пол</label>
+                                <select id="calorieGender">
+                                    <option value="male" selected>Мужской</option>
+                                    <option value="female">Женский</option>
+                                </select>
+                            </div>
+
+                            <div class="calorie-field">
+                                <label for="calorieAge">Возраст</label>
+                                <input type="text" id="calorieAge" value="30" inputmode="decimal">
+                            </div>
+                        </div>
+
+                        <div class="calorie-form__grid">
+                            <div class="calorie-field">
+                                <label for="calorieHeight">Рост, см</label>
+                                <input type="text" id="calorieHeight" value="175" inputmode="decimal">
+                            </div>
+
+                            <div class="calorie-field">
+                                <label for="calorieWeight">Вес, кг</label>
+                                <input type="text" id="calorieWeight" value="75" inputmode="decimal">
+                            </div>
+                        </div>
+
+                        <div class="calorie-field">
+                            <label for="calorieActivity">Уровень активности</label>
+                            <select id="calorieActivity">
+                                <option value="1.2">Минимальная активность, сидячий образ жизни</option>
+                                <option value="1.375">Лёгкая активность, тренировки 1–3 раза в неделю</option>
+                                <option value="1.55" selected>Средняя активность, тренировки 3–5 раз в неделю</option>
+                                <option value="1.725">Высокая активность, тренировки 6–7 раз в неделю</option>
+                                <option value="1.9">Очень высокая активность, тяжёлый физический труд</option>
+                            </select>
+                        </div>
+
+                        <div class="calorie-field">
+                            <label for="calorieGoal">Цель</label>
+                            <select id="calorieGoal">
+                                <option value="maintain" selected>Поддержание веса</option>
+                                <option value="lose_slow">Плавное похудение, дефицит 10%</option>
+                                <option value="lose_normal">Похудение, дефицит 20%</option>
+                                <option value="gain_slow">Плавный набор, профицит 10%</option>
+                                <option value="gain_normal">Набор массы, профицит 15%</option>
+                            </select>
+                        </div>
+
+                        <div class="calorie-actions">
+                            <button type="button" class="calorie-submit__secondary" id="calorieReset">
+                                Сбросить
+                            </button>
+
+                            <button type="button" class="calorie-submit__button" id="calorieCopyResult">
+                                Скопировать результат
+                            </button>
+                        </div>
+
+                        <div class="calorie-message" id="calorieMessage">
+                            Расчёт обновляется автоматически.
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="calorie-panel">
+                    <div class="calorie-panel__head">
+                        <div>
+                            <h2>Результат</h2>
+                            <p>Суточная норма калорий и примерное БЖУ</p>
+                        </div>
+                    </div>
+
+                    <div class="calorie-result">
+
+                        <div class="calorie-result-box">
+                            <span>Рекомендуемая норма</span>
+                            <strong id="calorieTargetResult">—</strong>
+                            <p id="calorieResultNote">Расчёт появится после ввода данных.</p>
+                        </div>
+
+                        <div class="calorie-stats">
+                            <div>
+                                <span>BMR</span>
+                                <strong id="calorieBmrResult">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Поддержание веса</span>
+                                <strong id="calorieMaintainResult">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Белки</span>
+                                <strong id="calorieProteinResult">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Жиры</span>
+                                <strong id="calorieFatResult">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Углеводы</span>
+                                <strong id="calorieCarbsResult">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Цель</span>
+                                <strong id="calorieGoalResult">—</strong>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="calorie-examples">
+                <div class="calorie-examples__head">
+                    <div>
+                        <h2>Быстрые примеры</h2>
+                        <p>Подставьте готовые параметры для проверки</p>
+                    </div>
+                </div>
+
+                <div class="calorie-example-grid" id="calorieExamples">
+                    <button type="button" data-gender="male" data-age="25" data-height="180" data-weight="80">Мужчина 25 лет</button>
+                    <button type="button" data-gender="male" data-age="35" data-height="175" data-weight="90">Мужчина 35 лет</button>
+                    <button type="button" data-gender="female" data-age="25" data-height="165" data-weight="60">Женщина 25 лет</button>
+                    <button type="button" data-gender="female" data-age="35" data-height="170" data-weight="70">Женщина 35 лет</button>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="calorie-info">
+            <div class="calorie-info__content">
+                <h2>Как работает калькулятор калорий?</h2>
+
+                <p>
+                    Калькулятор сначала считает базовый обмен веществ — BMR. Это примерное количество
+                    калорий, которое организм тратит в состоянии покоя. Затем BMR умножается на коэффициент
+                    активности, чтобы получить суточную норму для поддержания веса.
+                </p>
+
+                <p>
+                    После этого к норме применяется выбранная цель: поддержание веса, дефицит для похудения
+                    или небольшой профицит для набора массы.
+                </p>
+            </div>
+        </section>
+
+        <section class="calorie-info">
+            <div class="calorie-info__content">
+                <h2>Что показывает результат?</h2>
+
+                <div class="calorie-rules">
+                    <div>
+                        <strong>BMR</strong>
+                        <span>
+                            Базовый расход энергии без учёта тренировок и повседневной активности.
+                        </span>
+                    </div>
+
+                    <div>
+                        <strong>Поддержание веса</strong>
+                        <span>
+                            Примерная калорийность, при которой вес должен оставаться стабильным.
+                        </span>
+                    </div>
+
+                    <div>
+                        <strong>Дефицит калорий</strong>
+                        <span>
+                            Калорийность ниже поддержания. Используется для снижения веса.
+                        </span>
+                    </div>
+
+                    <div>
+                        <strong>Профицит калорий</strong>
+                        <span>
+                            Калорийность выше поддержания. Используется для набора массы.
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="calorie-info">
+            <div class="calorie-info__content">
+                <h2>Важное уточнение</h2>
+
+                <p>
+                    Расчёт является ориентировочным. Реальная норма калорий зависит от состава тела,
+                    здоровья, уровня NEAT, сна, тренировок, гормонального фона и других факторов.
+                    Используйте результат как стартовую точку и корректируйте питание по динамике веса.
+                </p>
+            </div>
+        </section>
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'tools/js/daily_calorie_calculator.js' %}" defer></script>
+{% endblock %}
