@@ -1,0 +1,318 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page.meta_title }}{% endblock %}
+
+{% block meta_description %}
+{{ page.meta_description }}
+{% endblock %}
+
+{% block canonical %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_url %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_title %}{{ page.meta_title }}{% endblock %}
+{% block og_description %}{{ page.meta_description }}{% endblock %}
+
+{% block nav_tools_active %}nav__link_active{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/deposit_calculator.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="deposit-page">
+    <div class="container">
+
+        <div class="breadcrumbs">
+            <a href="/">Главная</a>
+            <span>/</span>
+            <a href="/tools/">Инструменты</a>
+            <span>/</span>
+            {% if page.category %}
+                <a href="{{ page.category.get_absolute_url }}">{{ page.category.title }}</a>
+                <span>/</span>
+            {% endif %}
+            <span>{{ page.title }}</span>
+        </div>
+
+        <section class="deposit-hero">
+            <div class="deposit-hero__content">
+                <p class="page-label">
+                    {% if page.category %}
+                        {{ page.category.title }}
+                    {% else %}
+                        Финансы
+                    {% endif %}
+                </p>
+
+                <h1 class="page-title">
+                    {{ page.h1 }}
+                </h1>
+
+                <p class="page-description">
+                    {{ page.short_description }}
+                </p>
+            </div>
+
+            <div class="deposit-hero__card">
+                <div class="deposit-hero__icon">
+                    ₽
+                </div>
+
+                <div>
+                    <strong>Deposit Calculator</strong>
+                    <span>Доход · Пополнения · Капитализация</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="deposit-tool">
+
+            <div class="deposit-columns">
+
+                <div class="deposit-panel">
+                    <div class="deposit-panel__head">
+                        <div>
+                            <h2>Данные вклада</h2>
+                            <p>Введите сумму, ставку, срок и дополнительные условия</p>
+                        </div>
+                    </div>
+
+                    <div class="deposit-form">
+
+                        <div class="deposit-field">
+                            <label for="depositAmount">Начальная сумма вклада</label>
+                            <input type="text" id="depositAmount" value="500000" inputmode="decimal">
+                        </div>
+
+                        <div class="deposit-form__grid">
+                            <div class="deposit-field">
+                                <label for="depositRate">Ставка, % годовых</label>
+                                <input type="text" id="depositRate" value="14" inputmode="decimal">
+                            </div>
+
+                            <div class="deposit-field">
+                                <label for="depositTerm">Срок</label>
+                                <input type="text" id="depositTerm" value="1" inputmode="decimal">
+                            </div>
+                        </div>
+
+                        <div class="deposit-form__grid">
+                            <div class="deposit-field">
+                                <label for="depositTermUnit">Единица срока</label>
+                                <select id="depositTermUnit">
+                                    <option value="years" selected>лет</option>
+                                    <option value="months">месяцев</option>
+                                </select>
+                            </div>
+
+                            <div class="deposit-field">
+                                <label for="depositCapitalization">Капитализация</label>
+                                <select id="depositCapitalization">
+                                    <option value="monthly" selected>ежемесячная</option>
+                                    <option value="none">без капитализации</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="deposit-form__grid">
+                            <div class="deposit-field">
+                                <label for="depositTopUp">Ежемесячное пополнение</label>
+                                <input type="text" id="depositTopUp" value="0" inputmode="decimal">
+                            </div>
+
+                            <div class="deposit-field">
+                                <label for="depositWithdrawal">Ежемесячное снятие</label>
+                                <input type="text" id="depositWithdrawal" value="0" inputmode="decimal">
+                            </div>
+                        </div>
+
+                        <div class="deposit-actions">
+                            <button type="button" class="deposit-submit__button" id="depositCalculate">
+                                Рассчитать
+                            </button>
+
+                            <button type="button" class="deposit-submit__secondary" id="depositReset">
+                                Сбросить
+                            </button>
+                        </div>
+
+                        <div class="deposit-message" id="depositMessage">
+                            Измените данные и нажмите «Рассчитать».
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="deposit-panel">
+                    <div class="deposit-panel__head">
+                        <div>
+                            <h2>Результат</h2>
+                            <p>Итоговая сумма, доход и движения по вкладу</p>
+                        </div>
+                    </div>
+
+                    <div class="deposit-result">
+
+                        <div class="deposit-result-box">
+                            <span>Итоговая сумма</span>
+                            <strong id="depositFinalAmount">—</strong>
+                            <p id="depositResultNote">Расчёт появится после ввода данных.</p>
+                        </div>
+
+                        <div class="deposit-stats">
+                            <div>
+                                <span>Начальная сумма</span>
+                                <strong id="depositInitialResult">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Доход по процентам</span>
+                                <strong id="depositInterestResult">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Сумма пополнений</span>
+                                <strong id="depositTopUpResult">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Сумма снятий</span>
+                                <strong id="depositWithdrawalResult">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Срок</span>
+                                <strong id="depositMonthsResult">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Эффективная доходность</span>
+                                <strong id="depositEffectiveRateResult">—</strong>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="deposit-schedule">
+                <div class="deposit-schedule__head">
+                    <div>
+                        <h2>График по месяцам</h2>
+                        <p>Баланс, пополнения, снятия, проценты и итог на конец месяца</p>
+                    </div>
+
+                    <button type="button" class="deposit-small-btn" id="depositCopySchedule">
+                        Скопировать
+                    </button>
+                </div>
+
+                <div class="deposit-table-wrap">
+                    <table class="deposit-table">
+                        <thead>
+                            <tr>
+                                <th>Месяц</th>
+                                <th>Баланс на начало</th>
+                                <th>Пополнение</th>
+                                <th>Снятие</th>
+                                <th>Проценты</th>
+                                <th>Баланс на конец</th>
+                            </tr>
+                        </thead>
+                        <tbody id="depositScheduleBody">
+                            <tr>
+                                <td colspan="6">Введите данные и выполните расчёт.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="deposit-info">
+            <div class="deposit-info__content">
+                <h2>Как работает калькулятор вкладов?</h2>
+
+                <p>
+                    Калькулятор считает примерный доход по вкладу на основе суммы,
+                    годовой процентной ставки, срока, капитализации, ежемесячных пополнений
+                    и снятий. Пользователь сам вводит условия, которые предлагает банк.
+                </p>
+
+                <p>
+                    Инструмент не получает банковские ставки автоматически, поэтому подходит
+                    для сравнения разных предложений: достаточно взять ставку и условия банка
+                    и вставить их в форму расчёта.
+                </p>
+            </div>
+        </section>
+
+        <section class="deposit-info">
+            <div class="deposit-info__content">
+                <h2>Капитализация и обычные проценты</h2>
+
+                <div class="deposit-rules">
+                    <div>
+                        <strong>Ежемесячная капитализация</strong>
+                        <span>
+                            Проценты каждый месяц прибавляются к сумме вклада.
+                            В следующем месяце проценты начисляются уже на увеличенный баланс.
+                        </span>
+                    </div>
+
+                    <div>
+                        <strong>Без капитализации</strong>
+                        <span>
+                            Проценты считаются отдельно и не увеличивают тело вклада.
+                            Итоговая сумма включает вклад, пополнения и начисленный доход.
+                        </span>
+                    </div>
+
+                    <div>
+                        <strong>Пополнение вклада</strong>
+                        <span>
+                            Ежемесячное пополнение увеличивает баланс, поэтому будущие проценты
+                            считаются уже с большей суммы.
+                        </span>
+                    </div>
+
+                    <div>
+                        <strong>Снятие со вклада</strong>
+                        <span>
+                            Ежемесячное снятие уменьшает баланс. Если сумма снятия слишком большая,
+                            расчёт может стать невозможным.
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="deposit-info">
+            <div class="deposit-info__content">
+                <h2>Важное уточнение</h2>
+
+                <p>
+                    Расчёт носит справочный характер. Реальные условия банка могут отличаться:
+                    проценты могут начисляться ежедневно, ежемесячно, в конце срока или по другой схеме.
+                    Также банк может учитывать дату открытия, календарные дни, налоги, ограничения
+                    на пополнение и снятие.
+                </p>
+
+                <p>
+                    Перед открытием вклада проверяйте точные условия и итоговый расчёт
+                    в официальном предложении банка.
+                </p>
+            </div>
+        </section>
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'tools/js/deposit_calculator.js' %}" defer></script>
+{% endblock %}

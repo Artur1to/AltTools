@@ -34,3 +34,19 @@ def mortgage_calculator(request, page=None):
             'page': page,
         }
     )
+
+def deposit_calculator(request, page=None):
+    if page is None:
+        page = get_object_or_404(
+            ToolPage,
+            slug='deposit-calculator',
+            is_published=True
+        )
+
+    return render(
+        request,
+        'tools/finance/deposit_calculator.html',
+        {
+            'page': page,
+        }
+    )
