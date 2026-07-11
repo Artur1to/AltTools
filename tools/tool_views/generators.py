@@ -89,26 +89,6 @@ PHONE_PRESETS = {
             },
         },
     },
-
-    'ua': {
-        'title': 'Украина',
-        'country_code': '380',
-        'national_length': 9,
-        'operators': {
-            'kyivstar': {
-                'title': 'Киевстар',
-                'prefixes': ['67', '68', '96', '97', '98'],
-            },
-            'vodafone_ua': {
-                'title': 'Vodafone Украина',
-                'prefixes': ['50', '66', '95', '99'],
-            },
-            'lifecell': {
-                'title': 'lifecell',
-                'prefixes': ['63', '73', '93'],
-            },
-        },
-    },
 }
 
 def normalize_url(value):
