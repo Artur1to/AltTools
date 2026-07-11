@@ -15,6 +15,7 @@ from .tool_views.generators import (
 
 from .tool_views.text import (
     fish_text_generator,
+    text_analyzer,
 )
 
 from .tool_views.it import (
@@ -181,6 +182,7 @@ TOOL_HANDLERS = {
     'random-date-generator': random_date_generator,
 
     'fish-text-generator': fish_text_generator,
+    'text-analyzer': text_analyzer,
 
     'base64-converter': base64_converter,
     'url-encoder-decoder': url_encoder_decoder,

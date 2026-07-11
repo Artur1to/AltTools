@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page.meta_title }}{% endblock %}
+
+{% block meta_description %}
+{{ page.meta_description }}
+{% endblock %}
+
+{% block canonical %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_url %}https://example.com{{ page.get_absolute_url }}{% endblock %}
+{% block og_title %}{{ page.meta_title }}{% endblock %}
+{% block og_description %}{{ page.meta_description }}{% endblock %}
+
+{% block nav_tools_active %}nav__link_active{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tools/css/text_analyzer.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="text-analyzer-page">
+    <div class="container">
+
+        <div class="breadcrumbs">
+            <a href="/">Главная</a>
+            <span>/</span>
+            <a href="/tools/">Инструменты</a>
+            <span>/</span>
+            {% if page.category %}
+                <a href="{{ page.category.get_absolute_url }}">{{ page.category.title }}</a>
+                <span>/</span>
+            {% endif %}
+            <span>{{ page.title }}</span>
+        </div>
+
+        <section class="text-analyzer-hero">
+            <div class="text-analyzer-hero__content">
+                <p class="page-label">
+                    {% if page.category %}
+                        {{ page.category.title }}
+                    {% else %}
+                        Текст
+                    {% endif %}
+                </p>
+
+                <h1 class="page-title">
+                    {{ page.h1 }}
+                </h1>
+
+                <p class="page-description">
+                    {{ page.short_description }}
+                </p>
+            </div>
+
+            <div class="text-analyzer-hero__card">
+                <div class="text-analyzer-hero__icon">
+                    T
+                </div>
+
+                <div>
+                    <strong>Text Analyzer</strong>
+                    <span>Символы · Слова · Очистка</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="text-analyzer-tool">
+
+            <div class="text-analyzer-columns">
+
+                <div class="text-analyzer-panel">
+                    <div class="text-analyzer-panel__head">
+                        <div>
+                            <h2>Введите текст</h2>
+                            <p>Статистика обновляется автоматически</p>
+                        </div>
+
+                        <button type="button" class="text-analyzer-small-btn" id="textAnalyzerClear">
+                            Очистить
+                        </button>
+                    </div>
+
+                    <div class="text-analyzer-editor">
+                        <textarea
+                            id="textAnalyzerInput"
+                            class="text-analyzer-textarea"
+                            placeholder="Вставьте или напишите текст здесь..."
+                        ></textarea>
+
+                        <div class="text-analyzer-actions">
+                            <button type="button" class="text-analyzer-submit__button" data-action="trim-spaces">
+                                Убрать лишние пробелы
+                            </button>
+
+                            <button type="button" class="text-analyzer-submit__secondary" data-action="remove-empty-lines">
+                                Удалить пустые строки
+                            </button>
+
+                            <button type="button" class="text-analyzer-submit__secondary" data-action="copy">
+                                Скопировать
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-analyzer-panel">
+                    <div class="text-analyzer-panel__head">
+                        <div>
+                            <h2>Статистика</h2>
+                            <p>Количество символов, слов, строк и предложений</p>
+                        </div>
+                    </div>
+
+                    <div class="text-analyzer-stats">
+                        <div class="text-analyzer-stat">
+                            <span>Символы</span>
+                            <strong id="statCharacters">0</strong>
+                        </div>
+
+                        <div class="text-analyzer-stat">
+                            <span>Без пробелов</span>
+                            <strong id="statCharactersNoSpaces">0</strong>
+                        </div>
+
+                        <div class="text-analyzer-stat">
+                            <span>Слова</span>
+                            <strong id="statWords">0</strong>
+                        </div>
+
+                        <div class="text-analyzer-stat">
+                            <span>Строки</span>
+                            <strong id="statLines">0</strong>
+                        </div>
+
+                        <div class="text-analyzer-stat">
+                            <span>Предложения</span>
+                            <strong id="statSentences">0</strong>
+                        </div>
+
+                        <div class="text-analyzer-stat">
+                            <span>Абзацы</span>
+                            <strong id="statParagraphs">0</strong>
+                        </div>
+                    </div>
+
+                    <div class="text-analyzer-case">
+                        <h3>Смена регистра</h3>
+
+                        <div class="text-analyzer-case__buttons">
+                            <button type="button" data-action="uppercase">ВЕРХНИЙ</button>
+                            <button type="button" data-action="lowercase">нижний</button>
+                            <button type="button" data-action="sentence-case">Как в предложении</button>
+                            <button type="button" data-action="capitalize-words">Каждое Слово</button>
+                            <button type="button" data-action="invert-case">Инвертировать</button>
+                        </div>
+                    </div>
+
+                    <div class="text-analyzer-note" id="textAnalyzerMessage">
+                        Введите текст, чтобы увидеть статистику.
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="text-analyzer-info">
+            <div class="text-analyzer-info__content">
+                <h2>Что считает анализатор текста?</h2>
+
+                <p>
+                    Инструмент считает общее количество символов, символы без пробелов,
+                    слова, строки, предложения и абзацы. Это удобно для SEO-текстов,
+                    описаний товаров, постов, статей, объявлений, учебных работ и коротких заметок.
+                </p>
+
+                <p>
+                    Статистика обновляется сразу после ввода текста, поэтому не нужно нажимать
+                    отдельную кнопку расчёта.
+                </p>
+            </div>
+        </section>
+
+        <section class="text-analyzer-info">
+            <div class="text-analyzer-info__content">
+                <h2>Как работает очистка текста?</h2>
+
+                <p>
+                    Кнопка «Убрать лишние пробелы» заменяет несколько пробелов подряд на один,
+                    удаляет пробелы в начале и конце строк и аккуратно приводит текст к более
+                    чистому виду.
+                </p>
+
+                <p>
+                    Кнопка «Удалить пустые строки» убирает лишние пустые строки между абзацами.
+                    Это полезно, когда текст скопирован из документа, сайта, мессенджера или таблицы.
+                </p>
+            </div>
+        </section>
+
+        <section class="text-analyzer-info">
+            <div class="text-analyzer-info__content">
+                <h2>Как считается текст?</h2>
+
+                <div class="text-analyzer-rules">
+                    <div>
+                        <strong>Символы</strong>
+                        <span>Считаются все знаки в тексте, включая пробелы, переносы строк и пунктуацию.</span>
+                    </div>
+
+                    <div>
+                        <strong>Слова</strong>
+                        <span>Считаются группы букв и цифр, разделённые пробелами или знаками препинания.</span>
+                    </div>
+
+                    <div>
+                        <strong>Строки</strong>
+                        <span>Считаются строки, разделённые переносами. Пустой текст показывает 0 строк.</span>
+                    </div>
+
+                    <div>
+                        <strong>Абзацы</strong>
+                        <span>Считаются непустые блоки текста, разделённые одной или несколькими пустыми строками.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'tools/js/text_analyzer.js' %}" defer></script>
+{% endblock %}

@@ -180,3 +180,19 @@ def fish_text_generator(request, page=None):
         'tools/text/fish_text_generator.html',
         context
     )
+
+def text_analyzer(request, page=None):
+    if page is None:
+        page = get_object_or_404(
+            ToolPage,
+            slug='text-analyzer',
+            is_published=True
+        )
+
+    return render(
+        request,
+        'tools/text/text_analyzer.html',
+        {
+            'page': page,
+        }
+    )
