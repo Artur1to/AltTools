@@ -47,6 +47,7 @@ from .tool_views.finance import (
     mortgage_calculator,
     deposit_calculator,
     compound_interest_calculator,
+    vat_calculator,
 )
 
 
@@ -208,6 +209,7 @@ TOOL_HANDLERS = {
     'mortgage-calculator': mortgage_calculator,
     'deposit-calculator': deposit_calculator,
     'compound-interest-calculator': compound_interest_calculator,
+    'vat-calculator': vat_calculator,
 }
 
 for converter_slug in UNIT_CONVERTER_SLUGS:
